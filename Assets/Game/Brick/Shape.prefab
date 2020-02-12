@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 849059181560594130}
   m_LocalRotation: {x: 0, y: 0, z: -0.0034033263, w: 0.9999942}
-  m_LocalPosition: {x: -2.05, y: 2.53, z: -1}
+  m_LocalPosition: {x: -2.05, y: 2.53, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -68,6 +68,7 @@ MonoBehaviour:
   TypeShape: 5
   MaxLength: 0
   PrebShape: {fileID: 88069959447786939, guid: a0684fcdb37ba464d8b4c1752eae87ac, type: 3}
-  ListShape: {fileID: 0}
+  ListShape: []
   offsetX: 0.6
   offsetY: 0.6
+  point: {x: 0, y: 0}
