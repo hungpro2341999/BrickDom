@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 849059181560594131}
-  - component: {fileID: 849059181560594128}
   - component: {fileID: 849059181560594129}
+  - component: {fileID: 4496903907187136957}
   m_Layer: 0
   m_Name: Shape
   m_TagString: Untagged
@@ -32,7 +32,27 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -0.39}
---- !u!50 &849059181560594128
+--- !u!114 &849059181560594129
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 849059181560594130}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d10ae2e89575e8e4d9174f5e139af9c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 0
+  TypeShape: 6
+  MaxLength: 0
+  PrebShape: {fileID: 88069959447786939, guid: a0684fcdb37ba464d8b4c1752eae87ac, type: 3}
+  ListShape: []
+  offsetX: 0.6
+  offsetY: 0.6
+  point: {x: 0, y: 0}
+--- !u!50 &4496903907187136957
 Rigidbody2D:
   serializedVersion: 4
   m_ObjectHideFlags: 0
@@ -53,22 +73,3 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 5
---- !u!114 &849059181560594129
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 849059181560594130}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d10ae2e89575e8e4d9174f5e139af9c7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  TypeShape: 5
-  MaxLength: 0
-  PrebShape: {fileID: 88069959447786939, guid: a0684fcdb37ba464d8b4c1752eae87ac, type: 3}
-  ListShape: []
-  offsetX: 0.6
-  offsetY: 0.6
-  point: {x: 0, y: 0}

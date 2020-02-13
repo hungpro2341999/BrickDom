@@ -4,9 +4,10 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 
-public enum TypeShape {crossBar_1,crossBar_2,crossBar_3, crossBar_4, square,three_cube}
+public enum TypeShape {crossBar_1,crossBar_2,crossBar_3, crossBar_4, square,three_cube,L_3}
 public class Shape : MonoBehaviour
 {
+    public int id;
     public TypeShape TypeShape;
     public int[,] shape;
     public int MaxLength;
@@ -15,12 +16,11 @@ public class Shape : MonoBehaviour
     public float offsetX=0.6f;
     public float offsetY=0.6f;
     public Vector2 point;
+    bool initPos = false;
     // Start is called before the first frame update
     void Start()
     {
-        init();
-        
-        initShape(TypeShape);
+       
     }
 
     // Update is called once per frame
@@ -33,14 +33,36 @@ public class Shape : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.A))
         {
-          for(int i = 0; i < ListShape.Count; i++)
-            {
-                CtrlGamePlay.Ins.AddCubeIntoBoard(ListShape[i]);
-                Debug.Log("Push");
-            }
+          //for(int i = 0; i < ListShape.Count; i++)
+          //  {
+          //      CtrlGamePlay.Ins.AddCubeIntoBoard(ListShape[i]);
+          //      Debug.Log("Push");
+          //  }
         }
     }
+    public void isMove(int vertical)
+    {
+      
+    }
+  
+    public void AddCubeToBoard()
+    {
+        init();
+        initShape(TypeShape);
+        for (int i = 0; i < ListShape.Count; i++)
+        {
+            CtrlGamePlay.Ins.AddCubeIntoBoard(ListShape[i]);
+        }
+    }
+
     #region InitShape
+
+
+
+    public void SetNextId()
+  {
+
+  }
     public void init()
     {
         
@@ -87,6 +109,7 @@ public class Shape : MonoBehaviour
                     { 0, 0, 0, 0} ,
               };
                 RotationMaxtrix(Random.Range(0, 7));
+
                 break;
             case TypeShape.crossBar_4:
                 shape = new int[4, 4]
@@ -122,7 +145,20 @@ public class Shape : MonoBehaviour
                     { 0, 0, 0, 0} ,
             };
                 RotationMaxtrix(Random.Range(0,7));
-                Render(shape);
+                
+                SplitMatrix(shape);
+                break;
+            case TypeShape.L_3:
+                shape = new int[4, 4]
+            {
+
+                    { 1, 1, 0, 0} ,
+                    { 1, 0, 0, 0} ,
+                    { 1, 0, 0, 0} ,
+                    { 1, 0, 0, 0} ,
+            };
+                RotationMaxtrix(Random.Range(0, 7));
+
                 SplitMatrix(shape);
                 break;
         }
@@ -132,75 +168,85 @@ public class Shape : MonoBehaviour
     }
     public int[,] SplitMatrix(int[,] matrix)
     {
+        Render(matrix);
         int x = -1;
         int y = -1;
-        int xMatrixSlip = 0;
-        int yMatrixSlip = 0;
+        int xMatrixSlip = 100;
+        int yMatrixSlip = 100;
         int xSlip = 0;
         int ySlip = 0;
         // Check Width
         int width=0;
-        int height = 0;
+        int height=0;
         string s = "";
         for (int j=0;j<matrix.GetLength(1); j++)
         {
             s += "\n";
           
-            if (width >= xSlip)
-            {
-                xSlip = width;
-                Debug.Log("Chance :" + xSlip);
-            }
-            width = 0;
-        //    Debug.Log("HANG " + j + " :" + xSlip);
-          
+           
+         
             for (int i = 0; i < matrix.GetLength(0); i++)
             {
                 s += matrix[i,j];
-                if (matrix[i, j] == 1)
+                if (matrix[i, j] !=0)
                 {
-                   xMatrixSlip =  Mathf.Min(xMatrixSlip, i);
+                   xMatrixSlip =  Mathf.Min(xMatrixSlip, j);
+               //     Debug.Log("HANG Min" + j + " :" + xMatrixSlip);
+
                     width++;
-                 //   Debug.Log("HANG " + "[" + j + "," + "]" + " :: " + width);
-                 //   xSlip = Mathf.Min(xSlip, j);
+                  
+              
                 }
+
             }
+            xSlip = Mathf.Max(xSlip, width);
+            width = 0;
+           // Debug.Log("HANG " + "[" + j + "," + "]" + " :: " + width);
         }
      
-        //   Debug.Log(s);
+        //   Debug.Log("Check Width: "+xSlip );
 
         // Check Height
         for (int j = 0; j < matrix.GetLength(0); j++)
         {
-
-            ySlip = Mathf.Max(ySlip, height);
-            height = 0;
             for (int i = 0; i < matrix.GetLength(1); i++)
             {
-                if (matrix[j, i] == 1)
+                if (matrix[j, i] !=0)
                 {
-                    height++;
+                     height++;
                   
-                    //  ySlip = Mathf.Min(xSlip, j);
+                    yMatrixSlip = Mathf.Min(yMatrixSlip, j);
+               //     Debug.Log("Cot Min" + j + " :" + yMatrixSlip);
                 }
             }
-            Debug.Log("COT " + j + " :" + height);
+            ySlip = Mathf.Max(ySlip, height);
+            height = 0;
+         //   Debug.Log("COT " + j + " :" + height);
         }
-          
-        int[,] MatrixSlip = new int[xMatrixSlip,yMatrixSlip];
-        Debug.Log(xMatrixSlip + "   " + yMatrixSlip);
-        Debug.Log(xSlip + "   " + ySlip);
+    //    Debug.Log("Check Height: " + ySlip);
+
+        int[,] MatrixSlip = new int[xSlip,ySlip];
+     //   Debug.Log(xMatrixSlip + "  Size   " + yMatrixSlip);
+      //  Debug.Log(xSlip + "   " + ySlip);
         //Get Slip Matrix
-        for (int j = ySlip; j < ySlip+yMatrixSlip; j++)
+        string ss = "";
+        ss += "Colum : " + xMatrixSlip + "  " + "WIDTH :" + yMatrixSlip +"\n"; 
+        for (int j = xMatrixSlip; j < ySlip+xMatrixSlip; j++)
         {
             y++;
             x = 0;
-            for (int i = xSlip; i < xSlip + xMatrixSlip; i++)
+            ss += "\n";
+            for (int i = yMatrixSlip; i < xSlip + yMatrixSlip; i++)
             {
-                MatrixSlip[x, y] = matrix[i, j];
+                int a = matrix[i, j];
+                MatrixSlip[x, y] = a;
                     x++;
+                ss += "  a[" + i + "," + j + "]  : " + matrix[i, j];
+              //  Debug.Log("" + i + "  " + j + "  "+ matrix[i, j]);
+               
             }
         }
+        Debug.Log(ss);
         Render(MatrixSlip);
         return MatrixSlip;
                         
@@ -231,19 +277,14 @@ public class Shape : MonoBehaviour
         return cloneMatrix;
         
        
-
-
-
-
-
     }
-    public int[,] Clone(int[,] matrix)
+    public static int[,] Clone(int[,] matrix)
     {
-        int[,] matrixs = new int[4, 4];
-        for(int i = 0; i < 4; i++)
+        int[,] matrixs = new int[matrix.GetLength(0), matrix.GetLength(1)];
+        for(int i = 0; i < matrix.GetLength(1); i++)
         {
           
-            for(int j = 0; j < 4; j++)
+            for(int j = 0; j < matrix.GetLength(0); j++)
             {
                 int x = matrix[j, i];
                 matrixs[j, i] = x;
@@ -255,10 +296,10 @@ public class Shape : MonoBehaviour
     public void Render(int[,] matrix)
     {
         string s = "";
-        for(int i = 0; i < 4; i++)
+        for(int i = 0; i < matrix.GetLength(1); i++)
         {
             s+="\n";
-            for (int j = 0; j < 4; j++)
+            for (int j = 0; j <matrix.GetLength(0); j++)
             {
                s+= matrix[j, i] + "  ";    
             }
@@ -267,33 +308,34 @@ public class Shape : MonoBehaviour
     }
     private void SetShape()
     {
-        int[,] matrixs = new int[4,4];
+        shape = SplitMatrix(shape);
+     //   Debug.Log("SET ");
+        Render(shape);
+
         int i = 0;
-        for(int y = 0; y < 4; y++)
+        for(int y = 0; y < shape.GetLength(1); y++)
         {
             
-            for(int x = 0; x < 4; x++)
+            for(int x = 0; x < shape.GetLength(0); x++)
             {
-                if (shape[y,x] != 0)
+                if (shape[x,y] != 0)
                 {
-                    matrixs[y, x] = 1;
+                  
                    var a =  Instantiate(PrebShape, transform);
                     a.transform.localPosition = new Vector3(y * offsetX,- x * offsetY);
                     i++;
                     a.name = "Shape " + i;
                     ListShape.Add(a);
                 }
-                else
-                {
-                    matrixs[y, x] = 0;
-                }
+               
             }
         }
-        Render(matrixs);
+        
     }
     #endregion
 
     #region PushToBoard
+
 
     public Vector2[] PushToBoard()
     {
@@ -328,6 +370,7 @@ public class Shape : MonoBehaviour
     {
         Destroy(gameObject);
     }
+ 
 
     #endregion
 }
