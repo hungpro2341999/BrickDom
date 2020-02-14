@@ -15,4 +15,8 @@ public class DestroySelf : MonoBehaviour
         GetComponentInParent<Shape>().RemoveCube(gameObject);
         Destroy(gameObject);
     }
+    public Vector2 GetPoint()
+    {
+        return Point;
+    }
 }

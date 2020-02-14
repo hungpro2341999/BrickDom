@@ -17,10 +17,22 @@ public class Shape : MonoBehaviour
     public float offsetY=0.6f;
     public Vector2 point;
     bool initPos = false;
+    public Rigidbody2D Body;
+    #region Move
+
+    public Vector3 posInit;
+    public Vector3 PosTarget;
+    public float Speed = 0;
+    public bool m_isMove = false;
+    public bool isClick = false;
+    public float ClampMoveMinX = 0;
+    public float ClampMoveMaxX = 0;
+
+    #endregion
     // Start is called before the first frame update
     void Start()
     {
-       
+        Body = GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
@@ -39,6 +51,11 @@ public class Shape : MonoBehaviour
           //      Debug.Log("Push");
           //  }
         }
+        if (isClick)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, PosTarget, Time.deltaTime * Speed);
+        }
+
     }
     public void isMove(int vertical)
     {
@@ -366,11 +383,51 @@ public class Shape : MonoBehaviour
             return false;
         }
     }
-    public void Destroy()
+    public void CheckDestroy()
     {
-        Destroy(gameObject);
+        if (ListShape.Count == 0)
+        {
+            Destroy(gameObject);
+        }
+      
+       
     }
+    public void MoveTo(float distance)
+    {
+        Vector3 pos = posInit;
+        pos.x -= distance;
+        PosTarget = pos;
+    }
+   
+    public void ActiveRigidBody2D(bool active)
+    {
+      
+            Body.isKinematic = !active;
+        
+    }
+
  
 
     #endregion
+    public void InitPoint()
+    {
+        isClick = true;
+        m_isMove = true;
+        posInit = transform.position;
+    }
+    public void ResetStatus()
+    {
+        isClick = false;
+        m_isMove = false;
+        posInit = Vector3.zero;
+    }
+    public void Snap()
+    {
+        
+       
+    }
+    public void ClampMove(int x,int y)
+    {
+
+    }
 }
