@@ -53,11 +53,14 @@ MonoBehaviour:
   offsetY: 0.6
   point: {x: 0, y: 0}
   Body: {fileID: 0}
+  Spawn: 0
   posInit: {x: 0, y: 0, z: 0}
   PosTarget: {x: 0, y: 0, z: 0}
   Speed: 20
   m_isMove: 0
   isClick: 0
+  ClampMoveMinX: 0
+  ClampMoveMaxX: 0
 --- !u!50 &4496903907187136957
 Rigidbody2D:
   serializedVersion: 4

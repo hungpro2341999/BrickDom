@@ -40,6 +40,7 @@ public class CtrlGamePlay : MonoBehaviour
     public Text Matrix;
     public Text Select;
     public Text ShapeSelect;
+    public Text MoveSelect;
 
     //Test
     public int xx;
@@ -66,6 +67,10 @@ public class CtrlGamePlay : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (ShapeClick != null)
+        {
+            ClampShape(ShapeClick);
+        }
         Matrix.text = Render(Board);
         if (Input.GetKeyDown(KeyCode.S))
         {
@@ -157,7 +162,7 @@ public class CtrlGamePlay : MonoBehaviour
         int x = Mathf.FloorToInt((Pos.x - CtrlGamePlay.Ins.initPoint.x) / CtrlGamePlay.Ins.offsetX);
         int y = Mathf.FloorToInt((CtrlGamePlay.Ins.initPoint.y - Pos.y) / CtrlGamePlay.Ins.offsetY);
       //  Debug.Log(x + "  " + y);
-        if (x<0 ||  x > countX || y <0 || y >countY)
+        if (x<0 ||  x >= countX || y <0 || y >countY)
         {
 
             return -Vector2.one;
@@ -228,16 +233,22 @@ public class CtrlGamePlay : MonoBehaviour
 
 
     }
-
+  
     public void SpawnShape()
     {
 
         int x = Random.Range(0,countX);
-        var  a =  Instantiate(PrebShape, new Vector3(initPoint.x + x * offsetX, initPoint.y),Quaternion.identity,null);
-        a.name = "Shape : " + Random.Range(0, 100);
+        var  a =  Instantiate(PrebShape,null);
+        a.name = "Shape : " + Random.Range(0, 10);
         List_Shape.Add(a.GetComponent<Shape>());
         a.GetComponent<Shape>().AddCubeToBoard();
         
+    }
+
+    public static  Vector3 RandomPosShape()
+    {
+        int x = Random.Range(0, CtrlGamePlay.Ins.countX);
+        return new Vector3(CtrlGamePlay.Ins.initPoint.x + x * CtrlGamePlay.Ins.offsetX, CtrlGamePlay.Ins.initPoint.y);
     }
    
     public void AddCubeIntoBoard(GameObject cube)
@@ -252,18 +263,9 @@ public class CtrlGamePlay : MonoBehaviour
    
     private void PushToBoard(GameObject cube)
     {
+        
         Vector2 point = cube.GetComponent<DestroySelf>().Point;
-        for (int i = 0; i < countY; i++)
-        {
-            for (int j = 0; j < countX; j++)
-            {
-                if (j == point.x && i == point.y)
-                {
-                    Board[j, i] = 1;
-                }
-
-            }
-        }
+        Board[(int)point.x,(int)point.y] = 1;  
     }
     public bool isCubeCorrect(GameObject cube)
     {
@@ -297,15 +299,15 @@ public class CtrlGamePlay : MonoBehaviour
            
                 try
                 {
-                    s += Board[j, i] + "  ";
+                    s += Board[i, j] + "  ";
                 }
                 catch(System.Exception e)
                 {
-                    Debug.Log("GotError");
-                    Debug.Log(s);
+                  
+                    Debug.Log(s+ "GotError");
 
                 }
-                if (j == x && i == y && Board[j, i] == 1)
+                if (i == x && j == y && Board[i, j] == 1)
                 {
                     Debug.Log(i + " " + j);
                     Debug.Log("D Hop Ly");
@@ -392,6 +394,7 @@ public class CtrlGamePlay : MonoBehaviour
     public void RefershBoard()
     {
         ReflectShape();
+        Board = new int[countX, countY];
         for (int j = 0; j < List_Shape.Count; j++)
         {
 
@@ -438,23 +441,27 @@ public class CtrlGamePlay : MonoBehaviour
         }
           
     }
+    public static bool isInMatrix(int x,int y)
+    {
+        if (x < 0 || x >= CtrlGamePlay.Ins.countX || y <0 || y > CtrlGamePlay.Ins.countY)
+        {
+            return false;
+        }
+        return true;
+    }
     public static Vector2 PositonToMatrix(float PosX,float PosY)
     {
         int x = Mathf.FloorToInt((PosX - CtrlGamePlay.Ins.initPoint.x) / CtrlGamePlay.Ins.offsetX);
         int y = Mathf.FloorToInt((CtrlGamePlay.Ins.initPoint.y - PosY) / CtrlGamePlay.Ins.offsetY);
         return new Vector2(x, y);
+        
+    }
+    public static Vector2 PositonToMatrixRound(float PosX, float PosY)
+    {
 
-        //  Debug.Log(x + "  " + y);
-        //if (x < 0 || x > PosX || y < 0 || y > posY)
-        //{
-        //    return -Vector2.one;
-
-        //}
-        //else
-        //{
-        //    Vector2 point = new Vector2(x, y);
-        //    return point;
-        //}
+        int x = Mathf.RoundToInt((PosX - CtrlGamePlay.Ins.initPoint.x) / CtrlGamePlay.Ins.offsetX);
+        int y = Mathf.RoundToInt((CtrlGamePlay.Ins.initPoint.y - PosY) / CtrlGamePlay.Ins.offsetY);
+        return new Vector2(x, y);
 
     }
     public static Vector2 MatrixToPoint(int x,int y)
@@ -477,31 +484,79 @@ public class CtrlGamePlay : MonoBehaviour
     {
        
         RefershBoard();
+        int minX = 0;
+        int maxX = 0;
         List<Vector2> Point = new List<Vector2>();
-        for(int i = 0; i < shape.ListShape.Count; i++)
-        {
-            Point.Add(shape.ListShape[i].GetComponent<DestroySelf>().Point);
+        //for(int i = 0; i < shape.ListShape.Count; i++)
+        //{
+        //    Point.Add(shape.ListShape[i].GetComponent<DestroySelf>().Point);
             
-        }
-        for (int i = 0; i < List_Shape.Count; i++)
+        //}
+       
+        //Move_left
+         
+        bool isMove =true;
+
+        while (isMove)
         {
-
-            for (int j = 0; j < List_Shape[i].ListShape.Count; j++)
+            minX++;
+            for(int i = 0; i < shape.ListShape.Count; i++)
             {
-
-              
-
-
+                int x = (int)shape.ListShape[i].GetComponent<DestroySelf>().Point.x - minX;
+                int y = (int)shape.ListShape[i].GetComponent<DestroySelf>().Point.y;
+                if (IsCubeCorrect(x, y))
+                {
+                    isMove = false;
+                    minX--;
+                    minX = Mathf.Clamp(minX, 0, countX);
+                    break;
+                }
             }
+          
+
         }
 
+        //Move_Right
+        isMove = true;
 
+        while (isMove)
+        {
+            maxX++;
+            for (int i = 0; i < shape.ListShape.Count; i++)
+            {
+                int x = (int)shape.ListShape[i].GetComponent<DestroySelf>().Point.x + maxX;
+                int y = (int)shape.ListShape[i].GetComponent<DestroySelf>().Point.y;
+                if (IsCubeCorrect(x, y))
+                {
+                    isMove = false;
+                    maxX--;
+                    maxX = Mathf.Clamp(maxX, 0, countX);
+                    break;
+                }
+            }
+
+
+        }
+
+        MoveSelect.text = "X : " + minX + "---Y : " + maxX; 
+       
 
 
     }
+
+
+
+
+
+
+
+
+
+
+}
    
     
 
 
 
-}
+
