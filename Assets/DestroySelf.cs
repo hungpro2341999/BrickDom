@@ -5,13 +5,16 @@ using UnityEngine;
 public class DestroySelf : MonoBehaviour
 {
    public Vector2 Point;
-    public Shape shape;
+   public Shape shape;
+    public bool isDestroy = false;
     private void Start()
     {
         shape = GetComponentInParent<Shape>();
     }
     public void Destroy()
     {
+
+        isDestroy = true;
         GetComponentInParent<Shape>().RemoveCube(gameObject);
         Destroy(gameObject);
     }
@@ -19,4 +22,5 @@ public class DestroySelf : MonoBehaviour
     {
         return Point;
     }
+   
 }

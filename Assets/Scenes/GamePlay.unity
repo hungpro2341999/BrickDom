@@ -354,8 +354,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -230, y: -663}
-  m_SizeDelta: {x: 500, y: 500}
+  m_AnchoredPosition: {x: -367, y: -885}
+  m_SizeDelta: {x: 500, y: 1000}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &328562717
 MonoBehaviour:
@@ -987,6 +987,7 @@ MonoBehaviour:
   Select: {fileID: 678009776}
   ShapeSelect: {fileID: 796476729}
   MoveSelect: {fileID: 328562717}
+  Error: {fileID: 0}
   xx: 0
   yy: 2
 --- !u!1 &1731231423

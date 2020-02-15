@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class CtrlGamePlay : MonoBehaviour
 {
-  
+
     public static int idShape = 0;
     public static CtrlGamePlay Ins;
     public int countX;
@@ -21,12 +21,12 @@ public class CtrlGamePlay : MonoBehaviour
     public bool isClick = false;
     public Vector2 Destroy;
     public LayerMask LayerShape;
-
     public Shape ShapeClick = null;
+    public List<Vector2> neighbor = new List<Vector2>();
     #region localVariable
     bool initPos = false;
-    public  Vector2 PosInit;
-    public  Vector2 PosCurr;
+    public Vector2 PosInit;
+    public Vector2 PosCurr;
 
     #endregion
     #region Mouse
@@ -41,6 +41,8 @@ public class CtrlGamePlay : MonoBehaviour
     public Text Select;
     public Text ShapeSelect;
     public Text MoveSelect;
+    public Text Error;
+
 
     //Test
     public int xx;
@@ -48,6 +50,7 @@ public class CtrlGamePlay : MonoBehaviour
     // Start is called before the first frame update
     private void Awake()
     {
+
         if (Ins != null)
         {
             Destroy(gameObject);
@@ -57,10 +60,11 @@ public class CtrlGamePlay : MonoBehaviour
             Ins = this;
         }
     }
-  
+
 
     void Start()
     {
+
         Board = new int[countX, countY];
     }
 
@@ -69,27 +73,22 @@ public class CtrlGamePlay : MonoBehaviour
     {
         if (ShapeClick != null)
         {
-            ClampShape(ShapeClick);
+
         }
         Matrix.text = Render(Board);
         if (Input.GetKeyDown(KeyCode.S))
         {
-         
+
             SpawnShape();
-          
+
         }
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            RefershBoard();
-        }
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            IsCubeCorrect(xx, yy);
-        }
+
+
         if (Input.GetKeyDown(KeyCode.Z))
         {
             Debug.Log("Start Destroy");
-            DestroyRow(9);
+
+
         }
         if (Input.GetMouseButtonDown(0))
         {
@@ -105,27 +104,29 @@ public class CtrlGamePlay : MonoBehaviour
             ShapeClick = isShapeClick();
             if (ShapeClick != null)
             {
+                ClampShape(ShapeClick);
                 ShapeClick.InitPoint();
+
             }
         }
         if (Input.GetMouseButtonUp(0))
         {
-          
+
             isClick = false;
-        
+
         }
         if (isClick)
         {
-            int Direct =  UpdatePoint(Input.mousePosition);
+            int Direct = UpdatePoint(Input.mousePosition);
             float dis = 0;
-           
+
             if (ShapeClick != null)
             {
 
                 ActiveShape(false);
                 dis = PosMouseInit.x - Camera.main.ScreenToWorldPoint(Input.mousePosition).x;
-                ShapeClick.MoveTo(dis); 
-              //  Shape.transform.position = ScreenToWord(Input.mousePosition);
+                ShapeClick.MoveTo(dis);
+                //  Shape.transform.position = ScreenToWord(Input.mousePosition);
                 Debug.Log("Move");
             }
             else
@@ -134,47 +135,73 @@ public class CtrlGamePlay : MonoBehaviour
                 ShapeSelect.text = "NULL";
             }
             Select.text += "\n Direct :" + Direct;
-            
+
         }
         else
         {
-            if (ShapeClick!=null) 
+            if (ShapeClick != null)
             {
+                ShapeClick.Snap();
                 ShapeClick.ResetStatus();
+                ShapeClick = null;
+
+
             }
-          
-            ShapeClick = null; 
-         // Reset Staus
+            RefershBoard();
+            CheckDestroyRow();
+            // Reset Staus
             ActiveShape(true);
-            initPos = false; 
+            initPos = false;
+
+            // Destroy Row
+
+
+
         }
     }
-   
-    
-   public static Vector3 ScreenToWord(Vector2 posScreen)
+    public void CheckDestroyRow()
     {
-       Vector3 pos =   Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        int[] row;
+        if (DestroyAtRow(out row))
+        {
+
+            for (int i = 0; i < row.Length; i++)
+            {
+                Debug.Log("DESTROY ROW :" + i);
+                DestroyRow(row[i]);
+            }
+
+        }
+        else
+        {
+            Debug.Log(" NOTTHING ");
+        }
+    }
+
+    public static Vector3 ScreenToWord(Vector2 posScreen)
+    {
+        Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         pos.z = 0;
         return pos;
     }
-    public  Vector2 PointToMatrix(Vector2 Pos)
+    public Vector2 PointToMatrix(Vector2 Pos)
     {
         int x = Mathf.FloorToInt((Pos.x - CtrlGamePlay.Ins.initPoint.x) / CtrlGamePlay.Ins.offsetX);
         int y = Mathf.FloorToInt((CtrlGamePlay.Ins.initPoint.y - Pos.y) / CtrlGamePlay.Ins.offsetY);
-      //  Debug.Log(x + "  " + y);
-        if (x<0 ||  x >= countX || y <0 || y >countY)
+        //  Debug.Log(x + "  " + y);
+        if (x < 0 || x >= countX || y < 0 || y > countY)
         {
 
             return -Vector2.one;
-           
+
         }
         else
         {
             Vector2 point = new Vector2(x, y);
             return point;
         }
-       
-      
+
+
     }
     public int UpdatePoint(Vector3 point)
     {
@@ -185,12 +212,12 @@ public class CtrlGamePlay : MonoBehaviour
 
         Select.text = PosInit + "::" + PosCurr + " ::: " + CheckPointCorrect(pos.x, pos.y);
 
-       if ((PosCurr.x - PosInit.x) == 0)
+        if ((PosCurr.x - PosInit.x) == 0)
         {
             return 0;
         }
-        return  (int)Mathf.Sign(PosCurr.x - PosInit.x);
-        
+        return (int)Mathf.Sign(PosCurr.x - PosInit.x);
+
     }
     public bool isMove(Shape shape)
     {
@@ -198,74 +225,84 @@ public class CtrlGamePlay : MonoBehaviour
 
         for (int x = 0; x < shape.ListShape.Count; x++)
         {
-           
-            
+
+
         }
         return false;
     }
-  
+
     public Shape isShapeClick()
     {
-            RaycastHit2D rayHit;
-            rayHit = Physics2D.GetRayIntersection(Camera.main.ScreenPointToRay(Input.mousePosition));
-            if (rayHit.collider != null)
-            {
+        RaycastHit2D rayHit;
+        rayHit = Physics2D.GetRayIntersection(Camera.main.ScreenPointToRay(Input.mousePosition));
+        if (rayHit.collider != null)
+        {
             if (rayHit.collider.gameObject.layer == 8)
             {
-               
+
                 Shape shape = rayHit.collider.gameObject.GetComponent<DestroySelf>().shape;
                 ShapeSelect.text = shape.gameObject.name;
                 return shape;
 
             }
-            
-         
 
-            }
-            else
-            {
-                return null;
-            }
 
+
+        }
+        else
+        {
             return null;
+        }
+
+        return null;
 
 
 
 
     }
-  
+
     public void SpawnShape()
     {
 
-        int x = Random.Range(0,countX);
-        var  a =  Instantiate(PrebShape,null);
-        a.name = "Shape : " + Random.Range(0, 10);
+        int x = Random.Range(0, countX);
+        var a = Instantiate(PrebShape, null);
+        a.name = "Shape : " + CtrlGamePlay.idShape;
+        idShape++;
         List_Shape.Add(a.GetComponent<Shape>());
         a.GetComponent<Shape>().AddCubeToBoard();
-        
+
     }
 
-    public static  Vector3 RandomPosShape()
+    public static Vector3 RandomPosShape()
     {
         int x = Random.Range(0, CtrlGamePlay.Ins.countX);
         return new Vector3(CtrlGamePlay.Ins.initPoint.x + x * CtrlGamePlay.Ins.offsetX, CtrlGamePlay.Ins.initPoint.y);
     }
-   
+
     public void AddCubeIntoBoard(GameObject cube)
     {
         if (!Cubes.Contains(cube))
         {
             Cubes.Add(cube);
         }
-       
+
 
     }
-   
+
     private void PushToBoard(GameObject cube)
     {
-        
+        if (cube.GetComponent<DestroySelf>() == null)
+            return;
         Vector2 point = cube.GetComponent<DestroySelf>().Point;
-        Board[(int)point.x,(int)point.y] = 1;  
+        try
+        {
+            Board[(int)point.x, (int)point.y] = 1;
+        }
+        catch
+        {
+            Error.text = " ERROR : " + point.x + ":" + point.y;
+        }
+
     }
     public bool isCubeCorrect(GameObject cube)
     {
@@ -274,7 +311,7 @@ public class CtrlGamePlay : MonoBehaviour
         {
             for (int j = 0; j < countX; j++)
             {
-                if (j == point.x && i == point.y && Board[j, i] == 1 )
+                if (j == point.x && i == point.y && Board[j, i] == 1)
                 {
                     return false;
                 }
@@ -287,46 +324,43 @@ public class CtrlGamePlay : MonoBehaviour
         }
         return false;
     }
-    
-    public bool IsCubeCorrect(int x,int y)
+
+    public bool IsCubeCorrect(int x, int y)
     {
+        if (!isInMatrix(x, y))
+        {
+            return false;
+        }
         string s = "";
         for (int j = 0; j < countY; j++)
         {
             s += "\n";
             for (int i = 0; i < countX; i++)
             {
-           
-                try
-                {
-                    s += Board[i, j] + "  ";
-                }
-                catch(System.Exception e)
-                {
-                  
-                    Debug.Log(s+ "GotError");
 
-                }
+
+                s += Board[i, j] + "  ";
+
                 if (i == x && j == y && Board[i, j] == 1)
                 {
                     Debug.Log(i + " " + j);
-                    Debug.Log("D Hop Ly");
+
                     return false;
                 }
-              
+
 
             }
         }
         Debug.Log(s);
-        Debug.Log("Hop Ly");
+
         return true;
 
     }
-    public bool isShapeCorrect(Shape shape,int x,int y)
+    public bool isShapeCorrect(Shape shape, int x, int y)
     {
-        for(int i = 0; i < shape.ListShape.Count; i++)
+        for (int i = 0; i < shape.ListShape.Count; i++)
         {
-            Vector2 point =   shape.ListShape[i].GetComponent<DestroySelf>().Point;
+            Vector2 point = shape.ListShape[i].GetComponent<DestroySelf>().Point;
             if (!IsCubeCorrect((int)point.x, (int)point.y))
             {
 
@@ -339,7 +373,7 @@ public class CtrlGamePlay : MonoBehaviour
     public bool isCorrectWithBoard(Shape shape)
     {
         bool correct = false;
-        
+
 
         return correct;
     }
@@ -348,32 +382,39 @@ public class CtrlGamePlay : MonoBehaviour
 
         bool correct = false;
 
-//        Cube.GetComponent<DestroySelf>().
+        //        Cube.GetComponent<DestroySelf>().
 
         return correct;
     }
 
-   
+
 
     public void DestroyRow(int row)
     {
-       
-      for(int i = 0; i < countX; i++)
+
+        Shape shape;
+        for (int i = 0; i < countX; i++)
         {
             for (int x = 0; x < Cubes.Count; x++)
             {
-               
-                if (Cubes[x].GetComponent<DestroySelf>().Point == new Vector2((float)i,row))
+
+                if (Cubes[x].GetComponent<DestroySelf>().Point == new Vector2((float)i, row))
                 {
+                    shape = Cubes[x].GetComponent<DestroySelf>().shape;
                     Cubes[x].GetComponent<DestroySelf>().Destroy();
-                  
+                    shape.ReflectShape();
+                    //    Debug.Log(shape.name);
+
+
                 }
             }
         }
-           
-        
+
+        RefershBoard();
+
+
     }
-    
+
     private string Render(int[,] matrix)
     {
         string s = "";
@@ -385,7 +426,7 @@ public class CtrlGamePlay : MonoBehaviour
                 s += matrix[j, i] + "  ";
             }
         }
-       // Debug.Log(s);
+        // Debug.Log(s);
         return s;
     }
 
@@ -414,22 +455,22 @@ public class CtrlGamePlay : MonoBehaviour
             int count = 0;
 
             count = List_Shape[i].ListShape.Count;
-            Debug.Log("List_Shape : " + count);
+            //   Debug.Log("List_Shape : " + count);
             if (count == 0)
             {
-                Debug.Log("Destroy_Shape : " + count);
-                Debug.Log("Remove");
-                List_Shape.Remove(List_Shape[i]);
-                //     List_Shape[i].CheckDestroy();
+                //      Debug.Log("Destroy_Shape : " + count);
+                //   Debug.Log("Remove");
+
+                List_Shape[i].CheckDestroy();
             }
         }
     }
     #endregion
 
 
-    public static bool  CheckPointCorrect(float PosX, float PosY)
+    public static bool CheckPointCorrect(float PosX, float PosY)
     {
-    
+
         Vector2 point = PositonToMatrix(PosX, PosY);
         if (point.x < 0 || point.x > CtrlGamePlay.Ins.countX || point.y < 0 || point.y > CtrlGamePlay.Ins.countY)
         {
@@ -439,22 +480,22 @@ public class CtrlGamePlay : MonoBehaviour
         {
             return true;
         }
-          
+
     }
-    public static bool isInMatrix(int x,int y)
+    public static bool isInMatrix(int x, int y)
     {
-        if (x < 0 || x >= CtrlGamePlay.Ins.countX || y <0 || y > CtrlGamePlay.Ins.countY)
+        if (x < 0 || x >= CtrlGamePlay.Ins.countX || y < 0 || y >= CtrlGamePlay.Ins.countY)
         {
             return false;
         }
         return true;
     }
-    public static Vector2 PositonToMatrix(float PosX,float PosY)
+    public static Vector2 PositonToMatrix(float PosX, float PosY)
     {
         int x = Mathf.FloorToInt((PosX - CtrlGamePlay.Ins.initPoint.x) / CtrlGamePlay.Ins.offsetX);
         int y = Mathf.FloorToInt((CtrlGamePlay.Ins.initPoint.y - PosY) / CtrlGamePlay.Ins.offsetY);
         return new Vector2(x, y);
-        
+
     }
     public static Vector2 PositonToMatrixRound(float PosX, float PosY)
     {
@@ -464,61 +505,92 @@ public class CtrlGamePlay : MonoBehaviour
         return new Vector2(x, y);
 
     }
-    public static Vector2 MatrixToPoint(int x,int y)
+    public static Vector2 MatrixToPoint(int x, int y)
     {
         Vector2 pos = Vector2.zero;
         pos.x = CtrlGamePlay.Ins.PosInit.x + x * CtrlGamePlay.Ins.offsetX;
         pos.y = CtrlGamePlay.Ins.PosInit.y - y * CtrlGamePlay.Ins.offsetY;
         return pos;
     }
-    public void ActiveShape(bool active) 
+    public void ActiveShape(bool active)
     {
-      for(int i = 0; i < List_Shape.Count; i++)
-         {
+        for (int i = 0; i < List_Shape.Count; i++)
+        {
             List_Shape[i].GetComponent<Rigidbody2D>().isKinematic = !active;
 
-         }
+        }
     }
-   
+
+    public bool DestroyAtRow(out int[] row)
+    {
+        List<int> Row = new List<int>();
+        bool isDestroy = false;
+        for (int i = 0; i < countY; i++)
+        {
+            int count = countX;
+            for (int j = 0; j < countX; j++)
+            {
+
+                if (Board[j, i] == 1)
+                {
+                    count--;
+                }
+                if (count == 0)
+                {
+                    isDestroy = true;
+                    Row.Add(i);
+                }
+            }
+        }
+        row = Row.ToArray();
+        return isDestroy;
+    }
+
     public void ClampShape(Shape shape)
     {
-       
-        RefershBoard();
+
+
         int minX = 0;
         int maxX = 0;
         List<Vector2> Point = new List<Vector2>();
         //for(int i = 0; i < shape.ListShape.Count; i++)
         //{
         //    Point.Add(shape.ListShape[i].GetComponent<DestroySelf>().Point);
-            
-        //}
-       
-        //Move_left
-         
-        bool isMove =true;
 
+        //}
+
+        //Move_left
+
+        bool isMove = true;
+        string s = "";
+        s += "MOVE LEFT : \n";
         while (isMove)
         {
             minX++;
-            for(int i = 0; i < shape.ListShape.Count; i++)
+
+            for (int i = 0; i < shape.ListShape.Count; i++)
             {
                 int x = (int)shape.ListShape[i].GetComponent<DestroySelf>().Point.x - minX;
                 int y = (int)shape.ListShape[i].GetComponent<DestroySelf>().Point.y;
-                if (IsCubeCorrect(x, y))
+
+                s += "apply x : " + x + "y :" + y + "\n";
+                if (!IsCanMove(shape.ListShape[i].GetComponent<DestroySelf>(), x, y))
                 {
                     isMove = false;
                     minX--;
                     minX = Mathf.Clamp(minX, 0, countX);
+                    s += " reject x : " + x + "y :" + y + "\n";
                     break;
                 }
+
             }
-          
+
 
         }
 
         //Move_Right
         isMove = true;
-
+        s += "MOVE RIGHT : \n";
         while (isMove)
         {
             maxX++;
@@ -526,22 +598,121 @@ public class CtrlGamePlay : MonoBehaviour
             {
                 int x = (int)shape.ListShape[i].GetComponent<DestroySelf>().Point.x + maxX;
                 int y = (int)shape.ListShape[i].GetComponent<DestroySelf>().Point.y;
-                if (IsCubeCorrect(x, y))
+                s += " apply x : " + x + "y :" + y + "\n";
+                if (!IsCanMove(shape.ListShape[i].GetComponent<DestroySelf>(), x, y))
                 {
+
                     isMove = false;
                     maxX--;
                     maxX = Mathf.Clamp(maxX, 0, countX);
+                    s += " reject  x : " + x + "y :" + y + "\n";
+
                     break;
                 }
             }
 
-
         }
 
-        MoveSelect.text = "X : " + minX + "---Y : " + maxX; 
-       
+        MoveSelect.text = "LEFT : " + minX + "RIGHT :  " + maxX + "\n";
+        float ClampMinX = minX * offsetX;
+        float ClampMaxX = maxX * offsetY;
+
+        MoveSelect.text += ClampMinX + " :: " + ClampMaxX;
+        shape.SetUpClamp(ClampMinX, ClampMaxX);
+
+        //MoveSelect.text = s;
+        //Debug.Log(s);
 
 
+    }
+    public bool IsCanMove(DestroySelf Cube, int x, int y)
+    {
+        if (!isInMatrix(x, y))
+        {
+            return false;
+        }
+
+
+        string s = "";
+        for (int j = 0; j < countY; j++)
+        {
+            s += "\n";
+            for (int i = 0; i < countX; i++)
+            {
+
+
+                s += Board[i, j] + "  ";
+
+                if (i == x && j == y && Board[i, j] == 1 && !isCubeInShape(Cube, new Vector2(i, j)))
+                {
+                    Debug.Log(i + " " + j);
+
+                    return false;
+                }
+
+
+            }
+        }
+        //   Debug.Log(s);
+
+        return true;
+
+    }
+    public bool isCubeInShape(DestroySelf Cube, Vector2 point)
+    {
+        for (int i = 0; i < Cube.shape.ListShape.Count; i++)
+        {
+            if (Cube != Cube.shape.ListShape[i].GetComponent<DestroySelf>())
+            {
+                if (Cube.shape.ListShape[i].GetComponent<DestroySelf>().Point == point)
+                {
+                    return true;
+                }
+            }
+
+        }
+        return false;
+    }
+    public void SplitShape(Shape shape)
+    {
+        List<Shape> splitShape = new List<Shape>();
+        List<int> LenghtRow = new List<int>();
+        List<int> LenghtColumn = new List<int>();
+        int[,] matrixshape = shape.shape;
+        for (int j = 0; j < matrixshape.GetLength(0); j++)
+        {
+            bool Split = false;
+            for (int i = 0; i < matrixshape.GetLength(1); i++)
+            {
+             
+              int row = j* matrixshape.GetLength(1) + i;
+              LenghtRow.Add(row);
+                
+                
+            }
+            if()
+        }
+
+    }
+    public static bool isConnect(int[] row1, int[] row2)
+    {
+       // bool isConnect = false;
+        for (int i = 0; i < row1.Length; i++)
+        {
+            if (row1[i] != 1 || row2[i]!=1)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    public static bool isInMatrix(int x, int y, int[,] matrix)
+    {
+        if (x < 0 || x > matrix.GetLength(0) || y < 0 || y > matrix.GetLength(1))
+        {
+            return false;
+        }
+        return true;
     }
 
 

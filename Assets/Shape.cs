@@ -7,7 +7,8 @@ using UnityEngine.EventSystems;
 public enum TypeShape {crossBar_1,crossBar_2,crossBar_3, crossBar_4, square,three_cube,L_3}
 public class Shape : MonoBehaviour
 {
-    public int id;
+    public int idShape;
+    
     public TypeShape TypeShape;
     public int[,] shape;
     public int MaxLength;
@@ -18,7 +19,7 @@ public class Shape : MonoBehaviour
     public Vector2 point;
     bool initPos = false;
     public Rigidbody2D Body;
-    public bool Spawn = false;
+    
     #region Move
 
     public Vector3 posInit;
@@ -33,27 +34,39 @@ public class Shape : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+     
         Body = GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        PushToBoard();
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+
+            ReflectShape();
+
+        }
+
+        if (!isClick)
+        {
+            PushToBoard();
+        }
+      
         if (Input.GetKeyDown(KeyCode.W))
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            //for(int i = 0; i < ListShape.Count; i++)
-            //  {
-            //      CtrlGamePlay.Ins.AddCubeIntoBoard(ListShape[i]);
-            //      Debug.Log("Push");
-            //  }
-        }
+      
         if (isClick)
         {
+             
+            Vector3 pos = PosTarget;
+
+            pos.x = Mathf.Clamp(pos.x, ClampMoveMinX, ClampMoveMaxX);
+
+            PosTarget = pos;
+           
             transform.position = Vector3.MoveTowards(transform.position, PosTarget, Time.deltaTime * Speed);
         }
 
@@ -66,9 +79,10 @@ public class Shape : MonoBehaviour
     public void AddCubeToBoard()
     {
       
-        init();
-        initShape(TypeShape);
-       
+          init();
+          TypeShape = RandomShape();
+          initShape(TypeShape);
+         // initShape(TypeShape);
         for (int i = 0; i < ListShape.Count; i++)
         {
             CtrlGamePlay.Ins.AddCubeIntoBoard(ListShape[i]);
@@ -109,9 +123,8 @@ public class Shape : MonoBehaviour
                     { 0, 0, 0, 0} ,
                     { 0, 0, 0, 0} ,
                 };
-                   RotationMaxtrix(Random.Range(0, 7));
-             
-                SplitMatrix(shape);
+                GenerateRandom();
+
                 break;
             case TypeShape.crossBar_2:
                 shape = new int[4, 4]
@@ -121,8 +134,8 @@ public class Shape : MonoBehaviour
                     { 0, 0, 0, 0} ,
                     { 0, 0, 0, 0} ,
                 };
-                RotationMaxtrix(Random.Range(0, 7));
-                SplitMatrix(shape);
+                GenerateRandom();
+
                 break;
             case TypeShape.crossBar_3:
                 shape = new int[4, 4]
@@ -132,8 +145,9 @@ public class Shape : MonoBehaviour
                     { 0, 0, 0, 0} ,
                     { 0, 0, 0, 0} ,
               };
-                RotationMaxtrix(Random.Range(0, 7));
-                SplitMatrix(shape);
+                GenerateRandom();
+
+
                 break;
             case TypeShape.crossBar_4:
                 shape = new int[4, 4]
@@ -143,14 +157,8 @@ public class Shape : MonoBehaviour
                     { 0, 0, 0, 0} ,
                     { 0, 0, 0, 0} ,
               };
-                RotationMaxtrix(Random.Range(0, 7));
-                Debug.Log(Render(shape));
+                GenerateRandom();
 
-                shape = SplitMatrix(shape);
-                
-                Debug.Log(Render(shape));
-                shape = extendMatrix(shape);
-                Debug.Log(Render(shape));
 
                 break;
             case TypeShape.square:
@@ -161,8 +169,8 @@ public class Shape : MonoBehaviour
                     { 0, 0, 0, 0} ,
                     { 0, 0, 0, 0} ,
             };
-                RotationMaxtrix(Random.Range(0, 7));
-                SplitMatrix(shape);
+                GenerateRandom();
+
                 break;
             case TypeShape.three_cube:
 
@@ -175,21 +183,21 @@ public class Shape : MonoBehaviour
                     { 0, 0, 0, 0} ,
                 };
 
-                while (!Spawn)
-                {
+                //while (!Spawn)
+                //{
                   
-                    shape = extendMatrix(shape);
-                    RotationMaxtrix(Random.Range(0, 8));
-                    // Debug.Log(Render(shape));
+                ////    shape = extendMatrix(shape);
+                ////    RotationMaxtrix(Random.Range(0, 8));
+                ////    // Debug.Log(Render(shape));
                   
-                    shape = SplitMatrix(shape);
-                    //   Debug.Log(Render(shape));
+                ////    shape = SplitMatrix(shape);
+                ////    //   Debug.Log(Render(shape));
                   
-                    Debug.Log(Render(shape));
-                    Spawn = SetShape();
-                }
-                GenerateShape();
-
+                ////    Debug.Log(Render(shape));
+                ////    Spawn = SetShape();
+                ////}
+                ////GenerateShape();
+                GenerateRandom();
 
                 break;
             case TypeShape.L_3:
@@ -201,26 +209,31 @@ public class Shape : MonoBehaviour
                     { 1, 0, 0, 0} ,
                     { 1, 0, 0, 0} ,
             };
-                while (!Spawn)
-                {
-
-                    shape = extendMatrix(shape);
-                    RotationMaxtrix(Random.Range(0, 8));
-                    // Debug.Log(Render(shape));
-
-                    shape = SplitMatrix(shape);
-                    //   Debug.Log(Render(shape));
-
-                    Debug.Log(Render(shape));
-                    Spawn = SetShape();
-                }
-                GenerateShape();
+                GenerateRandom();
 
                 break;
         }
-       // SetShape();
+     
 
 
+    }
+    public void GenerateRandom()
+    {
+        bool Spawn = false;
+        while (!Spawn)
+        {
+
+            shape = extendMatrix(shape);
+            RotationMaxtrix(Random.Range(0, 8));
+          //   Debug.Log(Render(shape));
+
+            shape = SplitMatrix(shape);
+       //      Debug.Log(Render(shape));
+
+       //     Debug.Log(Render(shape));
+            Spawn = SetShape();
+        }
+        GenerateShape();
     }
    
     public void InitShapeRandom()
@@ -316,7 +329,8 @@ public class Shape : MonoBehaviour
             }
         }
         //   Debug.Log(ss);
-        Render(MatrixSlip);
+     //    Debug.Log(Render(MatrixSlip));
+        
         return MatrixSlip;
 
 
@@ -425,7 +439,7 @@ public class Shape : MonoBehaviour
                     }
 
                     
-                    Debug.Log(point.ToString() + "   " + CtrlGamePlay.isInMatrix((int)point.x, (int)point.y));
+                  //  Debug.Log(point.ToString() + "   " + CtrlGamePlay.isInMatrix((int)point.x, (int)point.y));
 
                   
 
@@ -448,16 +462,26 @@ public class Shape : MonoBehaviour
             {
                 if (shape[x, y] != 0)
                 {
-                    
 
                       var a = Instantiate(PrebShape, transform);
                       a.transform.localPosition = new Vector3(x * offsetX, -y * offsetY);
-                      a.name = "Shape :" + Random.Range(0,100);
+                      a.name =  idShape.ToString();
                       ListShape.Add(a);
+                   
                 }
+                this.idShape++;
             }
         }
     }
+    public TypeShape RandomShape()
+    {
+    
+        System.Array values = System.Enum.GetValues(typeof(TypeShape));
+
+        TypeShape typeShape = (TypeShape)values.GetValue(UnityEngine.Random.Range(0,values.Length));
+        return typeShape;
+    } 
+  
     #endregion
 
     #region PushToBoard
@@ -480,6 +504,7 @@ public class Shape : MonoBehaviour
     {
         CtrlGamePlay.Ins.Cubes.Remove(game);
         ListShape.Remove(game);
+  
     }
     public bool Check_Destroy()
     {
@@ -496,6 +521,8 @@ public class Shape : MonoBehaviour
     {
         if (ListShape.Count == 0)
         {
+            CtrlGamePlay.Ins.List_Shape.Remove(this);
+
             Destroy(gameObject);
         }
       
@@ -510,9 +537,10 @@ public class Shape : MonoBehaviour
    
     public void ActiveRigidBody2D(bool active)
     {
+
       
-            Body.isKinematic = !active;
         
+
     }
 
  
@@ -532,11 +560,97 @@ public class Shape : MonoBehaviour
     }
     public void Snap()
     {
-        
-       
-    }
-    public void ClampMove(int x,int y)
-    {
+        //for(int i = 0; i < ListShape.Count; i++)
+        //{
+
+        //   var a = ListShape[i].GetComponent<DestroySelf>();
+        //   Vector2 point  = a.Point;
+        //   Vector2 pos = CtrlGamePlay.MatrixToPoint((int)point.x, (int)point.y);
+        //   a.transform.position = pos;
+        //}
+        Vector2 pos = transform.position;
+        Vector2 point =  CtrlGamePlay.PositonToMatrixRound(pos.x, pos.y);
+      //  Debug.Log("POS SNAP "+point.ToString());
+        transform.position = new Vector3(CtrlGamePlay.Ins.initPoint.x + point.x * CtrlGamePlay.Ins.offsetX,pos.y);
+      //  Debug.Log("POSITON SNAP : "+ CtrlGamePlay.MatrixToPoint((int)point.x, (int)point.y));
+      //  Debug.Log("POSITON SNAP : "+ CtrlGamePlay.MatrixToPoint((int)point.x, (int)point.y));
+
+
 
     }
+  
+   public void SetUpClamp(float min,float max)
+    {
+        ClampMoveMinX = transform.position.x - min;
+
+        ClampMoveMaxX = transform.position.x + max;
+
+
+
+
+    }
+    public void ReflectShape() 
+    {
+        string s = "";
+        Debug.Log(Render(shape));
+        
+        Render(shape);
+        ResetMatrix(shape);
+        Debug.Log(Render(shape));
+        Debug.Log(shape.GetLength(0) + "  " + shape.GetLength(1));
+        for (int i = 0; i < shape.GetLength(1); i++)
+        {
+            s += "\n";
+            for (int j = 0; j < shape.GetLength(0); j++)
+            {
+                int x = j + i * shape.GetLength(0);
+
+                s += x.ToString()+"  ";
+            for(int z = 0; z < ListShape.Count; z++)
+                {
+                    if (ListShape[z].name == x.ToString())
+                    {
+                        shape[j,i] = 1; 
+                    }
+                }
+            
+            }
+        }
+         
+      //   shape = SplitMatrix(shape);
+        Debug.Log(Render(shape));
+      
+    
+           
+      
+    }
+   
+    public static void ResetMatrix(int[,] matrix)
+    {
+        for(int i=0;i< matrix.GetLength(1); i++)
+        {
+            for(int j=0;j< matrix.GetLength(0); j++)
+            {
+                matrix[j, i] = 0;
+            }
+        }
+    }
+    
+  
+    public int CountCube()
+    {
+        return ListShape.Count;
+    }
+    public void RandomColor()
+    {
+     Color background = new Color(
+    (float)Random.Range(0, 255),
+    (float)Random.Range(0, 255),
+    (float)Random.Range(0, 255)
+    );
+    }
+
+   
+    
+   
 }
