@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 849059181560594131}
   - component: {fileID: 849059181560594129}
-  - component: {fileID: 4496903907187136957}
+  - component: {fileID: 7128466667378514741}
   m_Layer: 8
   m_Name: Shape
   m_TagString: Untagged
@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d10ae2e89575e8e4d9174f5e139af9c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  id: 0
+  idShape: 0
   TypeShape: 6
   MaxLength: 0
   PrebShape: {fileID: 88069959447786939, guid: a0684fcdb37ba464d8b4c1752eae87ac, type: 3}
@@ -53,7 +53,6 @@ MonoBehaviour:
   offsetY: 0.6
   point: {x: 0, y: 0}
   Body: {fileID: 0}
-  Spawn: 0
   posInit: {x: 0, y: 0, z: 0}
   PosTarget: {x: 0, y: 0, z: 0}
   Speed: 20
@@ -61,7 +60,7 @@ MonoBehaviour:
   isClick: 0
   ClampMoveMinX: 0
   ClampMoveMaxX: 0
---- !u!50 &4496903907187136957
+--- !u!50 &7128466667378514741
 Rigidbody2D:
   serializedVersion: 4
   m_ObjectHideFlags: 0
@@ -73,10 +72,10 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 0.5
+  m_Mass: 1
   m_LinearDrag: 0
-  m_AngularDrag: 1
-  m_GravityScale: 0.5
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1

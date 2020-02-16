@@ -44,7 +44,6 @@ public class Shape : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Z))
         {
 
-            ReflectShape();
 
         }
 
@@ -87,6 +86,16 @@ public class Shape : MonoBehaviour
         {
             CtrlGamePlay.Ins.AddCubeIntoBoard(ListShape[i]);
         }
+    }
+    public void AddCubeToBoard(int[,] type,Vector2 pos,Color color)
+    {
+        init();
+        SetShape(type);
+        for (int i = 0; i < ListShape.Count; i++)
+        {
+            CtrlGamePlay.Ins.AddCubeIntoBoard(ListShape[i]);
+        }
+        CtrlGamePlay.Ins.List_Shape.Add(this);
     }
 
     #region InitShape
@@ -236,6 +245,11 @@ public class Shape : MonoBehaviour
         GenerateShape();
     }
    
+    public void SetShape(int[,] shape)
+    {
+       this.shape = shape;
+        SetGenerateShape();
+    }
     public void InitShapeRandom()
     {
         // Init
@@ -390,7 +404,7 @@ public class Shape : MonoBehaviour
         return matrixs;
 
     }
-    public string Render(int[,] matrix)
+    public static string Render(int[,] matrix)
     {
         string s = "";
         for (int i = 0; i < matrix.GetLength(1); i++)
@@ -452,6 +466,29 @@ public class Shape : MonoBehaviour
         return true;
         
     }
+
+    public void SetGenerateShape()
+    {
+
+        for (int y = 0; y < shape.GetLength(0); y++)
+        {
+
+            for (int x = 0; x < shape.GetLength(1); x++)
+            {
+                if (shape[y,x] != 0)
+                {
+
+                    var a = Instantiate(PrebShape, transform);
+                    a.transform.localPosition = new Vector3(x * offsetX, -y * offsetY);
+                    a.name = idShape.ToString();
+                    ListShape.Add(a);
+
+                }
+                this.idShape++;
+            }
+        }
+    }
+
     public void GenerateShape()
     {
        
@@ -492,11 +529,19 @@ public class Shape : MonoBehaviour
         List<Vector2> ListPoint = new List<Vector2>();
         for(int i = 0; i < ListShape.Count; i++)
         {
-            int x = Mathf.Abs(Mathf.RoundToInt((ListShape[i].transform.position.x - CtrlGamePlay.Ins.initPoint.x)/CtrlGamePlay.Ins.offsetX));
-            int y = Mathf.Abs(Mathf.RoundToInt((ListShape[i].transform.position.y - CtrlGamePlay.Ins.initPoint.y)/CtrlGamePlay.Ins.offsetY));
-            Vector2 point = new Vector2(x, y);
-         //   ListPoint.Add(point);
-            ListShape[i].GetComponent<DestroySelf>().Point = point;
+            try
+            {
+                int x = Mathf.Abs(Mathf.RoundToInt((ListShape[i].transform.position.x - CtrlGamePlay.Ins.initPoint.x) / CtrlGamePlay.Ins.offsetX));
+                int y = Mathf.Abs(Mathf.RoundToInt((ListShape[i].transform.position.y - CtrlGamePlay.Ins.initPoint.y) / CtrlGamePlay.Ins.offsetY));
+                Vector2 point = new Vector2(x, y);
+                //   ListPoint.Add(point);
+                ListShape[i].GetComponent<DestroySelf>().Point = point;
+            }
+            catch(System.Exception e)
+            {
+                
+            }
+           
         }
            return ListPoint.ToArray();
     }
@@ -596,7 +641,7 @@ public class Shape : MonoBehaviour
         
         Render(shape);
         ResetMatrix(shape);
-        Debug.Log(Render(shape));
+     //   Debug.Log(Render(shape));
         Debug.Log(shape.GetLength(0) + "  " + shape.GetLength(1));
         for (int i = 0; i < shape.GetLength(1); i++)
         {
@@ -648,6 +693,15 @@ public class Shape : MonoBehaviour
     (float)Random.Range(0, 255),
     (float)Random.Range(0, 255)
     );
+    }
+    public void DestroyAllCubeAndShape()
+    {
+        for(int i=0;i< ListShape.Count; i++)
+        {
+            CtrlGamePlay.Ins.Cubes.Remove(ListShape[i]);
+        }
+        CtrlGamePlay.Ins.List_Shape.Remove(this);
+        Destroy(gameObject);
     }
 
    
