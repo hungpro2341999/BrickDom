@@ -4,18 +4,21 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 
-public enum TypeShape {crossBar_1,crossBar_2,crossBar_3, crossBar_4, square,three_cube,L_3}
+public enum TypeShape {crossBar_1,crossBar_2,crossBar_3, crossBar_4, square,three_cube,L_3,None}
 public class Shape : MonoBehaviour
 {
+
+    public SpriteRenderer ImgCube;
+    public Color ColorShape;
     public int idShape;
-    
+    public int roll = 0;
+    public int CountRoll = 0;
     public TypeShape TypeShape;
     public int[,] shape;
     public int MaxLength;
     public GameObject PrebShape;
     public List<GameObject> ListShape = new List<GameObject>();
-    public float offsetX = 0.6f;
-    public float offsetY = 0.6f;
+   
     public Vector2 point;
     bool initPos = false;
     public Rigidbody2D Body;
@@ -79,9 +82,9 @@ public class Shape : MonoBehaviour
     {
       
           init();
-          TypeShape = RandomShape();
-          initShape(TypeShape);
-         // initShape(TypeShape);
+           TypeShape = RandomShape();
+        // initShape(TypeShape);
+        initShape(TypeShape.three_cube);
         for (int i = 0; i < ListShape.Count; i++)
         {
             CtrlGamePlay.Ins.AddCubeIntoBoard(ListShape[i]);
@@ -108,7 +111,7 @@ public class Shape : MonoBehaviour
     }
     public void init()
     {
-
+        ColorShape = RandomColor();
         shape = new int[4, 4]
               {
                     { 0, 0, 0, 0} ,
@@ -120,6 +123,7 @@ public class Shape : MonoBehaviour
 
     public void initShape(TypeShape type)
     {
+      
 
         switch (type)
         {
@@ -182,12 +186,12 @@ public class Shape : MonoBehaviour
 
                 break;
             case TypeShape.three_cube:
-
+                CountRoll = CtrlData.Ins.Img_Cube_3.Count;
                 shape = new int[4, 4]
                 {
 
-                    { 1, 1, 0, 0} ,
                     { 1, 0, 0, 0} ,
+                    { 1, 1, 0, 0} ,
                     { 0, 0, 0, 0} ,
                     { 0, 0, 0, 0} ,
                 };
@@ -229,11 +233,16 @@ public class Shape : MonoBehaviour
     public void GenerateRandom()
     {
         bool Spawn = false;
+        Debug.Log(Render(shape));
         while (!Spawn)
         {
 
             shape = extendMatrix(shape);
-            RotationMaxtrix(Random.Range(0, 8));
+            int i = Random.Range(0, CountRoll);
+            ImgCube.sprite = CtrlData.Ins.Img_Cube_3[i];
+            ImgCube.color = RandomColor();
+             RotationMaxtrix(i);
+            
           //   Debug.Log(Render(shape));
 
             shape = SplitMatrix(shape);
@@ -262,7 +271,7 @@ public class Shape : MonoBehaviour
     
 
 
-    public int[,] SplitMatrix(int[,] matrix)
+    public static int[,]  SplitMatrix(int[,] matrix)
     {
         Render(matrix);
         int x = -1;
@@ -375,7 +384,7 @@ public class Shape : MonoBehaviour
 
 
     }
-    public int[,] extendMatrix(int[,] Matrix)
+    public static int[,] extendMatrix(int[,] Matrix)
     {
         int[,] array = new int[4, 4];
         for(int j= 0 ; j<Matrix.GetLength(1);j++)
@@ -407,12 +416,12 @@ public class Shape : MonoBehaviour
     public static string Render(int[,] matrix)
     {
         string s = "";
-        for (int i = 0; i < matrix.GetLength(1); i++)
+        for (int i = 0; i < matrix.GetLength(0); i++)
         {
             s += "\n";
-            for (int j = 0; j < matrix.GetLength(0); j++)
+            for (int j = 0; j < matrix.GetLength(1); j++)
             {
-                s += matrix[j, i] + "  ";
+                s += matrix[i, j] + "  ";
             }
         }
         return s;
@@ -445,7 +454,7 @@ public class Shape : MonoBehaviour
                     //ListShape.Add(a);
 
                    //    var a = Instantiate(PrebShape, transform);
-                    Vector3 pos = new Vector3(transform.position.x + x * offsetX,transform.position.y - y * offsetY);
+                    Vector3 pos = new Vector3(transform.position.x + x * CtrlGamePlay.Ins.offsetX,transform.position.y - y * CtrlGamePlay.Ins.offsetY);
                     Vector2 point = CtrlGamePlay.PositonToMatrixRound(pos.x,pos.y);
                     if(!CtrlGamePlay.isInMatrix((int)point.x, (int)point.y))
                     {
@@ -479,7 +488,7 @@ public class Shape : MonoBehaviour
                 {
 
                     var a = Instantiate(PrebShape, transform);
-                    a.transform.localPosition = new Vector3(x * offsetX, -y * offsetY);
+                    a.transform.localPosition = new Vector3(x * CtrlGamePlay.Ins.offsetX, -y * CtrlGamePlay.Ins.offsetY);
                     a.name = idShape.ToString();
                     ListShape.Add(a);
 
@@ -501,7 +510,7 @@ public class Shape : MonoBehaviour
                 {
 
                       var a = Instantiate(PrebShape, transform);
-                      a.transform.localPosition = new Vector3(x * offsetX, -y * offsetY);
+                      a.transform.localPosition = new Vector3(y * CtrlGamePlay.Ins.offsetY, -x *CtrlGamePlay.Ins.offsetX);
                       a.name =  idShape.ToString();
                       ListShape.Add(a);
                    
@@ -663,7 +672,7 @@ public class Shape : MonoBehaviour
         }
          
       //   shape = SplitMatrix(shape);
-        Debug.Log(Render(shape));
+    //    Debug.Log(Render(shape));
       
     
            
@@ -686,13 +695,14 @@ public class Shape : MonoBehaviour
     {
         return ListShape.Count;
     }
-    public void RandomColor()
+    public Color RandomColor()
     {
-     Color background = new Color(
+    Color background = new Color(
     (float)Random.Range(0, 255),
     (float)Random.Range(0, 255),
     (float)Random.Range(0, 255)
     );
+        return background;
     }
     public void DestroyAllCubeAndShape()
     {
@@ -702,6 +712,10 @@ public class Shape : MonoBehaviour
         }
         CtrlGamePlay.Ins.List_Shape.Remove(this);
         Destroy(gameObject);
+    }
+    public void RenderShape()
+    {
+
     }
 
    

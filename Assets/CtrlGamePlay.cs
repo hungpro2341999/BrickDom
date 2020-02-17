@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class CtrlGamePlay : MonoBehaviour
 {
-
+  
     public static int idShape = 0;
     public static CtrlGamePlay Ins;
     public int countX;
@@ -88,7 +88,7 @@ public class CtrlGamePlay : MonoBehaviour
         {
 
         }
-        Matrix.text = Render(Board);
+        Matrix.text = Shape.Render((Board));
         if (Input.GetKeyDown(KeyCode.S))
         {
 
@@ -99,9 +99,10 @@ public class CtrlGamePlay : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Z))
         {
-            Debug.Log("CLIP SHAPE ");
-            ReflectShape();
-            SplitShape(List_Shape[0]);
+            Debug.Log(Shape.Render(List_Shape[0].shape));
+            Debug.Log("TYPE : " + MatrixToType(List_Shape[0].shape).ToString());   
+
+          
 
 
         }
@@ -163,11 +164,18 @@ public class CtrlGamePlay : MonoBehaviour
             // Reset Staus
             ActiveShape(true);
             initPos = false;
-
+            SplitShape();
             // Destroy Row
 
 
 
+        }
+    }
+    public void SplitShape()
+    {
+        for(int i = 0; i < List_Shape.Count; i++)
+        {
+            SplitShape(List_Shape[i]);
         }
     }
    
@@ -711,7 +719,7 @@ public class CtrlGamePlay : MonoBehaviour
         List<List<int>> ShapeSplit = new List<List<int>>();
         bool next = false;
         List<int>[] Split_Row = Cut_Shape(shape);
-        Debug.Log("ROW : " + Split_Row.GetLength(0));
+    //    Debug.Log("ROW : " + Split_Row.GetLength(0));
         bool hasCut = false;
         if (Split_Row.GetLength(0) > 0)
         {
@@ -736,7 +744,7 @@ public class CtrlGamePlay : MonoBehaviour
                     {
                         GrounpRow.Add(count);
                     }
-                      Debug.Log("CONNECT : " + (count-1).ToString() + " " + (count).ToString());
+              //        Debug.Log("CONNECT : " + (count-1).ToString() + " " + (count).ToString());
                 }
                 else
                 {
@@ -775,9 +783,22 @@ public class CtrlGamePlay : MonoBehaviour
                 Debug.Log(RenderList(GrounpRow));
                 List<int> SplitRow = new List<int>();
                 int indexSplit = 0;
-                List<List<int>> shapeSplit = new List<List<int>>();
-                for (int i = 0; i < GrounpRow.Count; i++)
+                List<List<int>> shapeSplit = Split(GrounpRow);
+                for(int i = 0; i < shapeSplit.Count; i++)
                 {
+                    Debug.Log("LIST : " + i);
+                    Debug.Log(RenderList(shapeSplit[i]));
+                }
+                for (int i = 0; i < shapeSplit.Count; i++)
+                {
+                    List<List<int>> shape_Split = new List<List<int>>();
+                    Vector3 pos = shape.transform.position;
+                    pos -= new Vector3(0, shapeSplit[i][0]* CtrlGamePlay.Ins.offsetX);
+                    for (int j = 0; j < shapeSplit[i].Count; j++)
+                    {
+                        shape_Split.Add(Split_Row[shapeSplit[i][j]]);
+                    }
+                    SpawnShape(ListToMatrix(shape_Split), pos);
                     //if (i == GrounpRow.Count - 1)
                     //{
                     //    if (GrounpRow[i] != -1 && GrounpRow[indexSplit] != -1)
@@ -824,6 +845,32 @@ public class CtrlGamePlay : MonoBehaviour
         
      
 
+    }
+    public  List<List<int>> Split(List<int> GrounpRow)
+    {
+        List<List<int>> ListRow = new List<List<int>>();
+        List<int> Row = new List<int>();
+         for (int i = 0; i < GrounpRow.Count; i++)
+        {
+            if (GrounpRow[i] != -1)
+            {
+                Row.Add(GrounpRow[i]);
+            }
+            else
+            {
+                if (Row.Count != 0)
+                {
+                    ListRow.Add(CloneList(Row));
+                    Row = new List<int>();
+                }
+            }
+        }
+        if (Row.Count != 0)
+        {
+            ListRow.Add(CloneList(Row));
+            Row = new List<int>();
+        }
+        return ListRow;
     }
     public int[,] ListToMatrix(List<List<int>> shape)
     {
@@ -941,7 +988,7 @@ public class CtrlGamePlay : MonoBehaviour
 
      //   Debug.Log(row + "  " + col);
         int[,] shape = shape_Split.shape;
-        Debug.Log(Shape.Render(shape));
+      //  Debug.Log(Shape.Render(shape));
         List<int>[] ListRow = new List<int>[row];
 
         for (int i = 0; i < row; i++)
@@ -964,8 +1011,73 @@ public class CtrlGamePlay : MonoBehaviour
         return ListRow;
 
     }
+    public void SetTypeShape(int[,] typeShape)
+    {
+        
+    }
 
 
+    #region RelizeShape
+    public TypeShape MatrixToType(int[,] typeShape)
+    {
+        TypeShape type = TypeShape.None;
+        for (int i = 0; i < CtrlData.ShapeType.Count; i++)
+        {
+            Debug.Log(Render(Shape.extendMatrix(typeShape)) + "  " + Render(CtrlData.ShapeType[i]));
+            if (isMatrixSame(Shape.extendMatrix(typeShape), CtrlData.ShapeType[i]))
+            {
+                Debug.Log(Render(Shape.extendMatrix(typeShape)) + "  " + Render(CtrlData.ShapeType[i]));
+                return CtrlData.GetShapeType(i);
+            }
+        }
+        return type;
+
+    }
+   public bool isMatrixSame(int[,] matrix1, int[,] matrix2)
+    {
+        if (isSame(Shape.SplitMatrix(matrix1),Shape.SplitMatrix(matrix2)) && isSameCube(matrix1,matrix2))
+        {
+            return true;
+        }
+        return false;
+    }
+    private bool isSame(int[,] matrix1, int[,] matrix2)
+    {
+        if ((matrix1.GetLength(0) == matrix2.GetLength(0) && (matrix1.GetLength(1) == matrix2.GetLength(1))) ||
+            (matrix1.GetLength(0) == matrix2.GetLength(1) && (matrix1.GetLength(1) == matrix2.GetLength(0))))
+            
+             
+        {
+                return true;
+          
+        }
+        return false;
+    }
+    private bool isSameCube(int[,] matrix1, int[,] matrix2)
+    {
+        Debug.Log("COUNT");
+        Debug.Log(CountInCube(matrix1) + "  " + CountInCube(matrix2));
+        return CountInCube(matrix1) == CountInCube(matrix2);
+
+    }
+    public static int  CountInCube(int[,] matrix1)
+    {
+        int x = 0;
+        for(int i = 0; i < matrix1.GetLength(0); i++)
+        {
+            for(int j = 0; j < matrix1.GetLength(1); j++)
+            {
+                if (matrix1[i,j] == 1)
+                {
+                    x++;
+                }
+            }
+        }
+        return x;
+    }
+
+
+    #endregion
 
 
 
@@ -974,8 +1086,8 @@ public class CtrlGamePlay : MonoBehaviour
 
 
 }
-   
-    
+
+
 
 
 
