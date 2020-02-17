@@ -80,11 +80,11 @@ public class Shape : MonoBehaviour
 
     public void AddCubeToBoard()
     {
-      
-          init();
+       
+           init();
            TypeShape = RandomShape();
         // initShape(TypeShape);
-        initShape(TypeShape.three_cube);
+        initShape(TypeShape.crossBar_2);
         for (int i = 0; i < ListShape.Count; i++)
         {
             CtrlGamePlay.Ins.AddCubeIntoBoard(ListShape[i]);
@@ -123,7 +123,7 @@ public class Shape : MonoBehaviour
 
     public void initShape(TypeShape type)
     {
-      
+       
 
         switch (type)
         {
@@ -186,7 +186,7 @@ public class Shape : MonoBehaviour
 
                 break;
             case TypeShape.three_cube:
-                CountRoll = CtrlData.Ins.Img_Cube_3.Count;
+               
                 shape = new int[4, 4]
                 {
 
@@ -232,21 +232,51 @@ public class Shape : MonoBehaviour
     }
     public void GenerateRandom()
     {
+        int[,] backup = Clone(shape);
         bool Spawn = false;
         Debug.Log(Render(shape));
         while (!Spawn)
         {
-
+            shape = backup;
             shape = extendMatrix(shape);
-            int i = Random.Range(0, CountRoll);
-            ImgCube.sprite = CtrlData.Ins.Img_Cube_3[i];
-            ImgCube.color = RandomColor();
-             RotationMaxtrix(i);
+            switch (TypeShape)
+            {
+                case TypeShape.three_cube:
+                    CountRoll = CtrlData.Ins.Img_Cube_3.Count;
+                    int i = Random.Range(0, CountRoll);
+                    roll = i;
+                    ImgCube.sprite = CtrlData.Ins.Img_Cube_3[roll];
+
+                    shape = RotationMaxtrix(roll);
+                    break;
+                case TypeShape.crossBar_1:
+
+                    break;
+                case TypeShape.crossBar_2:
+
+                    CountRoll = CtrlData.Ins.Img_Cube_Cross_2.Count;
+                    int i1 = Random.Range(0, CountRoll);
+                    roll = i1;
+                    ImgCube.sprite = CtrlData.Ins.Img_Cube_Cross_2[roll];
+
+                    shape = RotationMaxtrix(roll);
+                    break;
+                case TypeShape.crossBar_3:
+                    break;
+                case TypeShape.crossBar_4:
+                    break;
+                case TypeShape.square:
+                    break;
+                case TypeShape.L_3:
+                    break;
+
+            }
+         
             
           //   Debug.Log(Render(shape));
 
             shape = SplitMatrix(shape);
-       //      Debug.Log(Render(shape));
+            Debug.Log( Render(shape));
 
        //     Debug.Log(Render(shape));
             Spawn = SetShape();
@@ -501,12 +531,12 @@ public class Shape : MonoBehaviour
     public void GenerateShape()
     {
        
-        for (int y = 0; y < shape.GetLength(1); y++)
+        for (int y = 0; y < shape.GetLength(0); y++)
         {
 
-            for (int x = 0; x < shape.GetLength(0); x++)
+            for (int x = 0; x < shape.GetLength(1); x++)
             {
-                if (shape[x, y] != 0)
+                if (shape[y, x] != 0)
                 {
 
                       var a = Instantiate(PrebShape, transform);
@@ -646,12 +676,12 @@ public class Shape : MonoBehaviour
     public void ReflectShape() 
     {
         string s = "";
-        Debug.Log(Render(shape));
+    
         
         Render(shape);
         ResetMatrix(shape);
      //   Debug.Log(Render(shape));
-        Debug.Log(shape.GetLength(0) + "  " + shape.GetLength(1));
+     //   Debug.Log(shape.GetLength(0) + "  " + shape.GetLength(1));
         for (int i = 0; i < shape.GetLength(1); i++)
         {
             s += "\n";
