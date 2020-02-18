@@ -97,15 +97,7 @@ public class CtrlGamePlay : MonoBehaviour
         }
 
 
-        if (Input.GetKeyDown(KeyCode.Z))
-        {
-            Debug.Log(Shape.Render(List_Shape[0].shape));
-            Debug.Log("TYPE : " + MatrixToType(List_Shape[0].shape).ToString());   
-
-          
-
-
-        }
+      
         if (Input.GetMouseButtonDown(0))
         {
 
@@ -438,7 +430,7 @@ public class CtrlGamePlay : MonoBehaviour
                 {
                     shape = Cubes[x].GetComponent<DestroySelf>().shape;
                     Cubes[x].GetComponent<DestroySelf>().Destroy();
-                    shape.ReflectShape();
+                  
                     //    Debug.Log(shape.name);
 
 
@@ -711,7 +703,9 @@ public class CtrlGamePlay : MonoBehaviour
     }
     public void SplitShape(Shape shape)
     {
+      //  Debug.Log("INIT_1 : \n " + Render(shape.shape));
         shape.ReflectShape();
+        //Debug.Log("REFLECT : \n "+ Render(shape.shape));
         int colum = shape.shape.GetLength(1);
         List<Shape> splitShape = new List<Shape>();
         List<int> LenghtRow = new List<int>();
@@ -719,7 +713,10 @@ public class CtrlGamePlay : MonoBehaviour
         List<List<int>> ShapeSplit = new List<List<int>>();
         bool next = false;
         List<int>[] Split_Row = Cut_Shape(shape);
-    //    Debug.Log("ROW : " + Split_Row.GetLength(0));
+   //for(int j = 0; j < Split_Row.Length; j++)
+   //     {
+   //    //    Debug.Log( RenderList(Split_Row[j]));
+   //     }
         bool hasCut = false;
         if (Split_Row.GetLength(0) > 0)
         {
@@ -744,7 +741,7 @@ public class CtrlGamePlay : MonoBehaviour
                     {
                         GrounpRow.Add(count);
                     }
-              //        Debug.Log("CONNECT : " + (count-1).ToString() + " " + (count).ToString());
+                    Debug.Log("CONNECT : " + (count-1).ToString() + " " + (count).ToString());
                 }
                 else
                 {
@@ -892,15 +889,36 @@ public class CtrlGamePlay : MonoBehaviour
         {
             Debug.LogError("LIST MATRIX NULL");
         }
-        Debug.Log(Render(matrix));
+       
         return matrix;
     }
 
 
     public void  SpawnShape(int[,] Type,Vector2 pos)
     {
+        Debug.Log("SHAPE SPLIT : \n" +Render(Type));
        var a =  Instantiate(PrebShape, pos, Quaternion.identity, null);
-        a.GetComponent<Shape>().AddCubeToBoard(Type, pos, Color.black);
+        a.GetComponent<Shape>().AddCubeToBoard(Type, pos, Color.black,BackTo(Type));
+
+        
+    }
+    public int BackTo(int[,] Type)
+    {
+        int x = 0;
+        int Colum = Type.GetLength(1);
+        int Row = Type.GetLength(0);
+        for(int i = 0; i < Colum; i++)
+        {
+            for(int j = 0; j < Row; j++)
+            {
+                if (Type[j, i] != 0)
+                {
+                    break;
+                }
+            }
+            x++;
+        }
+        return x;
     }
     
     public bool IsRowZero(int[] row)
@@ -982,8 +1000,8 @@ public class CtrlGamePlay : MonoBehaviour
 
      
         string s = "";
-        int row = shape_Split.shape.GetLength(1);
-        int col = shape_Split.shape.GetLength(0);
+        int row = shape_Split.shape.GetLength(0);
+        int col = shape_Split.shape.GetLength(1);
         s += "\n";
 
      //   Debug.Log(row + "  " + col);
@@ -1000,13 +1018,14 @@ public class CtrlGamePlay : MonoBehaviour
             {
 
 
-                ListRow[i].Add(shape[j, i]);
+                ListRow[i].Add(shape[i, j]);
 
-                s += " " + shape[j, i];
+                s += " " + shape[i, j];
 
             }
 
         }
+
      //   Debug.Log(s);
         return ListRow;
 
@@ -1026,7 +1045,7 @@ public class CtrlGamePlay : MonoBehaviour
             Debug.Log(Render(Shape.extendMatrix(typeShape)) + "  " + Render(CtrlData.ShapeType[i]));
             if (isMatrixSame(Shape.extendMatrix(typeShape), CtrlData.ShapeType[i]))
             {
-                Debug.Log(Render(Shape.extendMatrix(typeShape)) + "  " + Render(CtrlData.ShapeType[i]));
+                 Debug.Log(Render(Shape.extendMatrix(typeShape)) + "  " + Render(CtrlData.ShapeType[i]));
                 return CtrlData.GetShapeType(i);
             }
         }
@@ -1076,15 +1095,8 @@ public class CtrlGamePlay : MonoBehaviour
         return x;
     }
 
-
     #endregion
-
-
-
-
-
-
-
+   
 }
 
 
