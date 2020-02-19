@@ -23,6 +23,8 @@ public class CtrlGamePlay : MonoBehaviour
     public LayerMask LayerShape;
     public Shape ShapeClick = null;
     public List<Vector2> neighbor = new List<Vector2>();
+    public float ClampY;
+    public bool IsRandom = false;
     #region localVariable
     bool initPos = false;
     public Vector2 PosInit;
@@ -63,6 +65,7 @@ public class CtrlGamePlay : MonoBehaviour
     public int xx;
     public int yy;
     // Start is called before the first frame update
+     
     private void Awake()
     {
 
@@ -75,6 +78,8 @@ public class CtrlGamePlay : MonoBehaviour
             Ins = this;
         }
         Init_Event();
+        Vector3 pos = transform.position;
+        ClampY = PosInit.y - Row * offsetY;
     }
     public void Init_Event()
     {
@@ -94,13 +99,14 @@ public class CtrlGamePlay : MonoBehaviour
       //  Event_Completed_Move_Down();
         Board = new int[Row,Column];
         Event_Start_Game();
+
     }
 
     // Update is called once per frame
     void Update()
     {
 
-        RefershBoard();
+       // RefershBoard();
         if (Input.GetKeyDown(KeyCode.E))
         {
             SpawnShape();
@@ -109,8 +115,12 @@ public class CtrlGamePlay : MonoBehaviour
         {
             RefershBoard();
         }
-
-
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            DestroyRow(12);
+            SplitShape();
+        }
+           
         if (ShapeClick != null)
         {
 
@@ -149,12 +159,14 @@ public class CtrlGamePlay : MonoBehaviour
             isClick_down = false;
             isClick_up = true;
             ActiveRigidBoy(true);
+            SetUpAll();
+            return;
 
         }
         // Button_Up_And_Complete_Move_Down
         if (isClick_up)
         {
-            
+            RefershBoard();
             if (IsListShapeMove())
             {
                 RefershBoard();
@@ -162,11 +174,11 @@ public class CtrlGamePlay : MonoBehaviour
                 Debug.Log("Complete_Move");
                // ActiveRigidBoy(false);
                 
-                CheckDestroyRow();
+                 CheckDestroyRow();
               // Reset Staus
             
                 initPos = false;
-                SplitShape();
+             
                 // Destroy Row
                 isClick_up = false;
             }
@@ -180,8 +192,10 @@ public class CtrlGamePlay : MonoBehaviour
            // RefershBoard();
             if (ShapeClick != null)
             {
+                ActiveRigidBoy(false);
                 ShapeClick.PushToBoard();
                 Event_Completed_Change();
+              
                 dis = PosMouseInit.x - Camera.main.ScreenToWorldPoint(Input.mousePosition).x;
                 ShapeClick.MoveTo(dis);
                 //  Shape.transform.position = ScreenToWord(Input.mousePosition);
@@ -197,7 +211,7 @@ public class CtrlGamePlay : MonoBehaviour
         }
         else
         {
-            
+          
             if (ShapeClick != null)
             {
                
@@ -209,8 +223,12 @@ public class CtrlGamePlay : MonoBehaviour
                 
 
             }
+          
+                ActiveRigidBoy(true);
            
-            //CheckDestroyRow();
+               
+
+            // CheckDestroyRow();
             //// Reset Staus
             //ActiveShape(true);
             //initPos = false;
@@ -221,10 +239,21 @@ public class CtrlGamePlay : MonoBehaviour
 
         }
     }
-    
+    public void SetUpAll()
+    {
+        for (int i = 0; i < List_Shape.Count; i++)
+        {
+            List_Shape[i].gameObject.layer = 8;
+            for (int j = 0; j < List_Shape[i].ListShape.Count; j++)
+            {
+                List_Shape[i].ListShape[j].gameObject.layer = 8;
+            }
+          
+        }
+    }
     public void SetUpMoveDown()
     {
-        ActiveRigidBoy(true);
+       // ActiveRigidBoy(true);
         // RefershBoard();
         //Debug.Log("SetUpMoveDown");
         //for(int i = 0; i < List_Shape.Count; i++)
@@ -237,9 +266,14 @@ public class CtrlGamePlay : MonoBehaviour
     }
     public void ActiveRigidBoy(bool active)
     {
+       
         for(int i=0 ; i < List_Shape.Count; i++)
         {
-            List_Shape[i].Body.isKinematic = !active;
+           if(List_Shape[i].gameObject.layer == 8)
+            {
+                List_Shape[i].Body.isKinematic = !active;
+            }
+           
         }
     }
 
@@ -249,9 +283,9 @@ public class CtrlGamePlay : MonoBehaviour
     }
     public bool IsListShapeMove()
     {
-        for(int i = 0; i < List_Shape.Count; i++)
+        for (int i = 0; i < List_Shape.Count; i++)
         {
-            if (!List_Shape[i].isMove())
+            if (isDowmShape(List_Shape[i])!=0)
             {
                 return false;
             }
@@ -287,6 +321,7 @@ public class CtrlGamePlay : MonoBehaviour
     public void CheckDestroyRow()
     {
         int[] row;
+      
         if (DestroyAtRow(out row))
         {
 
@@ -295,6 +330,7 @@ public class CtrlGamePlay : MonoBehaviour
                 Debug.Log("DESTROY ROW :" + i);
                 DestroyRow(row[i]);
             }
+           
 
         }
         else
@@ -393,6 +429,7 @@ public class CtrlGamePlay : MonoBehaviour
         var a = Instantiate(PrebShape, null);
         a.name = "Shape : " + CtrlGamePlay.idShape;
         idShape++;
+        a.GetComponent<Rigidbody2D>().mass -= idShape * 0.2f;
         List_Shape.Add(a.GetComponent<Shape>());
         a.GetComponent<Shape>().AddCubeToBoard();
 
@@ -518,17 +555,17 @@ public class CtrlGamePlay : MonoBehaviour
     {
 
         Shape shape;
-        for (int i = 0; i < Row ; i++)
+        for (int i = 0; i < Column ; i++)
         {
             for (int x = 0; x < Cubes.Count; x++)
             {
 
-                if (Cubes[x].GetComponent<DestroySelf>().Point == new Vector2((float)i, row))
+                if (Cubes[x].GetComponent<DestroySelf>().Point == new Vector2((float)i,row))
                 {
                     shape = Cubes[x].GetComponent<DestroySelf>().shape;
                     Cubes[x].GetComponent<DestroySelf>().Destroy();
                   
-                    //    Debug.Log(shape.name);
+                       Debug.Log(shape.name);
 
 
                 }
@@ -637,22 +674,14 @@ public class CtrlGamePlay : MonoBehaviour
         pos.y = CtrlGamePlay.Ins.PosInit.y - y * CtrlGamePlay.Ins.offsetY;
         return pos;
     }
-    public void ActiveShape(bool active)
-    {
-        for (int i = 0; i < List_Shape.Count; i++)
-        {
-         //   List_Shape[i].GetComponent<Rigidbody2D>().isKinematic = !active;
-
-        }
-    }
-
+   
     public bool DestroyAtRow(out int[] row)
     {
         List<int> Row = new List<int>();
         bool isDestroy = false;
         for (int i = 0; i < this.Row; i++)
         {
-            int count = this.Row;
+            int count = this.Column;
             for (int j = 0; j < Column; j++)
             {
 
@@ -750,6 +779,7 @@ public class CtrlGamePlay : MonoBehaviour
 
 
     }
+    
     public bool IsCanMove(DestroySelf Cube, int x, int y)
     {
         if (!isInMatrix(x, y))
@@ -800,9 +830,9 @@ public class CtrlGamePlay : MonoBehaviour
     }
     public void SplitShape(Shape shape)
     {
-      //  Debug.Log("INIT_1 : \n " + Render(shape.shape));
+        Debug.Log("INIT_1 : \n " + Render(shape.shape));
         shape.ReflectShape();
-        //Debug.Log("REFLECT : \n "+ Render(shape.shape));
+        Debug.Log("REFLECT : \n "+ Render(shape.shape));
         int colum = shape.shape.GetLength(1);
         List<Shape> splitShape = new List<Shape>();
         List<int> LenghtRow = new List<int>();
@@ -1127,10 +1157,8 @@ public class CtrlGamePlay : MonoBehaviour
         return ListRow;
 
     }
-    public void SetTypeShape(int[,] typeShape)
-    {
-        
-    }
+    
+
 
 
     #region RelizeShape
@@ -1307,7 +1335,7 @@ public class CtrlGamePlay : MonoBehaviour
     }
     
 
-    public bool isDowmShape(Shape shape)
+    public int isDowmShape(Shape shape)
     {
 
 
@@ -1344,15 +1372,8 @@ public class CtrlGamePlay : MonoBehaviour
         MoveSelect.text = "DOWN : " + minY + "\n";
         float ClampMinY = minY * offsetY;
 
-      
-        if (minY <= 0)
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
+
+        return minY;
 
     }
 

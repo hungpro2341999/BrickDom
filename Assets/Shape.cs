@@ -33,6 +33,7 @@ public class Shape : MonoBehaviour
     bool initPos = false;
     public Rigidbody2D Body;
     public int BackTo = 0;
+  
     
     #region Move
     
@@ -51,7 +52,7 @@ public class Shape : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+      
         Body = GetComponent<Rigidbody2D>();
     }
     
@@ -80,9 +81,20 @@ public class Shape : MonoBehaviour
            
             transform.position = Vector3.MoveTowards(transform.position, PosTarget, Time.deltaTime * Speed);
         }
+       
         
 
     }
+    private void FixedUpdate()
+    {
+        {
+            Vector3 pos1 = transform.position;
+            pos1 = new Vector2(pos1.x, Mathf.Clamp(pos1.y, CtrlGamePlay.Ins.ClampY, Mathf.Infinity));
+            transform.position = pos1;
+        }
+    }
+   
+   
     public void isMove(int vertical)
     {
 
@@ -92,7 +104,16 @@ public class Shape : MonoBehaviour
     {
        
            init();
-          TypeShape = RandomShape();
+        if (CtrlGamePlay.Ins.IsRandom)
+        {
+
+
+        }
+        else
+        {
+            TypeShape = RandomShape();
+        }
+         
           initShape(TypeShape);
         //  initShape(TypeShape.three_cube);
 
@@ -1171,7 +1192,7 @@ public class Shape : MonoBehaviour
     }
     public bool isMove()
     {
-        if (Vector3.Magnitude(Body.velocity) <= 0.1f)
+        if (Vector3.Magnitude(Body.velocity) == 0 )
         {
             return false;
         }
@@ -1185,8 +1206,9 @@ public class Shape : MonoBehaviour
         }
         return true;
     }
-    
-    
+   
+
+
 
 
 

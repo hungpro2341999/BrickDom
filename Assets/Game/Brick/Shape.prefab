@@ -249,7 +249,7 @@ GameObject:
   - component: {fileID: 849059181560594129}
   - component: {fileID: 2993216344406228767}
   - component: {fileID: 5061352769107215926}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Shape
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -307,7 +307,7 @@ MonoBehaviour:
   roll: 3
   indexType: 0
   CountRoll: 0
-  TypeShape: 6
+  TypeShape: 4
   MaxLength: 0
   PrebShape: {fileID: 2639597336545607854, guid: a0684fcdb37ba464d8b4c1752eae87ac,
     type: 3}
@@ -347,12 +347,12 @@ Rigidbody2D:
   m_GameObject: {fileID: 849059181560594130}
   m_BodyType: 1
   m_Simulated: 1
-  m_UseFullKinematicContacts: 0
+  m_UseFullKinematicContacts: 1
   m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_Mass: 5
+  m_LinearDrag: 30
+  m_AngularDrag: 0
+  m_GravityScale: 50
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
