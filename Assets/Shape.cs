@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 
-public enum TypeShape {crossBar_1,crossBar_2,crossBar_3, crossBar_4, square,three_cube,L_3,None}
+public enum TypeShape {crossBar_1,crossBar_2,crossBar_3, crossBar_4, square,three_cube,L_3}
 public class Shape : MonoBehaviour
 {
 
@@ -35,14 +35,17 @@ public class Shape : MonoBehaviour
     public int BackTo = 0;
     
     #region Move
-
+    
     public Vector3 posInit;
     public Vector3 PosTarget;
+    public Vector3 PosDown;
     public float Speed = 0;
     public bool m_isMove = false;
     public bool isClick = false;
     public float ClampMoveMinX = 0;
     public float ClampMoveMaxX = 0;
+    public float ClampMoveMinY = 0;
+    public bool isMovingDown = false;
 
     #endregion
     // Start is called before the first frame update
@@ -56,26 +59,16 @@ public class Shape : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Z))
-        {
+       
 
-            Debug.Log(Render(extendMatrixNotCopy(new int[2, 2]
-               {
-                 { 1, 0 },
-                 { 1, 1 }
-               })));
-        }
+        
+          PushToBoard();
 
-        if (!isClick)
-        {
-            PushToBoard();
-        }
-      
         if (Input.GetKeyDown(KeyCode.W))
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
-      
+       
         if (isClick)
         {
              
@@ -87,6 +80,7 @@ public class Shape : MonoBehaviour
            
             transform.position = Vector3.MoveTowards(transform.position, PosTarget, Time.deltaTime * Speed);
         }
+        
 
     }
     public void isMove(int vertical)
@@ -98,7 +92,7 @@ public class Shape : MonoBehaviour
     {
        
            init();
-       //   TypeShape = RandomShape();
+          TypeShape = RandomShape();
           initShape(TypeShape);
         //  initShape(TypeShape.three_cube);
 
@@ -123,7 +117,7 @@ public class Shape : MonoBehaviour
     #region InitShape
 
 
-
+    
     public void SetNextId()
     {
 
@@ -259,6 +253,7 @@ public class Shape : MonoBehaviour
         ImgCube_L3_0.gameObject.SetActive(false);
         ImgCube_L3_90.gameObject.SetActive(false);
 }
+   
     public void GenerateShapeByType()
     {
 
@@ -422,7 +417,7 @@ public class Shape : MonoBehaviour
             
           //   Debug.Log(Render(shape));
 
-            shape = SplitMatrix(shape);
+              shape = SplitMatrix(shape);
          //    Debug.Log( Render(shape));
 
             //     Debug.Log(Render(shape));
@@ -446,6 +441,7 @@ public class Shape : MonoBehaviour
             GenerateShape_Ver_2();
             
         }
+        Snap();
        
     }
     public void SetWith_1(int i)
@@ -715,8 +711,8 @@ public class Shape : MonoBehaviour
                    //    var a = Instantiate(PrebShape, transform);
                     Vector3 pos = new Vector3(transform.position.x + y * CtrlGamePlay.Ins.offsetX,transform.position.y - x * CtrlGamePlay.Ins.offsetY);
                     Vector2 point = CtrlGamePlay.PositonToMatrixRound(pos.x,pos.y);
-                    Debug.Log(point.x + "  " + point.y + " : " + CtrlGamePlay.isInMatrix((int)point.x, (int)point.y));
-                    if(!CtrlGamePlay.isInMatrix((int)point.x, (int)point.y))
+                 //    Debug.Log(point.x + "  " + point.y + " : " + CtrlGamePlay.isInMatrix((int)point.x, (int)point.y));
+                    if(!CtrlGamePlay.isInMatrix((int)point.x, (int)point.y) || CtrlGamePlay.Ins.Board[y,x]==1)
                     {
                         return false;
                     }
@@ -811,7 +807,7 @@ public class Shape : MonoBehaviour
     {
        
        // Debug.Log("SHAPGENERATE ");
-        Debug.Log(Render(shape));
+       //   Debug.Log(Render(shape));
         for (int y = 0; y < shape.GetLength(0); y++)
         {
 
@@ -833,7 +829,7 @@ public class Shape : MonoBehaviour
     public void GenerateShape()
     {
         Debug.Log("SHAPGENERATE ");
-        Debug.Log(Render(shape));
+     //   Debug.Log(Render(shape));
         for (int y = 0; y < shape.GetLength(0); y++)
         {
 
@@ -871,18 +867,13 @@ public class Shape : MonoBehaviour
         List<Vector2> ListPoint = new List<Vector2>();
         for(int i = 0; i < ListShape.Count; i++)
         {
-            try
-            {
+         
                 int x = Mathf.Abs(Mathf.RoundToInt((ListShape[i].transform.position.x - CtrlGamePlay.Ins.initPoint.x) / CtrlGamePlay.Ins.offsetX));
                 int y = Mathf.Abs(Mathf.RoundToInt((ListShape[i].transform.position.y - CtrlGamePlay.Ins.initPoint.y) / CtrlGamePlay.Ins.offsetY));
                 Vector2 point = new Vector2(x, y);
                 //   ListPoint.Add(point);
                 ListShape[i].GetComponent<DestroySelf>().Point = point;
-            }
-            catch(System.Exception e)
-            {
-                
-            }
+          
            
         }
            return ListPoint.ToArray();
@@ -922,16 +913,6 @@ public class Shape : MonoBehaviour
         PosTarget = pos;
     }
    
-    public void ActiveRigidBody2D(bool active)
-    {
-
-      
-        
-
-    }
-
- 
-
     #endregion
     public void InitPoint()
     {
@@ -965,8 +946,29 @@ public class Shape : MonoBehaviour
 
 
     }
-  
-   public void SetUpClamp(float min,float max)
+    public void Snap_1()
+    {
+        //for(int i = 0; i < ListShape.Count; i++)
+        //{
+
+        //   var a = ListShape[i].GetComponent<DestroySelf>();
+        //   Vector2 point  = a.Point;
+        //   Vector2 pos = CtrlGamePlay.MatrixToPoint((int)point.x, (int)point.y);
+        //   a.transform.position = pos;
+        //}
+        Vector2 pos = transform.position;
+        Vector2 point = CtrlGamePlay.PositonToMatrix(pos.x, pos.y);
+        //  Debug.Log("POS SNAP "+point.ToString());
+        transform.position = new Vector3(CtrlGamePlay.Ins.initPoint.x + point.x * CtrlGamePlay.Ins.offsetX, pos.y);
+        //  Debug.Log("POSITON SNAP : "+ CtrlGamePlay.MatrixToPoint((int)point.x, (int)point.y));
+        //  Debug.Log("POSITON SNAP : "+ CtrlGamePlay.MatrixToPoint((int)point.x, (int)point.y));
+
+
+
+    }
+
+
+    public void SetUpClamp(float min,float max)
     {
         ClampMoveMinX = transform.position.x - min;
 
@@ -976,6 +978,33 @@ public class Shape : MonoBehaviour
 
 
     }
+    public void SetUpClamp(float min)
+    {
+        PosDown = transform.position;
+        PosDown.y -= min;
+        isMovingDown = true;
+       
+        MoveDown();
+
+    }
+    public void ContinueMoveDown(int min)
+    {
+        PosDown = transform.position;
+        PosDown.y -= min;
+
+    }
+    public void MoveDown()
+    {
+             Vector3 pos = transform.position;
+             transform.position = Vector3.MoveTowards(transform.position, PosDown, Time.deltaTime * Speed);
+             pos = transform.position;
+               
+        
+       
+    }
+       
+
+   
     public void ReflectShape() 
     {
         string s = "";
@@ -1007,8 +1036,8 @@ public class Shape : MonoBehaviour
                 }
             }
         }
-        Debug.Log(s);
-    //    shape = SplitMatrix(shape);
+       // Debug.Log(s);
+      //    shape = SplitMatrix(shape);
         Debug.Log(Render(shape));
       
     
@@ -1076,6 +1105,7 @@ public class Shape : MonoBehaviour
 
 
     }
+   
     public void RenderShape(int[,] shape, TypeShape type)
     {
         int[,] typeShape = Shape.extendMatrixNotCopy(shape);
@@ -1139,6 +1169,14 @@ public class Shape : MonoBehaviour
 
         }
     }
+    public bool isMove()
+    {
+        if (Vector3.Magnitude(Body.velocity) <= 0.1f)
+        {
+            return false;
+        }
+        return true;
+    }
     public static bool isMatrixSame(int[,] matrix1 , int[,] matrix2) 
     {
           if(Render(matrix1) != Render(matrix2))
@@ -1147,6 +1185,7 @@ public class Shape : MonoBehaviour
         }
         return true;
     }
+    
     
 
 

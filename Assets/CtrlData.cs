@@ -78,7 +78,7 @@ public class CtrlData : MonoBehaviour
     public static List<int[,]> ShapeType = new List<int[,]>();
     public static TypeShape GetShapeType(int i)
     {
-        TypeShape type = TypeShape.None;
+        TypeShape type = TypeShape.crossBar_1;
         switch (i)
         {
             case 0:
