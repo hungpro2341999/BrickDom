@@ -4,62 +4,71 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 
-public enum TypeShape {crossBar_1,crossBar_2,crossBar_3, crossBar_4, square,three_cube,L_3,None}
+public enum TypeShape {crossBar_1,crossBar_2,crossBar_3, crossBar_4, square,three_cube,L_3}
 public class Shape : MonoBehaviour
 {
 
-    public SpriteRenderer ImgCube;
+    public SpriteRenderer Img_Cube_Cross_1;
+    public SpriteRenderer Img_Cube_Cross_2;
+    public SpriteRenderer Img_Cube_Cross_3_Horizontal;
+    public SpriteRenderer Img_Cube_Cross_3_Vertical;
+    public SpriteRenderer Img_Cube_Cross_4_Horizontal;
+    public SpriteRenderer Img_Cube_Cross_4_Vertical;
+    public SpriteRenderer Img_Cube_3;
+    public SpriteRenderer ImgCube_quare;
+    public SpriteRenderer ImgCube_L3_0;
+    public SpriteRenderer ImgCube_L3_90;
     public Color ColorShape;
     public int idShape;
     public int roll = 0;
+    public int indexType = 0;
     public int CountRoll = 0;
     public TypeShape TypeShape;
     public int[,] shape;
     public int MaxLength;
     public GameObject PrebShape;
     public List<GameObject> ListShape = new List<GameObject>();
-   
+    public int type = 0;
     public Vector2 point;
     bool initPos = false;
     public Rigidbody2D Body;
+    public int BackTo = 0;
     
     #region Move
-
+    
     public Vector3 posInit;
     public Vector3 PosTarget;
+    public Vector3 PosDown;
     public float Speed = 0;
     public bool m_isMove = false;
     public bool isClick = false;
     public float ClampMoveMinX = 0;
     public float ClampMoveMaxX = 0;
+    public float ClampMoveMinY = 0;
+    public bool isMovingDown = false;
 
     #endregion
     // Start is called before the first frame update
     void Start()
     {
-     
+        
         Body = GetComponent<Rigidbody2D>();
     }
+    
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Z))
-        {
+       
 
+        
+          PushToBoard();
 
-        }
-
-        if (!isClick)
-        {
-            PushToBoard();
-        }
-      
         if (Input.GetKeyDown(KeyCode.W))
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
-      
+       
         if (isClick)
         {
              
@@ -71,6 +80,7 @@ public class Shape : MonoBehaviour
            
             transform.position = Vector3.MoveTowards(transform.position, PosTarget, Time.deltaTime * Speed);
         }
+        
 
     }
     public void isMove(int vertical)
@@ -82,16 +92,19 @@ public class Shape : MonoBehaviour
     {
        
            init();
-           TypeShape = RandomShape();
-        // initShape(TypeShape);
-        initShape(TypeShape.crossBar_2);
+          TypeShape = RandomShape();
+          initShape(TypeShape);
+        //  initShape(TypeShape.three_cube);
+
+      //  initShape(TypeShape);
         for (int i = 0; i < ListShape.Count; i++)
         {
             CtrlGamePlay.Ins.AddCubeIntoBoard(ListShape[i]);
         }
     }
-    public void AddCubeToBoard(int[,] type,Vector2 pos,Color color)
+    public void AddCubeToBoard(int[,] type,Vector2 pos,Color color,int back)
     {
+        BackTo = back;
         init();
         SetShape(type);
         for (int i = 0; i < ListShape.Count; i++)
@@ -104,7 +117,7 @@ public class Shape : MonoBehaviour
     #region InitShape
 
 
-
+    
     public void SetNextId()
     {
 
@@ -128,6 +141,7 @@ public class Shape : MonoBehaviour
         switch (type)
         {
             case TypeShape.crossBar_1:
+                Img_Cube_Cross_1.gameObject.SetActive(true);
               
                     shape = new int[4, 4]
                 {
@@ -140,6 +154,7 @@ public class Shape : MonoBehaviour
 
                 break;
             case TypeShape.crossBar_2:
+                Img_Cube_Cross_2.gameObject.SetActive(true);
                 shape = new int[4, 4]
                 {
                     { 1, 1, 0, 0} ,
@@ -151,6 +166,7 @@ public class Shape : MonoBehaviour
 
                 break;
             case TypeShape.crossBar_3:
+             
                 shape = new int[4, 4]
               {
                     { 1, 1, 1, 0} ,
@@ -163,6 +179,7 @@ public class Shape : MonoBehaviour
 
                 break;
             case TypeShape.crossBar_4:
+              
                 shape = new int[4, 4]
               {
                     { 1, 1, 1, 1} ,
@@ -214,14 +231,7 @@ public class Shape : MonoBehaviour
 
                 break;
             case TypeShape.L_3:
-                shape = new int[4, 4]
-            {
-
-                    { 1, 1, 0, 0} ,
-                    { 1, 0, 0, 0} ,
-                    { 1, 0, 0, 0} ,
-                    { 1, 0, 0, 0} ,
-            };
+                
                 GenerateRandom();
 
                 break;
@@ -230,44 +240,176 @@ public class Shape : MonoBehaviour
 
 
     }
+    public void Reset()
+    {
+        Img_Cube_Cross_1.gameObject.SetActive(false);
+        Img_Cube_Cross_2.gameObject.SetActive(false);
+        Img_Cube_Cross_3_Horizontal.gameObject.SetActive(false);
+        Img_Cube_Cross_3_Vertical.gameObject.SetActive(false);
+        Img_Cube_Cross_4_Horizontal.gameObject.SetActive(false);
+        Img_Cube_Cross_4_Vertical.gameObject.SetActive(false);
+        Img_Cube_3.gameObject.SetActive(false);
+        ImgCube_quare.gameObject.SetActive(false);
+        ImgCube_L3_0.gameObject.SetActive(false);
+        ImgCube_L3_90.gameObject.SetActive(false);
+}
+   
+    public void GenerateShapeByType()
+    {
+
+    }
     public void GenerateRandom()
     {
+        Reset();
+        Vector3 angle;
         int[,] backup = Clone(shape);
         bool Spawn = false;
-        Debug.Log(Render(shape));
+    //    Debug.Log(Render(shape));
         while (!Spawn)
         {
+
+            if (TypeShape == TypeShape.L_3)
+            {
+           //     Debug.Log("Hinh dã biet");
+                indexType = Random.Range(0, 2);
+                if (indexType == 0)
+                {
+                    shape = new int[4, 4]
+          {
+
+                    { 1, 1, 0, 0} ,
+                    { 1, 0, 0, 0} ,
+                    { 1, 0, 0, 0} ,
+                    { 1, 0, 0, 0} ,
+          };
+                }
+                else
+                {
+                    shape = new int[4, 4]
+         {
+
+                    { 1, 1, 0, 0} ,
+                    { 0, 1, 0, 0} ,
+                    { 0, 1, 0, 0} ,
+                    { 0, 1, 0, 0} ,
+         };
+                }
+                ImgCube_L3_0.gameObject.SetActive(false);
+                ImgCube_L3_90.gameObject.SetActive(false);
+                ImgCube_L3_0.flipX = false;
+                ImgCube_L3_0.flipY = false;
+                ImgCube_L3_90.flipX = false;
+                ImgCube_L3_90.flipY = false;
+                backup = Clone(shape);
+               
+            }
             shape = backup;
             shape = extendMatrix(shape);
+         //   Debug.Log("BACK UP : " + Render(shape));
             switch (TypeShape)
             {
                 case TypeShape.three_cube:
-                    CountRoll = CtrlData.Ins.Img_Cube_3.Count;
-                    int i = Random.Range(0, CountRoll);
-                    roll = i;
-                    ImgCube.sprite = CtrlData.Ins.Img_Cube_3[roll];
-
+                    Img_Cube_3.gameObject.SetActive(true);
+                   
+                    roll = Random.Range(0,4);
+                  
+                    angle = Img_Cube_3.transform.rotation.eulerAngles;
                     shape = RotationMaxtrix(roll);
+                    angle.z = (-90 * roll);
+                    Img_Cube_3.transform.rotation = Quaternion.Euler(angle);
+               //   ImgCube.sprite = CtrlData.Ins.Img_Cube_3[roll];
+
+                  
                     break;
                 case TypeShape.crossBar_1:
-
+                    Img_Cube_Cross_1.gameObject.SetActive(true);
                     break;
                 case TypeShape.crossBar_2:
-
-                    CountRoll = CtrlData.Ins.Img_Cube_Cross_2.Count;
-                    int i1 = Random.Range(0, CountRoll);
+                    Img_Cube_Cross_2.gameObject.SetActive(true);
+                    int i1 = Random.Range(0,2);
                     roll = i1;
-                    ImgCube.sprite = CtrlData.Ins.Img_Cube_Cross_2[roll];
-
                     shape = RotationMaxtrix(roll);
+                    angle = Img_Cube_Cross_2.transform.rotation.eulerAngles;
+                    if (i1 == 0)
+                    {
+                        angle.z = 90;
+                    }
+                    if (i1 == 1)
+                    {
+                        angle.z = 0;
+                    }
+                    Img_Cube_Cross_2.transform.rotation = Quaternion.Euler(angle);
+
+
+
+
+                   
                     break;
                 case TypeShape.crossBar_3:
+                 
+                    int i2 = Random.Range(0, 2);
+                    roll = i2;
+                    shape = RotationMaxtrix(roll);
+                    angle = Img_Cube_Cross_2.transform.rotation.eulerAngles;
+                    if (i2 == 0)
+                    {
+                        Img_Cube_Cross_3_Horizontal.gameObject.SetActive(false);
+                        Img_Cube_Cross_3_Vertical.gameObject.SetActive(true);
+                        angle.z = 90;
+                    }
+                    if (i2 == 1)
+                    {
+                        Img_Cube_Cross_3_Horizontal.gameObject.SetActive(true);
+                        Img_Cube_Cross_3_Vertical.gameObject.SetActive(false);
+                        angle.z = 0;
+                    }
+                    Img_Cube_Cross_2.transform.rotation = Quaternion.Euler(angle);
+
                     break;
                 case TypeShape.crossBar_4:
+
+                    int i3 = Random.Range(0, 2);
+                    roll = i3;
+                    shape = RotationMaxtrix(roll);
+                   
+                    if (i3 == 0)
+                    {
+                        Img_Cube_Cross_4_Horizontal.gameObject.SetActive(false);
+                        Img_Cube_Cross_4_Vertical.gameObject.SetActive(true);
+                       
+                    }
+                    if (i3 == 1)
+                    {
+                        Img_Cube_Cross_4_Horizontal.gameObject.SetActive(true);
+                        Img_Cube_Cross_4_Vertical.gameObject.SetActive(false);
+                        
+                    }
+                  
                     break;
                 case TypeShape.square:
+                    ImgCube_quare.gameObject.SetActive(true); 
                     break;
                 case TypeShape.L_3:
+                    if (indexType==0)
+                    {
+                        int i4 = Random.Range(0, 4);
+                        roll = i4;
+                        shape = RotationMaxtrix(roll);
+                        SetWith_1(roll);
+                    }
+                    else
+                    {
+                        int i4 = Random.Range(0, 4);
+                        roll = i4;
+                        shape = RotationMaxtrix(roll);
+                        SetWith_2(roll);
+                    }
+                 //   Debug.Log("Start Rotation");
+                   //   Debug.Log(Render(shape));
+                  
+                    //  Debug.Log("Roataion");
+                     // Debug.Log(Render(shape));
+                   
                     break;
 
             }
@@ -275,19 +417,86 @@ public class Shape : MonoBehaviour
             
           //   Debug.Log(Render(shape));
 
-            shape = SplitMatrix(shape);
-            Debug.Log( Render(shape));
+              shape = SplitMatrix(shape);
+         //    Debug.Log( Render(shape));
 
-       //     Debug.Log(Render(shape));
-            Spawn = SetShape();
+            //     Debug.Log(Render(shape));
+            if (TypeShape != TypeShape.L_3)
+            {
+                Spawn = SetShape();
+            }
+            else
+            {
+                Spawn = SetShape_1();
+            }
+              
         }
-        GenerateShape();
+        if (TypeShape != TypeShape.L_3)
+        {
+            GenerateShape();
+
+        }
+        else
+        {
+            GenerateShape_Ver_2();
+            
+        }
+        Snap();
+       
     }
-   
+    public void SetWith_1(int i)
+    {
+        switch (i)
+        {
+            case 0:
+                
+                ImgCube_L3_90.gameObject.SetActive(true);
+                ImgCube_L3_90.flipX = true;
+                break;
+            case 1:
+                ImgCube_L3_0.gameObject.SetActive(true);
+                ImgCube_L3_0.flipY = true;
+                break;
+            case 2:
+                ImgCube_L3_90.gameObject.SetActive(true);
+                ImgCube_L3_90.flipY = true;
+                break;
+            case 3:
+                ImgCube_L3_0.gameObject.SetActive(true);
+                ImgCube_L3_0.flipX = true;
+                break;
+
+        }
+    }
+    public void SetWith_2(int i)
+    {
+        switch (i)
+        {
+            case 0:
+                ImgCube_L3_90.gameObject.SetActive(true);
+                ImgCube_L3_90.flipX = true;
+                ImgCube_L3_90.flipY = true;
+                break;
+            case 1:
+                ImgCube_L3_0.gameObject.SetActive(true);
+                break;
+            case 2:
+                ImgCube_L3_90.gameObject.SetActive(true);
+                break;
+            case 3:
+                ImgCube_L3_0.gameObject.SetActive(true);
+                ImgCube_L3_0.flipX = true;
+                ImgCube_L3_0.flipY = true;
+                break;
+
+        }
+    }
     public void SetShape(int[,] shape)
     {
        this.shape = shape;
         SetGenerateShape();
+        TypeShape = CtrlGamePlay.Ins.MatrixToType(shape);
+        RenderShape(shape, TypeShape);
     }
     public void InitShapeRandom()
     {
@@ -388,6 +597,8 @@ public class Shape : MonoBehaviour
 
 
     }
+
+    
     public int[,] RotationMaxtrix(int countRoll)
     {
 
@@ -428,6 +639,20 @@ public class Shape : MonoBehaviour
         Matrix = array;
         return Matrix;
     }
+    public static int[,] extendMatrixNotCopy(int[,] Matrix)
+    {
+        int[,] array = new int[4, 4];
+        for (int j = 0; j < Matrix.GetLength(0); j++)
+        {
+            for (int i = 0; i < Matrix.GetLength(1); i++)
+            {
+                array[j, i] = Matrix[j, i];
+
+            }
+        }
+     
+        return array;
+    }
     public static int[,] Clone(int[,] matrix)
     {
         int[,] matrixs = new int[matrix.GetLength(0), matrix.GetLength(1)];
@@ -464,12 +689,12 @@ public class Shape : MonoBehaviour
         transform.position = CtrlGamePlay.RandomPosShape();
         Render(shape);
         
-        for(int y = 0; y < shape.GetLength(1); y++)
+        for(int y = 0; y < shape.GetLength(0); y++)
         {
             
-            for(int x = 0; x < shape.GetLength(0); x++)
+            for(int x = 0; x < shape.GetLength(1); x++)
             {
-                if (shape[x,y] != 0)
+                if (shape[y,x] != 0)
                 {
                     //  PointShape[x,y] = new Vector3(y * offsetX, -x * offsetY);
 
@@ -484,9 +709,10 @@ public class Shape : MonoBehaviour
                     //ListShape.Add(a);
 
                    //    var a = Instantiate(PrebShape, transform);
-                    Vector3 pos = new Vector3(transform.position.x + x * CtrlGamePlay.Ins.offsetX,transform.position.y - y * CtrlGamePlay.Ins.offsetY);
+                    Vector3 pos = new Vector3(transform.position.x + y * CtrlGamePlay.Ins.offsetX,transform.position.y - x * CtrlGamePlay.Ins.offsetY);
                     Vector2 point = CtrlGamePlay.PositonToMatrixRound(pos.x,pos.y);
-                    if(!CtrlGamePlay.isInMatrix((int)point.x, (int)point.y))
+                 //    Debug.Log(point.x + "  " + point.y + " : " + CtrlGamePlay.isInMatrix((int)point.x, (int)point.y));
+                    if(!CtrlGamePlay.isInMatrix((int)point.x, (int)point.y) || CtrlGamePlay.Ins.Board[y,x]==1)
                     {
                         return false;
                     }
@@ -505,10 +731,60 @@ public class Shape : MonoBehaviour
         return true;
         
     }
+    private bool SetShape_1()
+    {
+
+
+        transform.position = CtrlGamePlay.RandomPosShape();
+        Render(shape);
+
+        for (int y = 0; y < shape.GetLength(0); y++)
+        {
+
+            for (int x = 0; x < shape.GetLength(1); x++)
+            {
+                if (shape[y, x] != 0)
+                {
+                    //  PointShape[x,y] = new Vector3(y * offsetX, -x * offsetY);
+
+                    //var a = Instantiate(PrebShape, transform);
+                    //a.transform.localPosition = new Vector3(x * offsetX, -y * offsetY);
+                    //Vector2 point = CtrlGamePlay.PositonToMatrixRound(a.transform.position.x, a.transform.position.y);
+                    //Debug.Log(point.ToString() + "   " + CtrlGamePlay.isInMatrix((int)point.x, (int)point.y));
+
+                    //i++;
+                    //a.name = "Shape " + i;
+
+                    //ListShape.Add(a);
+
+                    //    var a = Instantiate(PrebShape, transform);
+                    Vector3 pos = new Vector3(transform.position.x + x* CtrlGamePlay.Ins.offsetX, transform.position.y - y * CtrlGamePlay.Ins.offsetY);
+                    Vector2 point = CtrlGamePlay.PositonToMatrixRound(pos.x, pos.y);
+                //    Debug.Log(point.x + "  " + point.y + " : " + CtrlGamePlay.isInMatrix((int)point.x, (int)point.y));
+                    if (!CtrlGamePlay.isInMatrix((int)point.x, (int)point.y))
+                    {
+                        return false;
+                    }
+
+
+                    //  Debug.Log(point.ToString() + "   " + CtrlGamePlay.isInMatrix((int)point.x, (int)point.y));
+
+
+
+
+                }
+
+            }
+        }
+
+        return true;
+
+    }
 
     public void SetGenerateShape()
     {
-
+     //   shape = extendMatrix(shape);
+      //  shape = SplitMatrix(shape);
         for (int y = 0; y < shape.GetLength(0); y++)
         {
 
@@ -527,10 +803,33 @@ public class Shape : MonoBehaviour
             }
         }
     }
-
-    public void GenerateShape()
+    public void GenerateShape_Ver_2()
     {
        
+       // Debug.Log("SHAPGENERATE ");
+       //   Debug.Log(Render(shape));
+        for (int y = 0; y < shape.GetLength(0); y++)
+        {
+
+            for (int x = 0; x < shape.GetLength(1); x++)
+            {
+                if (shape[y, x] != 0)
+                {
+
+                    var a = Instantiate(PrebShape, transform);
+                    a.transform.localPosition = new Vector3(x * CtrlGamePlay.Ins.offsetY, -y * CtrlGamePlay.Ins.offsetX);
+                    a.name = idShape.ToString();
+                    ListShape.Add(a);
+
+                }
+                this.idShape++;
+            }
+        }
+    }
+    public void GenerateShape()
+    {
+        Debug.Log("SHAPGENERATE ");
+     //   Debug.Log(Render(shape));
         for (int y = 0; y < shape.GetLength(0); y++)
         {
 
@@ -568,18 +867,13 @@ public class Shape : MonoBehaviour
         List<Vector2> ListPoint = new List<Vector2>();
         for(int i = 0; i < ListShape.Count; i++)
         {
-            try
-            {
+         
                 int x = Mathf.Abs(Mathf.RoundToInt((ListShape[i].transform.position.x - CtrlGamePlay.Ins.initPoint.x) / CtrlGamePlay.Ins.offsetX));
                 int y = Mathf.Abs(Mathf.RoundToInt((ListShape[i].transform.position.y - CtrlGamePlay.Ins.initPoint.y) / CtrlGamePlay.Ins.offsetY));
                 Vector2 point = new Vector2(x, y);
                 //   ListPoint.Add(point);
                 ListShape[i].GetComponent<DestroySelf>().Point = point;
-            }
-            catch(System.Exception e)
-            {
-                
-            }
+          
            
         }
            return ListPoint.ToArray();
@@ -619,16 +913,6 @@ public class Shape : MonoBehaviour
         PosTarget = pos;
     }
    
-    public void ActiveRigidBody2D(bool active)
-    {
-
-      
-        
-
-    }
-
- 
-
     #endregion
     public void InitPoint()
     {
@@ -662,8 +946,29 @@ public class Shape : MonoBehaviour
 
 
     }
-  
-   public void SetUpClamp(float min,float max)
+    public void Snap_1()
+    {
+        //for(int i = 0; i < ListShape.Count; i++)
+        //{
+
+        //   var a = ListShape[i].GetComponent<DestroySelf>();
+        //   Vector2 point  = a.Point;
+        //   Vector2 pos = CtrlGamePlay.MatrixToPoint((int)point.x, (int)point.y);
+        //   a.transform.position = pos;
+        //}
+        Vector2 pos = transform.position;
+        Vector2 point = CtrlGamePlay.PositonToMatrix(pos.x, pos.y);
+        //  Debug.Log("POS SNAP "+point.ToString());
+        transform.position = new Vector3(CtrlGamePlay.Ins.initPoint.x + point.x * CtrlGamePlay.Ins.offsetX, pos.y);
+        //  Debug.Log("POSITON SNAP : "+ CtrlGamePlay.MatrixToPoint((int)point.x, (int)point.y));
+        //  Debug.Log("POSITON SNAP : "+ CtrlGamePlay.MatrixToPoint((int)point.x, (int)point.y));
+
+
+
+    }
+
+
+    public void SetUpClamp(float min,float max)
     {
         ClampMoveMinX = transform.position.x - min;
 
@@ -673,6 +978,33 @@ public class Shape : MonoBehaviour
 
 
     }
+    public void SetUpClamp(float min)
+    {
+        PosDown = transform.position;
+        PosDown.y -= min;
+        isMovingDown = true;
+       
+        MoveDown();
+
+    }
+    public void ContinueMoveDown(int min)
+    {
+        PosDown = transform.position;
+        PosDown.y -= min;
+
+    }
+    public void MoveDown()
+    {
+             Vector3 pos = transform.position;
+             transform.position = Vector3.MoveTowards(transform.position, PosDown, Time.deltaTime * Speed);
+             pos = transform.position;
+               
+        
+       
+    }
+       
+
+   
     public void ReflectShape() 
     {
         string s = "";
@@ -680,29 +1012,33 @@ public class Shape : MonoBehaviour
         
         Render(shape);
         ResetMatrix(shape);
-     //   Debug.Log(Render(shape));
-     //   Debug.Log(shape.GetLength(0) + "  " + shape.GetLength(1));
-        for (int i = 0; i < shape.GetLength(1); i++)
+      //  shape = extendMatrix(shape);
+      //  Debug.Log(Render(shape));
+        //   Debug.Log(shape.GetLength(0) + "  " + shape.GetLength(1));
+        for (int z = 0; z < ListShape.Count; z++)
         {
-            s += "\n";
-            for (int j = 0; j < shape.GetLength(0); j++)
+            for (int i = 0; i < shape.GetLength(0); i++)
             {
-                int x = j + i * shape.GetLength(0);
-
-                s += x.ToString()+"  ";
-            for(int z = 0; z < ListShape.Count; z++)
+                s += "\n";
+                for (int j = 0; j < shape.GetLength(1); j++)
                 {
-                    if (ListShape[z].name == x.ToString())
+                    int x = j + i * shape.GetLength(1);
+
+                
+
+                    if (int.Parse(ListShape[z].name) == x)
                     {
-                        shape[j,i] = 1; 
+                        shape[i, j] = 1;
+                        s += x.ToString() + "  : ";
                     }
+
+
                 }
-            
             }
         }
-         
-      //   shape = SplitMatrix(shape);
-    //    Debug.Log(Render(shape));
+       // Debug.Log(s);
+      //    shape = SplitMatrix(shape);
+        Debug.Log(Render(shape));
       
     
            
@@ -743,12 +1079,118 @@ public class Shape : MonoBehaviour
         CtrlGamePlay.Ins.List_Shape.Remove(this);
         Destroy(gameObject);
     }
-    public void RenderShape()
+    public int[,] RotationMaxtrix(int[,] Matrix,int countRoll)
     {
 
-    }
+        int[,] cloneMatrix = Clone(Matrix);
+        int[,] MatrixRotaion = new int[cloneMatrix.GetLength(0), cloneMatrix.GetLength(1)];
+        int count = 4;
+        for (int x = 0; x < countRoll; x++)
+        {
+            count = 4;
+            for (int i = 0; i < 4; i++)
+            {
+                count--;
+                for (int j = 0; j < 4; j++)
+                {
 
+                    MatrixRotaion[i, j] = cloneMatrix[j, count];
+                }
+            }
+            cloneMatrix = Clone(MatrixRotaion);
+
+
+        }
+        return cloneMatrix;
+
+
+    }
    
+    public void RenderShape(int[,] shape, TypeShape type)
+    {
+        int[,] typeShape = Shape.extendMatrixNotCopy(shape);
+        switch (type)
+        {
+
+
+            case TypeShape.crossBar_1:
+                Img_Cube_Cross_1.gameObject.SetActive(true);
+                if (BackTo != 0)
+                {
+                   Vector3 pos =   Img_Cube_Cross_1.transform.localPosition;
+                    pos.x -= BackTo * CtrlGamePlay.Ins.offsetX;
+                    Img_Cube_Cross_1.transform.localPosition = pos;
+                }
+                break;
+            case TypeShape.crossBar_2:
+                int rotation = 0;
+                for(int i = 0; i < 2; i++)
+                {
+                    rotation = i;
+                    if (isMatrixSame(shape, RotationMaxtrix(shape, i)))
+                    {
+
+                        break;
+                    }
+                        
+                     
+
+                   
+                }
+                Img_Cube_Cross_2.gameObject.SetActive(true);
+         
+                Vector3 angle = Img_Cube_Cross_2.transform.rotation.eulerAngles;
+                if (rotation == 1)
+                {
+                    angle.z = 90;
+                }
+                else if (rotation == 0)
+                {
+                    angle.z = 0;
+                }
+               
+                Img_Cube_Cross_2.transform.rotation = Quaternion.Euler(angle);
+                break;
+            case TypeShape.crossBar_3:
+
+                break;
+            case TypeShape.crossBar_4:
+
+                break;
+            case TypeShape.square:
+
+                break;
+            case TypeShape.L_3:
+
+                break;
+            case TypeShape.three_cube:
+
+                break;
+
+        }
+    }
+    public bool isMove()
+    {
+        if (Vector3.Magnitude(Body.velocity) <= 0.1f)
+        {
+            return false;
+        }
+        return true;
+    }
+    public static bool isMatrixSame(int[,] matrix1 , int[,] matrix2) 
+    {
+          if(Render(matrix1) != Render(matrix2))
+        {
+            return false;
+        }
+        return true;
+    }
     
-   
+    
+
+
+
+
+
+
 }

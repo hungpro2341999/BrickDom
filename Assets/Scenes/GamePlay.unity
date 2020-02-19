@@ -331,6 +331,7 @@ GameObject:
   - component: {fileID: 328562716}
   - component: {fileID: 328562718}
   - component: {fileID: 328562717}
+  - component: {fileID: 328562719}
   m_Layer: 5
   m_Name: CanMove
   m_TagString: Untagged
@@ -399,6 +400,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 328562715}
   m_CullTransparentMesh: 0
+--- !u!114 &328562719
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 328562715}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d10ae2e89575e8e4d9174f5e139af9c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Img_Cube_Cross_1: {fileID: 0}
+  Img_Cube_Cross_2: {fileID: 0}
+  Img_Cube_Cross_3_Horizontal: {fileID: 0}
+  Img_Cube_Cross_3_Vertical: {fileID: 0}
+  Img_Cube_Cross_4_Horizontal: {fileID: 0}
+  Img_Cube_Cross_4_Vertical: {fileID: 0}
+  Img_Cube_3: {fileID: 0}
+  ImgCube_quare: {fileID: 0}
+  ImgCube_L3_0: {fileID: 0}
+  ImgCube_L3_90: {fileID: 0}
+  ColorShape: {r: 0, g: 0, b: 0, a: 0}
+  idShape: 0
+  roll: 0
+  indexType: 0
+  CountRoll: 0
+  TypeShape: 0
+  MaxLength: 0
+  PrebShape: {fileID: 0}
+  ListShape: []
+  type: 0
+  point: {x: 0, y: 0}
+  Body: {fileID: 0}
+  BackTo: 0
+  posInit: {x: 0, y: 0, z: 0}
+  PosTarget: {x: 0, y: 0, z: 0}
+  PosDown: {x: 0, y: 0, z: 0}
+  Speed: 0
+  m_isMove: 0
+  isClick: 0
+  ClampMoveMinX: 0
+  ClampMoveMaxX: 0
+  ClampMoveMinY: 0
+  isMovingDown: 0
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -662,8 +708,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -61, y: 235}
-  m_SizeDelta: {x: 500, y: 500}
+  m_AnchoredPosition: {x: 239, y: 0}
+  m_SizeDelta: {x: 1000, y: 1000}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &652216886
 MonoBehaviour:
@@ -1172,8 +1218,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2bf920e572d1154390f6ddd8d3263be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  countX: 8
-  countY: 14
+  Row: 14
+  Column: 8
   initPoint: {x: -2.771, y: 4.552}
   offsetX: 0.681625
   offsetY: 0.681625

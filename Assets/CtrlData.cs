@@ -45,12 +45,12 @@ public class CtrlData : MonoBehaviour
                     { 0, 0, 0, 0} ,
               };
 
-    public static int[,] Cube_L4 = new int[4, 4]
+    public static int[,] Cube_L4_0 = new int[4, 4]
               {
-                    { 1, 1, 1, 1} ,
+                    { 1, 1, 0, 0} ,
                     { 1, 0, 0, 0} ,
-                    { 0, 0, 0, 0} ,
-                    { 0, 0, 0, 0} ,
+                    { 1, 0, 0, 0} ,
+                    { 1, 0, 0, 0} ,
               };
     public static int[,] Cube_Quare = new int[4, 4]
              {
@@ -59,6 +59,13 @@ public class CtrlData : MonoBehaviour
                     { 0, 0, 0, 0} ,
                     { 0, 0, 0, 0} ,
              };
+    public static int[,] Cube_L4_90 = new int[4, 4]
+            {
+                    { 1, 1, 0, 0} ,
+                    { 0, 1, 0, 0} ,
+                    { 0, 1, 0, 0} ,
+                    { 0, 1, 0, 0} ,
+            };
     #endregion
     public static CtrlData Ins;
     public List<Sprite>  Img_Cube_3 = new List<Sprite>();
@@ -71,7 +78,7 @@ public class CtrlData : MonoBehaviour
     public static List<int[,]> ShapeType = new List<int[,]>();
     public static TypeShape GetShapeType(int i)
     {
-        TypeShape type = TypeShape.None;
+        TypeShape type = TypeShape.crossBar_1;
         switch (i)
         {
             case 0:
@@ -115,7 +122,8 @@ public class CtrlData : MonoBehaviour
         ShapeType.Add(Cube_Cross_2);
         ShapeType.Add(Cube_Cross_3);
         ShapeType.Add(Cube_Cross_4);
-        ShapeType.Add(Cube_L4);
+        ShapeType.Add(Cube_L4_0);
+        ShapeType.Add(Cube_L4_90);
         ShapeType.Add(Cube_Quare);
         ShapeType.Add(Cube_3);
     }
