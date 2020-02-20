@@ -591,7 +591,7 @@ public class CtrlGamePlay : MonoBehaviour
 
     }
 
-    private string Render(int[,] matrix)
+    public static string Render(int[,] matrix)
     {
         string s = "";
         for (int j = 0; j < matrix.GetLength(0); j++)
@@ -1207,17 +1207,83 @@ public class CtrlGamePlay : MonoBehaviour
     #region RelizeShape
     public TypeShape MatrixToType(int[,] typeShape)
     {
-        TypeShape type = TypeShape.None;
+       
         for (int i = 0; i < CtrlData.ShapeType.Count; i++)
         {
-         //   Debug.Log(Render(Shape.extendMatrix(typeShape)) + "  " + Render(CtrlData.ShapeType[i]));
-            if (isMatrixSame(Shape.extendMatrix(typeShape), CtrlData.ShapeType[i]))
+            if (isTypeOf(CtrlData.GetShapeType(i), typeShape))
             {
-                 Debug.Log(Render(Shape.extendMatrix(typeShape)) + "  " + Render(CtrlData.ShapeType[i]));
                 return CtrlData.GetShapeType(i);
+            } 
+           
+        }
+        return TypeShape.None;
+
+    }
+    public bool isTypeOf(TypeShape type,int[,] shape)
+    {
+        int[,] CloneShape = standardizedMatrix(shape);
+        CloneShape = Shape.SplitMatrix(CloneShape);
+        string s1 = Render(CloneShape);
+        int[,] matrix = null;
+        int roll = 0;
+        switch (type)
+        {
+            case TypeShape.crossBar_1:
+                matrix = CtrlData.ShapeType[0];
+                roll = CtrlData.NotRoll;
+                break;
+            case TypeShape.crossBar_2:
+                matrix = CtrlData.ShapeType[1];
+                roll = CtrlData.Roll_Cross;
+                break;
+            case TypeShape.crossBar_3:
+                matrix = CtrlData.ShapeType[2];
+                roll = CtrlData.Roll_Cross;
+                break;
+            case TypeShape.crossBar_4:
+                matrix = CtrlData.ShapeType[3];
+                roll = CtrlData.Roll_Cross;
+                break;
+            
+            case TypeShape.L3_0:
+                matrix = CtrlData.ShapeType[8];
+                roll = CtrlData.Roll_Cube_L;
+                break;
+            case TypeShape.L3_90:
+                matrix = CtrlData.ShapeType[9];
+                roll = CtrlData.Roll_Cube_L;
+                break;
+            case TypeShape.L_4_0:
+                matrix = CtrlData.ShapeType[4];
+                roll = CtrlData.Roll_Cube_L;
+                break;
+            case TypeShape.L4_90:
+                matrix = CtrlData.ShapeType[5];
+                roll = CtrlData.Roll_Cube_L;
+                break;
+
+            case TypeShape.three_cube:
+                matrix = CtrlData.ShapeType[7];
+                roll = CtrlData.Roll_Cube_L;
+                break;
+            case TypeShape.square:
+                matrix = CtrlData.ShapeType[6];
+                roll = CtrlData.NotRoll;
+                break;
+              
+        }
+        
+        for(int i = 0; i < roll; i++)
+        {
+            string s = Render(Shape.SplitMatrix(SimulateRoll(i,type,false)));
+           // Debug.Log(s1 + "\n" + s);
+            if (s == s1)
+            {
+                return true;
             }
         }
-        return type;
+        return false;
+     
 
     }
    public bool isMatrixSame(int[,] matrix1, int[,] matrix2)
@@ -1345,8 +1411,8 @@ public class CtrlGamePlay : MonoBehaviour
             }
 
             ColumGroup.Add(CtrlGamePlay.CloneList(Colum));
-            Debug.Log("Render : " + CtrlGamePlay.Ins.RenderList(CtrlGamePlay.CloneList(Colum)));
-            Debug.Log("Cut Column : " + ColumGroup.Count);
+        //    Debug.Log("Render : " + CtrlGamePlay.Ins.RenderList(CtrlGamePlay.CloneList(Colum)));
+         //   Debug.Log("Cut Column : " + ColumGroup.Count);
            
 
         }
@@ -1453,7 +1519,7 @@ public class CtrlGamePlay : MonoBehaviour
     #endregion
 
     #region StartGame
-    public void GenerateStartGame(int index)
+    public void GenerateStartGame(int index,bool Start)
     {
         int[,] backup = Shape.Clone(Board);
         int[,] CloneBoard = Shape.Clone(Board);
@@ -1462,12 +1528,12 @@ public class CtrlGamePlay : MonoBehaviour
         {
            
             Vector3 pos = CtrlGamePlay.RandomPosShape();
-           
+            
             for(int i = 0; i < index; i++)
             {
-                if(isSpawnCorrect(CloneBoard,Shape.RandomShape(), CtrlGamePlay.RandomPosShape()))
+                if(isSpawnCorrect(CloneBoard,Shape.RandomShape(),pos))
                 {
-
+                    Debug.Log(Render(CloneBoard));
                 }
             }
               
@@ -1477,75 +1543,145 @@ public class CtrlGamePlay : MonoBehaviour
     
     public bool isSpawnCorrect(int[,] Board,TypeShape type,Vector3 pos)
     {
-       
-        
+        int[,] shape = SimulateRoll(0, type, true);
+        shape = Shape.SplitMatrix(shape);
+        Debug.Log("Board :::: ");
+        Debug.Log(Render(shape));
+       for(int i = 0; i < shape.GetLength(0); i++)
+        {
+            for(int j = 0; j < shape.GetLength(1); j++)
+            {
+                if (shape[i, j] != 0)
+                {
+                    Vector3 posCurr = new Vector3(pos.x - j* CtrlGamePlay.Ins.offsetX, pos.y - i * CtrlGamePlay.Ins.offsetY);
 
+                     Vector2 point = CtrlGamePlay.PositonToPointMatrix(posCurr.x, posCurr.y);
+                    Debug.Log(point);
+                    if (TryPushToBoard(Board, (int)point.x, (int)point.y))
+                    {
+                        Board[(int)point.x, (int)point.y] = 1;
+                    }
+                    else
+                    {
+                        Debug.Log("Spawn False");
+                        return false;
+                    }
+                }
+               
+
+            }
+        }
         return true;
+                   
+             
     }
-    public bool PushToBoard(int[,] Board,int x,int y)
+     public static Vector2 PositonToPointMatrix(float PosX, float PosY)
+    {
+
+        int x = Mathf.RoundToInt((PosX - CtrlGamePlay.Ins.initPoint.x) / CtrlGamePlay.Ins.offsetX);
+        int y = Mathf.RoundToInt((CtrlGamePlay.Ins.initPoint.y - PosY) / CtrlGamePlay.Ins.offsetY);
+        return new Vector2(y, x);
+
+    }
+    public bool TryPushToBoard(int[,] Board,int x,int y)
     {
         return IsPushShapeCorrect(Board, x, y);
     }
     public  bool IsPushShapeCorrect(int[,] Board, int x, int y)
     {
-        for(int i = 0; i < Board.GetLength(0); i++)
+        if (isInMatrix(x,y,Board) && Board[x,y]!=1)
         {
-            for(int j = 0; j < Board.GetLength(1); j++)
-            {
-                if (Board[i, j] == 1)
-                {
-                    return false;
-                }
-            }
+            return true;
         }
-        return true;
+        return false;
     }
+    
      
-    public int RollShape(TypeShape TypeShape,int[,] matrix)
+    public static int RollShape(TypeShape TypeShape,int[,] matrix)
     {
+        int roll = 0;
         int[,] shape = null;
+        int[,] shape_Clone =null;
+        
         switch (TypeShape)
         {
             case TypeShape.crossBar_1:
                 shape = CtrlData.Cube_Cross_1;
-
+                roll = CtrlData.NotRoll;
                 break;
             case TypeShape.crossBar_2:
 
                 shape = CtrlData.Cube_Cross_2;
-
+                roll = CtrlData.Roll_Cross ;
                 break;
             case TypeShape.crossBar_3:
 
                 shape = CtrlData.Cube_Cross_3;
-
+                roll = CtrlData.Roll_Cross;
                 break;
             case TypeShape.crossBar_4:
                 shape = CtrlData.Cube_Cross_4;
-
+                roll = CtrlData.Roll_Cross;
                 break;
             case TypeShape.square :
                 shape = CtrlData.Cube_Quare;
+                roll  =  CtrlData.NotRoll;
                 break;
-            case TypeShape.L_3:
+            case TypeShape.L3_0:
                 shape = CtrlData.Cube_L3_0;
-
+                roll = CtrlData.Roll_Cube_L;
                 break;
-         
+            case TypeShape.L3_90:
+                shape = CtrlData.Cube_L3_90;
+                roll = CtrlData.Roll_Cube_L;
+                break;
+            case TypeShape.L_4_0:
+                shape = CtrlData.Cube_L4_0;
+                roll = CtrlData.Roll_Cube_L;
+                break;
+            case TypeShape.L4_90:
+                shape = CtrlData.Cube_L4_90;
+                roll = CtrlData.Roll_Cube_L;
+                break;
+
             case TypeShape.three_cube:
                 shape = CtrlData.Cube_3;
-
+                roll = CtrlData.Roll_Cube_L;
                 break;
 
         }
-        int roll = 0;
+        shape_Clone = standardizedMatrix(matrix);
+        shape_Clone = Shape.SplitMatrix(shape_Clone);
+        for (int i = 0; i < roll; i++)
+        {
 
+            string s  = Render(Shape.SplitMatrix(SimulateRoll(i, TypeShape,false)));
+            string s1 = Render(shape_Clone);
+            Debug.Log("Roll Lan thu : " + i);
+            Debug.Log(s + "\n" + s1);
+            if (s == s1)
+            {
+            
+                return i;
+            }
+            
+        }
+        Debug.Log("KHong Co Type Shape !!!!");
 
-        return roll;
+        return 0;
     }
-    public int[,] RollShape(int roll,TypeShape type)
+    public  static  int[,] standardizedMatrix(int[,] matrix)
     {
-
+        int[,] clone = Shape.Clone(matrix);
+        clone =  RemoveRow(clone);
+        clone =  Shape.extendMatrix(clone);
+        return clone;
+    }
+        
+    public static int[,] SimulateRoll(int roll,TypeShape type,bool isRandom)
+    {
+        isRandom = true;
+        int r = 0;
         int[,] shape = null;
         switch (type)
         {
@@ -1556,32 +1692,52 @@ public class CtrlGamePlay : MonoBehaviour
             case TypeShape.crossBar_2:
 
                 shape = CtrlData.Cube_Cross_2;
-
+                r = Random.Range(0, CtrlData.Roll_Cross);
                 break;
             case TypeShape.crossBar_3:
 
                 shape = CtrlData.Cube_Cross_3;
-
+                r = Random.Range(0, CtrlData.Roll_Cross);
                 break;
             case TypeShape.crossBar_4:
                 shape = CtrlData.Cube_Cross_4;
-
+                r = Random.Range(0, CtrlData.Roll_Cross);
                 break;
             case TypeShape.square:
                 shape = CtrlData.Cube_Quare;
                 break;
-            case TypeShape.L_3:
+            case TypeShape.L_4_0:
+                shape = CtrlData.Cube_L4_0;
+                r = Random.Range(0, CtrlData.Roll_Cube_L);
+                break;
+            case TypeShape.L4_90:
+                shape = CtrlData.Cube_L4_90;
+                r = Random.Range(0, CtrlData.Roll_Cube_L);
+                break;
+            case TypeShape.L3_0:
                 shape = CtrlData.Cube_L3_0;
-
+                r = Random.Range(0, CtrlData.Roll_Cube_L);
+                break;
+            case TypeShape.L3_90:
+                shape = CtrlData.Cube_L3_90;
+                r = Random.Range(0, CtrlData.Roll_Cube_L);
                 break;
 
             case TypeShape.three_cube:
                 shape = CtrlData.Cube_3;
-
+                r = Random.Range(0, CtrlData.Roll_Cube_L);
                 break;
 
         }
-        shape = Shape.RotationMaxtrix(shape, roll);
+        if (isRandom)
+        {
+            shape = Shape.RotationMaxtrix(shape, r);
+        }
+        else
+        {
+            shape = Shape.RotationMaxtrix(shape, roll);
+        }
+       
         return shape;
        
 

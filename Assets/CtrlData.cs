@@ -80,6 +80,12 @@ public class CtrlData : MonoBehaviour
                     { 0, 1, 0, 0} ,
                     { 0, 0, 0, 0} ,
           };
+    public  const int NotRoll = 0;
+    public  const int Roll_Cross = 2;
+    public  const int Roll_Cube_L = 4;
+
+
+
     #endregion
     public static CtrlData Ins;
     public List<Sprite>  Img_Cube_3 = new List<Sprite>();
@@ -92,7 +98,7 @@ public class CtrlData : MonoBehaviour
     public static List<int[,]> ShapeType = new List<int[,]>();
     public static TypeShape GetShapeType(int i)
     {
-        TypeShape type = TypeShape.crossBar_1;
+        TypeShape type = TypeShape.None;
         switch (i)
         {
             case 0:
@@ -107,14 +113,26 @@ public class CtrlData : MonoBehaviour
             case 3:
                 type = TypeShape.crossBar_4;
                 break;
-            case 4:
-                type = TypeShape.L_3;
-                break;
+       
+
             case 5:
-                type = TypeShape.square;
+                type = TypeShape.L_4_0;
+
                 break;
             case 6:
+                type = TypeShape.L4_90;
+                break;
+            case 4:
+                type = TypeShape.square;
+                break;
+            case 7:
                 type = TypeShape.three_cube;
+                break;
+            case 8:
+                type = TypeShape.L3_0;
+                break;
+            case 9:
+                type = TypeShape.L3_90;
                 break;
             default:
                 Debug.Log("Khong Co Type nhu the");
@@ -132,14 +150,16 @@ public class CtrlData : MonoBehaviour
         {
             Ins = this;
         }
-        ShapeType.Add(Cube_Cross_1);
-        ShapeType.Add(Cube_Cross_2);
-        ShapeType.Add(Cube_Cross_3);
-        ShapeType.Add(Cube_Cross_4);
-        ShapeType.Add(Cube_L4_0);
-        ShapeType.Add(Cube_L4_90);
-        ShapeType.Add(Cube_Quare);
-        ShapeType.Add(Cube_3);
+        ShapeType.Add(Cube_Cross_1); //0
+        ShapeType.Add(Cube_Cross_2);//1
+        ShapeType.Add(Cube_Cross_3);//2
+        ShapeType.Add(Cube_Cross_4);//3
+        ShapeType.Add(Cube_L4_0);//4
+        ShapeType.Add(Cube_L4_90);//5
+        ShapeType.Add(Cube_Quare);//6
+        ShapeType.Add(Cube_3);//7
+        ShapeType.Add(Cube_L3_0);//8
+        ShapeType.Add(Cube_L3_90);//9
     }
     // Start is called before the first frame update
     void Start()

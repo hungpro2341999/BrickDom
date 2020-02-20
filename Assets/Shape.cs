@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 
-public enum TypeShape {crossBar_1,crossBar_2,crossBar_3, crossBar_4, square,three_cube,L_3,None}
+public enum TypeShape {crossBar_1,crossBar_2,crossBar_3, crossBar_4, square,three_cube,L_4_0,L4_90,L3_0,L3_90,None}
 public class Shape : MonoBehaviour
 {
 
@@ -251,7 +251,7 @@ public class Shape : MonoBehaviour
                 GenerateRandom();
 
                 break;
-            case TypeShape.L_3:
+            case TypeShape.L3_0:
 
                 GenerateRandom();
 
@@ -279,198 +279,7 @@ public class Shape : MonoBehaviour
     {
 
     }
-    public void GenerateRandom()
-    {
-        Reset();
-        Vector3 angle;
-        int[,] backup = Clone(shape);
-        bool Spawn = false;
-        //    Debug.Log(Render(shape));
-        while (!Spawn)
-        {
-
-            if (TypeShape == TypeShape.L_3)
-            {
-                //     Debug.Log("Hinh dã biet");
-                indexType = Random.Range(0, 2);
-                if (indexType == 0)
-                {
-                    shape = new int[4, 4]
-          {
-
-                    { 1, 1, 0, 0} ,
-                    { 1, 0, 0, 0} ,
-                    { 1, 0, 0, 0} ,
-                    { 1, 0, 0, 0} ,
-          };
-                }
-                else
-                {
-                    shape = new int[4, 4]
-         {
-
-                    { 1, 1, 0, 0} ,
-                    { 0, 1, 0, 0} ,
-                    { 0, 1, 0, 0} ,
-                    { 0, 1, 0, 0} ,
-         };
-                }
-                ImgCube_L3_0.gameObject.SetActive(false);
-                ImgCube_L3_90.gameObject.SetActive(false);
-                ImgCube_L3_0.flipX = false;
-                ImgCube_L3_0.flipY = false;
-                ImgCube_L3_90.flipX = false;
-                ImgCube_L3_90.flipY = false;
-                backup = Clone(shape);
-
-            }
-            shape = backup;
-            shape = extendMatrix(shape);
-            //   Debug.Log("BACK UP : " + Render(shape));
-            switch (TypeShape)
-            {
-                case TypeShape.three_cube:
-                    Img_Cube_3.gameObject.SetActive(true);
-
-                    roll = Random.Range(0, 4);
-
-                    angle = Img_Cube_3.transform.rotation.eulerAngles;
-                    shape = RotationMaxtrix(roll);
-                    angle.z = (-90 * roll);
-                    Img_Cube_3.transform.rotation = Quaternion.Euler(angle);
-                    //   ImgCube.sprite = CtrlData.Ins.Img_Cube_3[roll];
-
-
-                    break;
-                case TypeShape.crossBar_1:
-                    Img_Cube_Cross_1.gameObject.SetActive(true);
-                    break;
-                case TypeShape.crossBar_2:
-                    Img_Cube_Cross_2.gameObject.SetActive(true);
-                    int i1 = Random.Range(0, 2);
-                    roll = i1;
-                    shape = RotationMaxtrix(roll);
-                    angle = Img_Cube_Cross_2.transform.rotation.eulerAngles;
-                    if (i1 == 0)
-                    {
-                        angle.z = 90;
-                    }
-                    if (i1 == 1)
-                    {
-                        angle.z = 0;
-                    }
-                    Img_Cube_Cross_2.transform.rotation = Quaternion.Euler(angle);
-
-
-
-
-
-                    break;
-                case TypeShape.crossBar_3:
-
-                    int i2 = Random.Range(0, 2);
-                    roll = i2;
-                    RotationMaxtrix(roll);
-                    angle = Img_Cube_Cross_2.transform.rotation.eulerAngles;
-                    if (i2 == 0)
-                    {
-                        Img_Cube_Cross_3_Horizontal.gameObject.SetActive(false);
-                        Img_Cube_Cross_3_Vertical.gameObject.SetActive(true);
-                        angle.z = 90;
-                    }
-                    if (i2 == 1)
-                    {
-                        Img_Cube_Cross_3_Horizontal.gameObject.SetActive(true);
-                        Img_Cube_Cross_3_Vertical.gameObject.SetActive(false) ;
-                        angle.z = 0;
-                    }
-                    Img_Cube_Cross_2.transform.rotation = Quaternion.Euler(angle);
-
-                    break;
-                case TypeShape.crossBar_4:
-
-                    int i3 = Random.Range(0, 2);
-                    roll = i3;
-                    shape = RotationMaxtrix(roll);
-
-                    if (i3 == 0)
-                    {
-                        Img_Cube_Cross_4_Horizontal.gameObject.SetActive(false);
-                        Img_Cube_Cross_4_Vertical.gameObject.SetActive(true);
-
-                    }
-                    if (i3 == 1)
-                    {
-                        Img_Cube_Cross_4_Horizontal.gameObject.SetActive(true);
-                        Img_Cube_Cross_4_Vertical.gameObject.SetActive(false);
-
-                    }
-
-
-
-
-                    break;
-                case TypeShape.square:
-                    ImgCube_quare.gameObject.SetActive(true);
-                    break;
-                case TypeShape.L_3:
-                    if (indexType == 0)
-                    {
-                        int i4 = Random.Range(0, 4);
-                        roll = i4;
-                        shape = RotationMaxtrix(roll);
-                        SetWith_1(roll);
-                    }
-                    else
-                    {
-                        int i4 = Random.Range(0, 4);
-                        roll = i4;
-                        shape = RotationMaxtrix(roll);
-                        SetWith_2(roll);
-                    }
-                    //   Debug.Log("Start Rotation");
-                    //   Debug.Log(Render(shape));
-
-                    //  Debug.Log("Roataion");
-                    // Debug.Log(Render(shape));
-
-                    break;
-
-            }
-
-
-            //   Debug.Log(Render(shape));
-
-            shape = SplitMatrix(shape);
-            //    Debug.Log( Render(shape));
-
-            //     Debug.Log(Render(shape));
-            if (TypeShape != TypeShape.L_3)
-            {
-                Spawn = SetShape();
-            }
-            else
-            {
-                Spawn = SetShape_1();
-            }
-
-        }
-
-
-        if (TypeShape != TypeShape.L_3)
-        {
-            GenerateShape();
-
-        }
-        else
-        {
-            GenerateShape_Ver_2();
-
-        }
-        Snap();
-
-    }
-  
+   
     
 
    
@@ -686,13 +495,13 @@ public class Shape : MonoBehaviour
     public static int[,] Clone(int[,] matrix)
     {
         int[,] matrixs = new int[matrix.GetLength(0), matrix.GetLength(1)];
-        for (int i = 0; i < matrix.GetLength(1); i++)
+        for (int i = 0; i < matrix.GetLength(0); i++)
         {
 
-            for (int j = 0; j < matrix.GetLength(0); j++)
+            for (int j = 0; j < matrix.GetLength(1); j++)
             {
-                int x = matrix[j, i];
-                matrixs[j, i] = x;
+                int x = matrix[i, j];
+                matrixs[i, j] = x;
             }
         }
         return matrixs;
@@ -1309,6 +1118,200 @@ public class Shape : MonoBehaviour
         }
     }
 
+    
+
+
+    public void GenerateRandom()
+    {
+        Reset();
+        Vector3 angle;
+        int[,] backup = Clone(shape);
+        bool Spawn = false;
+        //    Debug.Log(Render(shape));
+        while (!Spawn)
+        {
+
+            if (TypeShape == TypeShape.L3_0)
+            {
+                //     Debug.Log("Hinh dã biet");
+                indexType = Random.Range(0, 2);
+                if (indexType == 0)
+                {
+                    shape = new int[4, 4]
+          {
+
+                    { 1, 1, 0, 0} ,
+                    { 1, 0, 0, 0} ,
+                    { 1, 0, 0, 0} ,
+                    { 1, 0, 0, 0} ,
+          };
+                }
+                else
+                {
+                    shape = new int[4, 4]
+         {
+
+                    { 1, 1, 0, 0} ,
+                    { 0, 1, 0, 0} ,
+                    { 0, 1, 0, 0} ,
+                    { 0, 1, 0, 0} ,
+         };
+                }
+                ImgCube_L3_0.gameObject.SetActive(false);
+                ImgCube_L3_90.gameObject.SetActive(false);
+                ImgCube_L3_0.flipX = false;
+                ImgCube_L3_0.flipY = false;
+                ImgCube_L3_90.flipX = false;
+                ImgCube_L3_90.flipY = false;
+                backup = Clone(shape);
+
+            }
+            shape = backup;
+            shape = extendMatrix(shape);
+            //   Debug.Log("BACK UP : " + Render(shape));
+            switch (TypeShape)
+            {
+                case TypeShape.three_cube:
+                    Img_Cube_3.gameObject.SetActive(true);
+
+                    roll = Random.Range(0, 4);
+
+                    angle = Img_Cube_3.transform.rotation.eulerAngles;
+                    shape = RotationMaxtrix(roll);
+                    angle.z = (-90 * roll);
+                    Img_Cube_3.transform.rotation = Quaternion.Euler(angle);
+                    //   ImgCube.sprite = CtrlData.Ins.Img_Cube_3[roll];
+
+
+                    break;
+                case TypeShape.crossBar_1:
+                    Img_Cube_Cross_1.gameObject.SetActive(true);
+                    break;
+                case TypeShape.crossBar_2:
+                    Img_Cube_Cross_2.gameObject.SetActive(true);
+                    int i1 = Random.Range(0, 2);
+                    roll = i1;
+                    shape = RotationMaxtrix(roll);
+                    angle = Img_Cube_Cross_2.transform.rotation.eulerAngles;
+                    if (i1 == 0)
+                    {
+                        angle.z = 90;
+                    }
+                    if (i1 == 1)
+                    {
+                        angle.z = 0;
+                    }
+                    Img_Cube_Cross_2.transform.rotation = Quaternion.Euler(angle);
+
+
+
+
+
+                    break;
+                case TypeShape.crossBar_3:
+
+                    int i2 = Random.Range(0, 2);
+                    roll = i2;
+                    RotationMaxtrix(roll);
+                    angle = Img_Cube_Cross_2.transform.rotation.eulerAngles;
+                    if (i2 == 0)
+                    {
+                        Img_Cube_Cross_3_Horizontal.gameObject.SetActive(false);
+                        Img_Cube_Cross_3_Vertical.gameObject.SetActive(true);
+                        angle.z = 90;
+                    }
+                    if (i2 == 1)
+                    {
+                        Img_Cube_Cross_3_Horizontal.gameObject.SetActive(true);
+                        Img_Cube_Cross_3_Vertical.gameObject.SetActive(false);
+                        angle.z = 0;
+                    }
+                    Img_Cube_Cross_2.transform.rotation = Quaternion.Euler(angle);
+
+                    break;
+                case TypeShape.crossBar_4:
+
+                    int i3 = Random.Range(0, 2);
+                    roll = i3;
+                    shape = RotationMaxtrix(roll);
+
+                    if (i3 == 0)
+                    {
+                        Img_Cube_Cross_4_Horizontal.gameObject.SetActive(false);
+                        Img_Cube_Cross_4_Vertical.gameObject.SetActive(true);
+
+                    }
+                    if (i3 == 1)
+                    {
+                        Img_Cube_Cross_4_Horizontal.gameObject.SetActive(true);
+                        Img_Cube_Cross_4_Vertical.gameObject.SetActive(false);
+
+                    }
+
+
+
+
+                    break;
+                case TypeShape.square:
+                    ImgCube_quare.gameObject.SetActive(true);
+                    break;
+                case TypeShape.L3_0:
+                    if (indexType == 0)
+                    {
+                        int i4 = Random.Range(0, 4);
+                        roll = i4;
+                        shape = RotationMaxtrix(roll);
+                        SetWith_1(roll);
+                    }
+                    else
+                    {
+                        int i4 = Random.Range(0, 4);
+                        roll = i4;
+                        shape = RotationMaxtrix(roll);
+                        SetWith_2(roll);
+                    }
+                    //   Debug.Log("Start Rotation");
+                    //   Debug.Log(Render(shape));
+
+                    //  Debug.Log("Roataion");
+                    // Debug.Log(Render(shape));
+
+                    break;
+
+            }
+
+
+            //   Debug.Log(Render(shape));
+
+            shape = SplitMatrix(shape);
+            //    Debug.Log( Render(shape));
+
+            //     Debug.Log(Render(shape));
+            if (TypeShape != TypeShape.L3_0)
+            {
+                Spawn = SetShape();
+            }
+            else
+            {
+                Spawn = SetShape_1();
+            }
+
+        }
+
+
+        if (TypeShape != TypeShape.L3_0)
+        {
+            GenerateShape();
+
+        }
+        else
+        {
+            GenerateShape_Ver_2();
+
+        }
+        Snap();
+
+    }
 
 
 
