@@ -307,7 +307,7 @@ MonoBehaviour:
   roll: 3
   indexType: 0
   CountRoll: 0
-  TypeShape: 4
+  TypeShape: 2
   MaxLength: 0
   PrebShape: {fileID: 2639597336545607854, guid: a0684fcdb37ba464d8b4c1752eae87ac,
     type: 3}

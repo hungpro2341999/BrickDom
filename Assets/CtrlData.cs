@@ -66,6 +66,20 @@ public class CtrlData : MonoBehaviour
                     { 0, 1, 0, 0} ,
                     { 0, 1, 0, 0} ,
             };
+  public static int[,] Cube_L3_0 = new int[4, 4]
+          {
+                    { 1, 1, 0, 0} ,
+                    { 1, 0, 0, 0} ,
+                    { 1, 0, 0, 0} ,
+                    { 0, 0, 0, 0} ,
+          };
+    public static int[,] Cube_L3_90 = new int[4, 4]
+          {
+                    { 1, 1, 0, 0} ,
+                    { 0, 1, 0, 0} ,
+                    { 0, 1, 0, 0} ,
+                    { 0, 0, 0, 0} ,
+          };
     #endregion
     public static CtrlData Ins;
     public List<Sprite>  Img_Cube_3 = new List<Sprite>();
