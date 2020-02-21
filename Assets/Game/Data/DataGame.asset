@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53671c60c46e8784bb744ca7fa294081, type: 3}
+  m_Name: DataGame
+  m_EditorClassIdentifier: 
+  Cube_Cross_1:
+  - {fileID: 21300000, guid: 73798c6a0b7e5db4c96ca015e3379c5e, type: 3}
+  - {fileID: 21300000, guid: c83f07b1be545b044b5944499a1d485a, type: 3}
+  - {fileID: 21300000, guid: 1a577e643faab01489d1a08e22d78068, type: 3}
+  - {fileID: 21300000, guid: 4cf43fdc3c4038a43aa6f6045290273b, type: 3}
+  - {fileID: 21300000, guid: f06275db93a5e304bb278e1454ae583f, type: 3}
+  Cube_Cross_2:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  Cube_Cross_3: []
+  Cube_Cross_4: []
+  Cube_L4_0: []
+  Cube_Square: []
+  Cube_L4_90: []
+  Cube_L3_0: []
+  Cube_L3_90: []

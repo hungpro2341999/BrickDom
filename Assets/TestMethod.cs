@@ -7,6 +7,9 @@ public class TestMethod : MonoBehaviour
     public int roll;
     public TypeShape type;
     public Vector2 point;
+    public int row;
+    public int column;
+    public bool isCorrect = false; 
     // Start is called before the first frame update
     void Start()
     {
@@ -17,28 +20,21 @@ public class TestMethod : MonoBehaviour
     void Update()
     {
         point = CtrlGamePlay.PositonToPointMatrix(transform.position.x, transform.position.y);
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            CtrlGamePlay.Ins.GenerateStartGame(1, true);
-            
-        }
+      
         if (Input.GetKeyDown(KeyCode.B))
         {
-            int[,] matrix = new int[2, 4]
-           {
-
-                   {1,1,1,1},
-                   {1,0,0,0},
-                   //{1,0},
-                   //{1,0},
-
-
-
-
-           };
-           type =   CtrlGamePlay.Ins.MatrixToType(matrix);
+            string s =  Shape.Render(Shape.RotationMaxtrix(CtrlData.Cube_3, roll));
+            Debug.Log(s);
         }
-            
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+        
+        }
+        Vector2 pos = CtrlGamePlay.PositonToPointMatrix(transform.position.x, transform.position.y);
+        row = (int)pos.x;
+        column = (int)pos.y;
+       // isCorrect = CtrlGamePlay.IsPushShapeCorrect(CtrlGamePlay.Ins.Board,row, column);
+
     }
 
 

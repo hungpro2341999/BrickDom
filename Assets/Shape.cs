@@ -290,18 +290,20 @@ public class Shape : MonoBehaviour
             case 0:
 
                 ImgCube_L3_90.gameObject.SetActive(true);
+                ImgCube_L3_90.flipY = true;
                 ImgCube_L3_90.flipX = true;
                 break;
             case 1:
                 ImgCube_L3_0.gameObject.SetActive(true);
-                ImgCube_L3_0.flipY = true;
+               
                 break;
             case 2:
                 ImgCube_L3_90.gameObject.SetActive(true);
-                ImgCube_L3_90.flipY = true;
+           
                 break;
             case 3:
                 ImgCube_L3_0.gameObject.SetActive(true);
+                ImgCube_L3_0.flipY = true;
                 ImgCube_L3_0.flipX = true;
                 break;
 
@@ -313,19 +315,21 @@ public class Shape : MonoBehaviour
         {
             case 0:
                 ImgCube_L3_90.gameObject.SetActive(true);
-                ImgCube_L3_90.flipX = true;
+             
                 ImgCube_L3_90.flipY = true;
                 break;
             case 1:
                 ImgCube_L3_0.gameObject.SetActive(true);
+                ImgCube_L3_0.flipY = true;
                 break;
             case 2:
                 ImgCube_L3_90.gameObject.SetActive(true);
+                ImgCube_L3_90.flipX = true;
                 break;
             case 3:
                 ImgCube_L3_0.gameObject.SetActive(true);
                 ImgCube_L3_0.flipX = true;
-                ImgCube_L3_0.flipY = true;
+             
                 break;
 
         }
@@ -638,6 +642,7 @@ public class Shape : MonoBehaviour
                     a.transform.localPosition = new Vector3(x * CtrlGamePlay.Ins.offsetX, -y * CtrlGamePlay.Ins.offsetY);
                     a.name = idShape.ToString();
                     ListShape.Add(a);
+                   
 
                 }
                 this.idShape++;
@@ -671,14 +676,7 @@ public class Shape : MonoBehaviour
     {
         Debug.Log("SHAPGENERATE ");
         Debug.Log(Render(shape));
-       
-        if (TypeShape == TypeShape.crossBar_4)
-        {
-            shape = SplitMatrix(shape);
-           
-            Debug.Log("Matrix has Clip");
-            Debug.Log(Render(shape));
-        }
+      
         for (int y = 0; y < shape.GetLength(0); y++)
         {
 
@@ -689,51 +687,37 @@ public class Shape : MonoBehaviour
                 {
 
                       var a = Instantiate(PrebShape, transform);
-                      a.transform.localPosition = new Vector3(y * CtrlGamePlay.Ins.offsetY, -x *CtrlGamePlay.Ins.offsetX);
-                      a.name = (y + x * shape.GetLength(0)).ToString();
+                      a.transform.localPosition = new Vector3(x * CtrlGamePlay.Ins.offsetY, -y *CtrlGamePlay.Ins.offsetX);
+                      a.name = (x + y * shape.GetLength(1)).ToString();
                       ListShape.Add(a);
-                   
+                      CtrlGamePlay.Ins.AddCubeIntoBoard(a);
                 }
                 
             }
         }
-        if (TypeShape == TypeShape.crossBar_2)
-        {
-            shape = extendMatrix(shape);
-            shape = RotationMaxtrix(1);
-            Debug.Log("Matrix has Clip");
-            shape = SplitMatrix(shape);
-            Debug.Log(Render(shape));
-
-        }
-        if (TypeShape == TypeShape.crossBar_3)
-        {
-            shape = extendMatrix(shape);
-            shape = RotationMaxtrix(1);
-            Debug.Log("Matrix has Clip");
-            shape = SplitMatrix(shape);
-            Debug.Log(Render(shape));
-
-        }
-        if (TypeShape == TypeShape.crossBar_4)
-        {
-            shape = extendMatrix(shape);
-            shape = RotationMaxtrix(1);
-            Debug.Log("Matrix has Clip");
-            shape = SplitMatrix(shape);
-            Debug.Log(Render(shape));
-
-        }
-
+      
 
     }
+    public void SetTypeShape(TypeShape type, int[,] shape)
+    {
+        TypeShape = type;
+        this.shape = shape;
+        GenerateShape();
+    }
+
     public static TypeShape RandomShape()
     {
-    
-        System.Array values = System.Enum.GetValues(typeof(TypeShape));
+        TypeShape type = TypeShape.None;
+        while (type == TypeShape.None || type == TypeShape.L3_0 || type == TypeShape.L3_90)
+        {
 
-        TypeShape typeShape = (TypeShape)values.GetValue(UnityEngine.Random.Range(0,values.Length));
-        return typeShape;
+          
+            System.Array values = System.Enum.GetValues(typeof(TypeShape));
+
+            type = (TypeShape)values.GetValue(UnityEngine.Random.Range(0, values.Length));
+         
+        }
+        return type;
     } 
   
     #endregion
@@ -966,7 +950,7 @@ public class Shape : MonoBehaviour
     public static int[,] RotationMaxtrix(int[,] Matrix,int countRoll)
     {
 
-        int[,] cloneMatrix = Clone(Matrix);
+        int[,] cloneMatrix = CtrlGamePlay.CloneBoard(Matrix);
         int[,] MatrixRotaion = new int[cloneMatrix.GetLength(0), cloneMatrix.GetLength(1)];
         int count = 4;
         for (int x = 0; x < countRoll; x++)
@@ -981,7 +965,7 @@ public class Shape : MonoBehaviour
                     MatrixRotaion[i, j] = cloneMatrix[j, count];
                 }
             }
-            cloneMatrix = Clone(MatrixRotaion);
+            cloneMatrix = CtrlGamePlay.CloneBoard(MatrixRotaion);
 
 
         }
@@ -1118,9 +1102,243 @@ public class Shape : MonoBehaviour
         }
     }
 
+
+    public void GenerateShape(int[,] shape, TypeShape type)
+    {
+        int r = 0;
+        switch (type)
+        {
+            case TypeShape.crossBar_1:
+                shape = CtrlData.Cube_Cross_1;
+                r = CtrlData.NotRoll;
+                break;
+            case TypeShape.crossBar_2:
+
+                shape = CtrlData.Cube_Cross_2;
+                r = CtrlData.Roll_Cross;
+                break;
+            case TypeShape.crossBar_3:
+
+                shape = CtrlData.Cube_Cross_3;
+                r = CtrlData.Roll_Cross;
+                break;
+            case TypeShape.crossBar_4:
+                shape = CtrlData.Cube_Cross_4;
+                r = CtrlData.Roll_Cross;
+                break;
+            case TypeShape.square:
+                shape = CtrlData.Cube_Quare;
+                r = CtrlData.NotRoll;
+                break;
+            case TypeShape.L_4_0:
+                shape = CtrlData.Cube_L4_0;
+                r = CtrlData.Roll_Cube_L;
+                r = Random.Range(0, CtrlData.Roll_Cube_L);
+                break;
+            case TypeShape.L4_90:
+                shape = CtrlData.Cube_L4_90;
+                r = CtrlData.Roll_Cube_L;
+                break;
+            case TypeShape.L3_0:
+                shape = CtrlData.Cube_L3_0;
+                r = CtrlData.Roll_Cube_L;
+                break;
+            case TypeShape.L3_90:
+                shape = CtrlData.Cube_L3_90;
+                r = Random.Range(0, CtrlData.Roll_Cube_L);
+                break;
+
+            case TypeShape.three_cube:
+                shape = CtrlData.Cube_3;
+                r = CtrlData.Roll_Cube_L;
+                break;
+        }
+    }
+
+   
+    public void Set_Up_Corrs(int roll,TypeShape type)
+    {
+        if(type == TypeShape.crossBar_2)
+        {
+            if (roll == 0) 
+            {
+                Cross_2_Vertical();
+            }
+            else
+            {
+                Cross_2_Horizontal();
+            }
+            return;
+        }
+        if(type == TypeShape.square)
+        {
+            Square();
+            return;
+        }
+        if (type == TypeShape.crossBar_1)
+        {
+
+            Cross_1();
+            return;
+        }
+        if(TypeShape == TypeShape.three_cube) 
+        {
+            RollCube_3(roll);
+            return;
+        }
+        if (TypeShape == TypeShape.L4_90)
+        {
+            SetWith_1(roll);
+            return;
+        }
+        if (TypeShape == TypeShape.L_4_0)
+        {
+            SetWith_2(roll);
+            return;
+        }
+
+        switch (roll)
+        {
+            case 0:
+                switch (type)
+                {
+                   
+
+                    case TypeShape.crossBar_2:
+                        Cross_2_Vertical();
+                        // rotation 90 Cross 2
+                      
+                     
+                        break;
+                    case TypeShape.crossBar_3:
+
+                        Cross_3_Horizontal();
+                        break;
+                    case TypeShape.crossBar_4:
+
+
+                        Cross_4_Horizontal();
+                        break;
+                    case TypeShape.three_cube:
+
+                        
+                        break;
+                }
+
+                break;
+            case 1:
+                switch (type)
+                {
+                   
+                    case TypeShape.crossBar_2:
+                        // rotation 0 Cross 2
+                        Cross_2_Horizontal();
+
+                        break;
+                    case TypeShape.crossBar_3:
+                        Cross_3_Vertical();
+                        break;
+                    case TypeShape.crossBar_4:
+                        Cross_4_Vertical();
+                        break;
+                    case TypeShape.three_cube:
+
+
+                        break;
+                }
+                break;
+            case 2:
+                switch (type) 
+                {
+
+                
+                 
+                }
+
+                break;
+            case 3:
+                switch (type)
+                {
+
+                    case TypeShape.L_4_0:
+
+                        break;
+                    case TypeShape.L4_90:
+
+                        break;
+                    case TypeShape.three_cube:
+
+
+                        break;
+                }
+                break;
+
+
+              
+               
+        }
+    }
+   
+    #region Set_Up_Image
+    public void Cross_2_Horizontal()
+    {
+        Vector3 angle = Vector3.zero;
+        Img_Cube_Cross_2.gameObject.SetActive(true);
+        angle = Img_Cube_Cross_2.transform.rotation.eulerAngles;
+        angle.z = 90;
+        Img_Cube_Cross_2.transform.rotation = Quaternion.Euler(angle);
+    }
+    public void Cross_2_Vertical()
+    {
+
+        Img_Cube_Cross_2.gameObject.SetActive(true);
+        Vector3 angle = Img_Cube_Cross_2.transform.rotation.eulerAngles;
+        angle.z = 0;
+        Img_Cube_Cross_2.transform.rotation = Quaternion.Euler(angle);
+    }
+    public void Cross_3_Horizontal()
+    {
+        Img_Cube_Cross_3_Horizontal.gameObject.SetActive(true);
+        Img_Cube_Cross_3_Vertical.gameObject.SetActive(false);
+    }
+    public void Cross_3_Vertical()
+    {
+        Img_Cube_Cross_3_Horizontal.gameObject.SetActive(false);
+        Img_Cube_Cross_3_Vertical.gameObject.SetActive(true);
+    }
+
+    public void Cross_4_Horizontal()
+    {
+        Img_Cube_Cross_4_Horizontal.gameObject.SetActive(true);
+        Img_Cube_Cross_4_Vertical.gameObject.SetActive(false);
+    }
+
+    public void Cross_4_Vertical()
+    {
+        Img_Cube_Cross_4_Horizontal.gameObject.SetActive(false);
+        Img_Cube_Cross_4_Vertical.gameObject.SetActive(true);
+    }
+
+    public void Cross_1()
+    {
+        Img_Cube_Cross_1.gameObject.SetActive(true);
+    }
+
+    public void Square()
+    {
+        ImgCube_quare.gameObject.SetActive(true);
+    }
+
+    public void RollCube_3(int roll)
+    {
+        Vector3 angle = new Vector3();
+        Img_Cube_3.gameObject.SetActive(true);
+        angle = Img_Cube_3.transform.rotation.eulerAngles;
+        angle.z = (90 * roll);
+        Img_Cube_3.transform.rotation = Quaternion.Euler(angle);
+    }
+    #endregion
     
-
-
     public void GenerateRandom()
     {
         Reset();
