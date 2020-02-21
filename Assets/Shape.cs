@@ -682,7 +682,7 @@ public class Shape : MonoBehaviour
 
             for (int x = 0; x < shape.GetLength(1); x++)
             {
-                Debug.Log(y + " " + x);
+              //  Debug.Log(y + " " + x);
                 if (shape[y, x] != 0)
                 {
 

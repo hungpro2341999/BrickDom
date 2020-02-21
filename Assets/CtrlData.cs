@@ -113,18 +113,18 @@ public class CtrlData : MonoBehaviour
             case 3:
                 type = TypeShape.crossBar_4;
                 break;
-       
-
-            case 5:
+            case 4:
                 type = TypeShape.L_4_0;
+                break;
+            case 5:
+                type = TypeShape.L4_90;
 
                 break;
             case 6:
-                type = TypeShape.L4_90;
-                break;
-            case 4:
                 type = TypeShape.square;
                 break;
+           
+              
             case 7:
                 type = TypeShape.three_cube;
                 break;
