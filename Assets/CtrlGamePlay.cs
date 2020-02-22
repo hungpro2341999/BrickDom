@@ -44,6 +44,7 @@ public class CtrlGamePlay : MonoBehaviour
     public delegate void MoveDownComplete();
     public delegate void StartGame();
     public delegate void CompleteChangeCube();
+    public delegate void GameOver();
     #endregion
     #region Action
     public event ClickDownHander Event_Click_Down;
@@ -51,6 +52,7 @@ public class CtrlGamePlay : MonoBehaviour
     public event MoveDownComplete Event_Completed_Move_Down;
     public event StartGame Event_Start_Game;
     public event MoveDownComplete Event_Completed_Change;
+    public event GameOver Event_Game_Over;
     #endregion
 
     // Simulate 
@@ -59,16 +61,20 @@ public class CtrlGamePlay : MonoBehaviour
     public Text ShapeSelect;
     public Text MoveSelect;
     public Text Error;
+    public Text TextPointInit;
 
 
     //Test
     public int xx;
     public int yy;
+    public int rowDestroy;
+    public int rotaion;
+  
     // Start is called before the first frame update
      
     private void Awake()
     {
-
+        Application.targetFrameRate = 100;
         if (Ins != null)
         {
             Destroy(gameObject);
@@ -88,21 +94,35 @@ public class CtrlGamePlay : MonoBehaviour
         Event_Click_Down += Init_Mouse_Down;
         Event_Click_Up += SetUpMoveDown;
         Event_Completed_Move_Down += SpawnShape;
-        Event_Start_Game += SpawnShape;
+        Event_Start_Game +=SpawnStartGame;
         Event_Start_Game += UnRigidBody;
+        Event_Start_Game += SpawnShape;
         Event_Completed_Change += SetUpMoveDown;
    
 
 
     }
 
+    #region StatusGame
+
+    public void Start_Game()
+    {
+        Event_Start_Game();
+    }
+    public void Over_Game()
+    {
+        Reset_Game();
+    }
+    
+
+    #endregion
     void Start()
     {
       //  Event_Completed_Move_Down();
         Board = new int[Row,Column];
         string s =     Render(Board);
         Debug.Log(s);
-        Event_Start_Game();
+        
         ///
 
         //ActiveRigidBoy(false);
@@ -118,8 +138,8 @@ public class CtrlGamePlay : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-       // RefershBoard();
+        #region
+        // RefershBoard();
         if (Input.GetKeyDown(KeyCode.E))
         {
             SpawnShape();
@@ -132,8 +152,8 @@ public class CtrlGamePlay : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Z))
         {
-            DestroyRow(13);
-            SplitShape(List_Shape[0]);
+            DestroyRow(rowDestroy);
+           
         }
            
         if (ShapeClick != null)
@@ -144,14 +164,16 @@ public class CtrlGamePlay : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.L))
         {
-            Test();
-
+            //Test();
+            GenerateStartGame(3,true);
         }
         if (Input.GetKeyDown(KeyCode.C))
         {
             Debug.Log(Render(List_Shape[0].shape));
         }
 
+
+        #endregion
         if (Input.GetMouseButtonDown(0))
         {
 
@@ -161,6 +183,7 @@ public class CtrlGamePlay : MonoBehaviour
 
 
         }
+
         if (Input.GetMouseButtonUp(0))
         {
 
@@ -183,21 +206,28 @@ public class CtrlGamePlay : MonoBehaviour
             if (IsListShapeMove())
             {
                 RefershBoard();
+                CheckDestroyRow();
                 Event_Completed_Move_Down();
                 Debug.Log("Complete_Move");
-               // ActiveRigidBoy(false);
+                // ActiveRigidBoy(false);
                 
-                 CheckDestroyRow();
+               
               // Reset Staus
             
                 initPos = false;
              
                 // Destroy Row
                 isClick_up = false;
+                SplitShape();
             }
 
         }
-        
+        if (!isClick_up)
+        {
+            Time.timeScale = 4;
+           
+        }
+
         if (isClick_down)
         {
             int Direct = UpdatePoint(Input.mousePosition);
@@ -214,10 +244,11 @@ public class CtrlGamePlay : MonoBehaviour
                 dis = PosMouseInit.x - Camera.main.ScreenToWorldPoint(Input.mousePosition).x;
                 ShapeClick.MoveTo(dis);
                 //  Shape.transform.position = ScreenToWord(Input.mousePosition);
-                Debug.Log("Move");
+             //   Debug.Log("Move");
             }  
             else
             {
+
 
                 ShapeSelect.text = "NULL";
             }
@@ -229,17 +260,28 @@ public class CtrlGamePlay : MonoBehaviour
           
             if (ShapeClick != null)
             {
-               
-                ShapeClick.Snap();
-                ShapeClick.ResetStatus();
+               Vector2 point =  ShapeClick.Snap();
+
+             
+              //if (ShapeClick.isShapeMove(point))
+              //  {
+                    ShapeClick.ResetStatus();
+
+                ShapeClick.isShapeMove(point);
+             
+                //}
+                if (ShapeClick.isShapeMove(point))
+                {
+                    ActiveRigidBoy(true);
+                }
                 ShapeClick = null;
-              //  Event_Completed_Change();
-           
-                
+                //  Event_Completed_Change();
+
+
 
             }
           
-                ActiveRigidBoy(true);
+            
            
                
 
@@ -448,7 +490,11 @@ public class CtrlGamePlay : MonoBehaviour
     public void SpawnShape()
     {
 
-        // GenerateStartGame(Random.Range(1, 4), true);
+        GenerateStartGame(Random.Range(1, 4),false);
+    }
+    public void SpawnStartGame()
+    {
+        GenerateStartGame(Random.Range(1, 4), true);
     }
 
     public static Vector3 RandomPosShape()
@@ -587,6 +633,7 @@ public class CtrlGamePlay : MonoBehaviour
                 }
             }
         }
+        SplitShape();
 
         RefershBoard();
 
@@ -689,6 +736,19 @@ public class CtrlGamePlay : MonoBehaviour
         pos.x = CtrlGamePlay.Ins.PosInit.x + x * CtrlGamePlay.Ins.offsetX;
         pos.y = CtrlGamePlay.Ins.PosInit.y - y * CtrlGamePlay.Ins.offsetY;
         return pos;
+    }
+
+    public  Vector2 RandomPosStart()
+    {
+      
+      
+       
+        int y = Random.Range(Row-Random.Range(0,4), Row);
+        int x = Random.Range(0, CtrlGamePlay.Ins.Column);
+    
+     
+        return new Vector3(CtrlGamePlay.Ins.initPoint.x + x * CtrlGamePlay.Ins.offsetX, CtrlGamePlay.Ins.initPoint.y-y* CtrlGamePlay.Ins.offsetX);
+
     }
    
     public bool DestroyAtRow(out int[] row)
@@ -846,9 +906,9 @@ public class CtrlGamePlay : MonoBehaviour
     }
     public void SplitShape(Shape shape)
     {
-        Debug.Log("INIT_1 : \n " + Render(shape.shape));
+       // Debug.Log("INIT_1 : \n " + Render(shape.shape));
         shape.ReflectShape();
-        Debug.Log("REFLECT : \n "+ Render(shape.shape));
+     //   Debug.Log("REFLECT : \n "+ Render(shape.shape));
         int colum = shape.shape.GetLength(1);
         List<Shape> splitShape = new List<Shape>();
         List<int> LenghtRow = new List<int>();
@@ -1228,7 +1288,12 @@ public class CtrlGamePlay : MonoBehaviour
     #region RelizeShape
     public TypeShape MatrixToType(int[,] typeShape)
     {
-       
+        if (CountInCube(typeShape)==1)
+        {
+
+            return TypeShape.crossBar_1;
+        }
+
         for (int i = 0; i < CtrlData.ShapeType.Count; i++)
         {
             if (isTypeOf(CtrlData.GetShapeType(i),Shape.Clone(typeShape)))
@@ -1244,7 +1309,7 @@ public class CtrlGamePlay : MonoBehaviour
     {
         int[,] CloneShape = standardizedMatrix(shape);
         CloneShape = Shape.SplitMatrix(CloneShape);
-        Debug.Log("Clone Shape : " + Render(shape));
+     //   Debug.Log("Clone Shape : " + Render(shape));
         string s1 = Render(CloneShape);
         int[,] matrix = null;
         int roll = 0;
@@ -1557,7 +1622,7 @@ public class CtrlGamePlay : MonoBehaviour
         {
             cont++;
             isCorrect = true;
-            Debug.Log("Spawn Again ");
+       //     Debug.Log("Spawn Again ");
         
             
             for(int i = 0; i < index; i++)
@@ -1567,16 +1632,22 @@ public class CtrlGamePlay : MonoBehaviour
 
                 if (!isCorrect)
                     break;
-                    Debug.Log("Check : " + "\n" + Render(CloneBoard));
-                    Vector3 pos = CtrlGamePlay.RandomPosShape();
+                //      Debug.Log("Check : " + "\n" + Render(CloneBoard));
+                    Vector3 pos;
+               
                     TypeShape type = Shape.RandomShape();
                     int[,] shape = null;
                     int roll = 0;
-                    if (isSpawnCorrect(CloneBoard,type, pos,out shape,out roll))
+
+                if (Start)
+                {
+
+                    pos = CtrlGamePlay.Ins.RandomPosStart();
+                    if (isSpawnCorrect_For_Start_Game(CloneBoard, type, pos, out shape, out roll))
                     {
-                        InforShape infor = new InforShape(type, pos, shape,roll);
-                        Debug.Log("Spawn SS : " + i);
-                        Debug.Log("Board SS : " + "\n" + Render(CloneBoard));
+                        InforShape infor = new InforShape(type, pos, shape, roll);
+                        //    Debug.Log("Spawn SS : " + i);
+                        //     Debug.Log("Board SS : " + "\n" + Render(CloneBoard));
                         InforShape.Add(infor);
                     }
                     else
@@ -1585,17 +1656,44 @@ public class CtrlGamePlay : MonoBehaviour
                         CloneBoard = CtrlGamePlay.CloneBoard(Board);
                         isCorrect = false;
                     }
-                
+
+                }
+                else
+                {
+                    
+                    pos = CtrlGamePlay.RandomPosShape();
+                    if (isSpawnCorrect(CloneBoard, type, pos, out shape, out roll))
+                    {
+                        InforShape infor = new InforShape(type, pos, shape, roll);
+                        //    Debug.Log("Spawn SS : " + i);
+                        //     Debug.Log("Board SS : " + "\n" + Render(CloneBoard));
+                        InforShape.Add(infor);
+                    }
+                    else
+                    {
+                        InforShape.Clear();
+                        CloneBoard = CtrlGamePlay.CloneBoard(Board);
+                        isCorrect = false;
+                    }
+
+                }
+
 
             }
 
-            
+            if (cont > 10000)
+            {
+                Debug.Log("Not Spawn");
+                return;
+            }
         }
-        Debug.Log("SPAWWN :" +InforShape.Count);
-        SpawnShape(InforShape);
+        //   Debug.Log("SPAWWN :" +InforShape.Count);
+       
+        SpawnShape(InforShape,Start);
     }
-    public void SpawnShape(List<InforShape> ListInfor)
+    public void SpawnShape(List<InforShape> ListInfor,bool isActive)
     {
+
         for(int i = 0; i < ListInfor.Count; i++)
         {
             var a = Instantiate(PrebShape, ListInfor[i].pos, Quaternion.identity, null);
@@ -1607,7 +1705,12 @@ public class CtrlGamePlay : MonoBehaviour
          //   a.GetComponent<Shape>().GetComponent<Rigidbody2D>().mass = (100000 - idShape*2);
             a.name = "Shape : " + idShape;
             List_Shape.Add(a.GetComponent<Shape>());
-        
+            if (isActive)
+            {
+                a.gameObject.layer = 8;
+
+                a.GetComponent<Shape>().Body.isKinematic = false;
+            }
           
         }
      
@@ -1626,14 +1729,16 @@ public class CtrlGamePlay : MonoBehaviour
     public void Test()
     {
 
-        int i = 2 ;
-        int[,] shape = Shape.RotationMaxtrix(CtrlData.Cube_L4_0, i);
+        int i = rotaion ;
+        int[,] shape = Shape.RotationMaxtrix(CtrlData.Cube_Cross_2, i);
         shape = Shape.SplitMatrix(shape);
-        InforShape infor = new InforShape(TypeShape.L_4_0, CtrlGamePlay.RandomPosShape(),shape, i);
+        InforShape infor = new InforShape(TypeShape.crossBar_2, CtrlGamePlay.RandomPosShape(),shape, i);
         List<InforShape> ListInfor = new List<InforShape>();
         ListInfor.Add(infor);
-        SpawnShape(ListInfor);
+      //  SpawnShape(ListInfor);
     }
+
+
     
     public bool isSpawnCorrect(int[,] Board,TypeShape type,Vector3 pos,out int[,] shapeCorrect,out int Roll)
     {
@@ -1642,7 +1747,7 @@ public class CtrlGamePlay : MonoBehaviour
         Roll = indexRoll;
         shape = Shape.SplitMatrix(shape);
       //  Debug.Log("Board :::: ");
-        Debug.Log(Render(shape));
+    //    Debug.Log(Render(shape));
        for(int i = 0; i < shape.GetLength(0); i++)
         {
             for(int j = 0; j < shape.GetLength(1); j++)
@@ -1661,7 +1766,7 @@ public class CtrlGamePlay : MonoBehaviour
                     else
                     {
                         shapeCorrect = null;
-                        Debug.Log("Spawn False : " + point.x +" :: "+point.y);
+                 //       Debug.Log("Spawn False : " + point.x +" :: "+point.y);
                         return false;
                     }
                 }
@@ -1675,7 +1780,74 @@ public class CtrlGamePlay : MonoBehaviour
                    
              
     }
-     public static Vector2 PositonToPointMatrix(float PosX, float PosY)
+  
+    public bool isSpawnCorrect_For_Start_Game(int[,] Board, TypeShape type, Vector3 pos, out int[,] shapeCorrect, out int Roll)
+    {
+        int indexRoll = 0;
+        int[,] shape = SimulateRoll(0, type, true, out indexRoll);
+        Roll = indexRoll;
+        shape = Shape.SplitMatrix(shape);
+        //  Debug.Log("Board :::: ");
+        //    Debug.Log(Render(shape));
+        int Ground = 0;
+        for (int i = 0; i < shape.GetLength(0); i++)
+        {
+            for (int j = 0; j < shape.GetLength(1); j++)
+            {
+                if (shape[i, j] != 0)
+                {
+                    Vector3 posCurr = new Vector3(pos.x + j * CtrlGamePlay.Ins.offsetX, pos.y - i * CtrlGamePlay.Ins.offsetY);
+
+                    Vector2 point = CtrlGamePlay.PositonToPointMatrix(posCurr.x, posCurr.y);
+                    //   Debug.Log(point);
+                    if (IsPushShapeCorrect(Board, (int)point.x, (int)point.y))
+                    {
+                        Board[(int)point.x, (int)point.y] = 1;
+                        if(isGround((int)point.x))
+                        {
+                            Ground++;
+                        }
+
+                    }
+                    else
+                    {
+                        shapeCorrect = null;
+                        //       Debug.Log("Spawn False : " + point.x +" :: "+point.y);
+                        return false;
+                    }
+                }
+
+
+            }
+        }
+        if (Ground==0)
+        {
+            shapeCorrect = null;
+            return false;
+        }
+        else
+        {
+            shapeCorrect = shape;
+            return true;
+        }
+      
+       
+
+    }
+    public bool isGround(int row)
+    {
+      if(row == (CtrlGamePlay.Ins.Row - 1))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+     
+    }
+
+    public static Vector2 PositonToPointMatrix(float PosX, float PosY)
     {
 
        
@@ -1698,8 +1870,8 @@ public class CtrlGamePlay : MonoBehaviour
         }
         return false;
     }
-    
-     
+  
+
     public static int RollShape(TypeShape TypeShape,int[,] matrix)
     {
         int roll = 0;
@@ -1836,7 +2008,7 @@ public class CtrlGamePlay : MonoBehaviour
                 break;
 
         }
-        Debug.Log("Init : " + Render(shape));
+     //   Debug.Log("Init : " + Render(shape));
         if (isRandom)
         {
            // Debug.Log("Roll  : " + Render(Shape.RotationMaxtrix(shape, roll)));
@@ -1910,7 +2082,7 @@ public class CtrlGamePlay : MonoBehaviour
         indexroll = 0;
         if (isRandom)
         {
-            Debug.Log("isRandom");
+       //     Debug.Log("isRandom");
             indexroll = r;
             shape = Shape.RotationMaxtrix(shape, r);
         
@@ -1922,7 +2094,7 @@ public class CtrlGamePlay : MonoBehaviour
             shape = Shape.RotationMaxtrix(shape, roll);
          
         }
-        Debug.Log("Render : " + Render(shape));
+     //   Debug.Log("Render : " + Render(shape));
         return shape;
 
 
@@ -1945,6 +2117,16 @@ public class CtrlGamePlay : MonoBehaviour
         return clone;
 
     }
+
+    public void Reset_Game()
+    {
+        for(int i = 0; i < List_Shape.Count; i++)
+        {
+            List_Shape[i].DestroyAllCubeAndShape();
+        }
+
+    }
+   
     public class InforShape
     {
         public TypeShape type;

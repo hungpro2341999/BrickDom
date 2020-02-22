@@ -28,21 +28,14 @@ public class TestMethod : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.D))
         {
-            int[,] type10 = new int[4, 4]
+            int[,] type10 = new int[1, 1]
             {
-            {1,1,1,0},
-            {0,0,0,0},
-           {0,0,0,0},
-           {0,0,0,0},
+              {1},
             };
-         
+
             //  string ss = Shape.Render(Shape.RotationMaxtrix(type10, i));
-           
-            string s = Shape.Render(type10);
-            Debug.Log("Matrix : " + s);
-        
-                string ss = CtrlGamePlay.Render(CtrlGamePlay.SimulateRoll(1,TypeShape.crossBar_3,false));
-                Debug.Log("SS  " + ss);
+
+           type =   CtrlGamePlay.Ins.MatrixToType(type10);
           
 
             //  type =  CtrlGamePlay.Ins.MatrixToType(type10);

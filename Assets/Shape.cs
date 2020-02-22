@@ -16,6 +16,8 @@ public class Shape : MonoBehaviour
     public SpriteRenderer Img_Cube_Cross_4_Vertical;
     public SpriteRenderer Img_Cube_3;
     public SpriteRenderer ImgCube_quare;
+    public SpriteRenderer ImgCube_L4_0;
+    public SpriteRenderer ImgCube_L4_90;
     public SpriteRenderer ImgCube_L3_0;
     public SpriteRenderer ImgCube_L3_90;
     public Color ColorShape;
@@ -33,6 +35,7 @@ public class Shape : MonoBehaviour
     bool initPos = false;
     public Rigidbody2D Body;
     public int BackTo = 0;
+    public Vector2 PointInitCheck;
 
 
     #region Move
@@ -271,35 +274,64 @@ public class Shape : MonoBehaviour
         Img_Cube_Cross_4_Vertical.gameObject.SetActive(false);
         Img_Cube_3.gameObject.SetActive(false);
         ImgCube_quare.gameObject.SetActive(false);
+        ImgCube_L4_0.gameObject.SetActive(false);
+        ImgCube_L4_90.gameObject.SetActive(false);
         ImgCube_L3_0.gameObject.SetActive(false);
         ImgCube_L3_90.gameObject.SetActive(false);
     }
+    
+    
 
     public void GenerateShapeByType()
     {
 
     }
    
-    
-
-   
-    public void SetWith_1(int i)
+    public void SetWith_L3_0(int i)
     {
         switch (i)
         {
             case 0:
 
                 ImgCube_L3_90.gameObject.SetActive(true);
-                ImgCube_L3_90.flipY = true;
-                ImgCube_L3_90.flipX = true;
+               
                 break;
             case 1:
                 ImgCube_L3_0.gameObject.SetActive(true);
-               
+                ImgCube_L3_0.flipY = true;
                 break;
             case 2:
                 ImgCube_L3_90.gameObject.SetActive(true);
-           
+                ImgCube_L3_90.flipY = true;
+                ImgCube_L3_90.flipX = true;
+                break;
+            case 3:
+                ImgCube_L3_0.gameObject.SetActive(true);
+               
+                ImgCube_L3_0.flipX = true;
+                break;
+
+        }
+    }
+
+    public void SetWith_L3_90(int i)
+    {
+        switch (i)
+        {
+            case 0:
+
+                ImgCube_L3_90.gameObject.SetActive(true);
+                ImgCube_L3_90.flipX = true;
+
+                break;
+            case 1:
+                ImgCube_L3_0.gameObject.SetActive(true);
+             
+                break;
+            case 2:
+                ImgCube_L3_90.gameObject.SetActive(true);
+                ImgCube_L3_90.flipY = true;
+             
                 break;
             case 3:
                 ImgCube_L3_0.gameObject.SetActive(true);
@@ -309,26 +341,55 @@ public class Shape : MonoBehaviour
 
         }
     }
+
+
+
+    public void SetWith_1(int i)
+    {
+        switch (i)
+        {
+            case 0:
+
+                ImgCube_L4_90.gameObject.SetActive(true);
+                ImgCube_L4_90.flipY = true;
+                ImgCube_L4_90.flipX = true;
+                break;
+            case 1:
+                ImgCube_L4_0.gameObject.SetActive(true);
+               
+                break;
+            case 2:
+                ImgCube_L4_90.gameObject.SetActive(true);
+           
+                break;
+            case 3:
+                ImgCube_L4_0.gameObject.SetActive(true);
+                ImgCube_L4_0.flipY = true;
+                ImgCube_L4_0.flipX = true;
+                break;
+
+        }
+    }
     public void SetWith_2(int i)
     {
         switch (i)
         {
             case 0:
-                ImgCube_L3_90.gameObject.SetActive(true);
+                ImgCube_L4_90.gameObject.SetActive(true);
              
-                ImgCube_L3_90.flipY = true;
+                ImgCube_L4_90.flipY = true;
                 break;
             case 1:
-                ImgCube_L3_0.gameObject.SetActive(true);
-                ImgCube_L3_0.flipY = true;
+                ImgCube_L4_0.gameObject.SetActive(true);
+                ImgCube_L4_0.flipY = true;
                 break;
             case 2:
-                ImgCube_L3_90.gameObject.SetActive(true);
-                ImgCube_L3_90.flipX = true;
+                ImgCube_L4_90.gameObject.SetActive(true);
+                ImgCube_L4_90.flipX = true;
                 break;
             case 3:
-                ImgCube_L3_0.gameObject.SetActive(true);
-                ImgCube_L3_0.flipX = true;
+                ImgCube_L4_0.gameObject.SetActive(true);
+                ImgCube_L4_0.flipX = true;
              
                 break;
 
@@ -674,7 +735,7 @@ public class Shape : MonoBehaviour
     }
     public void GenerateShape()
     {
-        Debug.Log("SHAPGENERATE ");
+    //    Debug.Log("SHAPGENERATE ");
         Debug.Log(Render(shape));
       
         for (int y = 0; y < shape.GetLength(0); y++)
@@ -782,14 +843,22 @@ public class Shape : MonoBehaviour
         isClick = true;
         m_isMove = true;
         posInit = transform.position;
+        
+        PointInitCheck = CtrlGamePlay.PositonToMatrix(transform.position.x, transform.position.y);
+     //   CtrlGamePlay.Ins.TextPointInit.text = "Init : " + PointInitCheck.x + "  " + PointInitCheck.y;
+
+      
+
+
     }
     public void ResetStatus()
     {
         isClick = false;
         m_isMove = false;
         posInit = Vector3.zero;
+        PointInitCheck = new Vector2(-1, -1);
     }
-    public void Snap()
+    public Vector2 Snap()
     {
         //for(int i = 0; i < ListShape.Count; i++)
         //{
@@ -803,9 +872,9 @@ public class Shape : MonoBehaviour
         Vector2 point =  CtrlGamePlay.PositonToMatrixRound(pos.x, pos.y);
       //  Debug.Log("POS SNAP "+point.ToString());
         transform.position = new Vector3(CtrlGamePlay.Ins.initPoint.x + point.x * CtrlGamePlay.Ins.offsetX,pos.y);
-      //  Debug.Log("POSITON SNAP : "+ CtrlGamePlay.MatrixToPoint((int)point.x, (int)point.y));
-      //  Debug.Log("POSITON SNAP : "+ CtrlGamePlay.MatrixToPoint((int)point.x, (int)point.y));
-
+        //  Debug.Log("POSITON SNAP : "+ CtrlGamePlay.MatrixToPoint((int)point.x, (int)point.y));
+        //  Debug.Log("POSITON SNAP : "+ CtrlGamePlay.MatrixToPoint((int)point.x, (int)point.y));
+        return point;
 
 
     }
@@ -872,10 +941,10 @@ public class Shape : MonoBehaviour
     {
         string s = "";
 
-        Debug.Log(Render(shape));
+     //   Debug.Log(Render(shape));
         ResetMatrix(shape);
       //  shape = extendMatrix(shape);
-        Debug.Log(Render(shape));
+   //     Debug.Log(Render(shape));
       //   Debug.Log(shape.GetLength(0) + "  " + shape.GetLength(1));
         for (int z = 0; z < ListShape.Count; z++)
         {
@@ -902,11 +971,11 @@ public class Shape : MonoBehaviour
                 }
             }
         }
-        Debug.Log("ReflectShape");
-        Debug.Log(s);
+       // Debug.Log("ReflectShape");
+     //   Debug.Log(s);
         //    shape = SplitMatrix(shape);
-        Debug.Log("Completed ReflectShape");
-        Debug.Log(Render(shape));
+        //Debug.Log("Completed ReflectShape");
+        //Debug.Log(Render(shape));
       
     
            
@@ -1196,6 +1265,15 @@ public class Shape : MonoBehaviour
             SetWith_2(roll);
             return;
         }
+        if(TypeShape == TypeShape.L3_0)
+        {
+            SetWith_L3_0(roll);
+        }
+
+        if (TypeShape == TypeShape.L3_90)
+        {
+            SetWith_L3_90(roll);
+        }
 
         switch (roll)
         {
@@ -1337,6 +1415,9 @@ public class Shape : MonoBehaviour
         angle.z = (90 * roll);
         Img_Cube_3.transform.rotation = Quaternion.Euler(angle);
     }
+  
+
+
     #endregion
     
     public void GenerateRandom()
@@ -1375,12 +1456,12 @@ public class Shape : MonoBehaviour
                     { 0, 1, 0, 0} ,
          };
                 }
-                ImgCube_L3_0.gameObject.SetActive(false);
-                ImgCube_L3_90.gameObject.SetActive(false);
-                ImgCube_L3_0.flipX = false;
-                ImgCube_L3_0.flipY = false;
-                ImgCube_L3_90.flipX = false;
-                ImgCube_L3_90.flipY = false;
+                ImgCube_L4_0.gameObject.SetActive(false);
+                ImgCube_L4_90.gameObject.SetActive(false);
+                ImgCube_L4_0.flipX = false;
+                ImgCube_L4_0.flipY = false;
+                ImgCube_L4_90.flipX = false;
+                ImgCube_L4_90.flipY = false;
                 backup = Clone(shape);
 
             }
@@ -1529,6 +1610,20 @@ public class Shape : MonoBehaviour
         }
         Snap();
 
+    }
+    public bool isShapeMove(Vector2 point)
+    {
+        Vector2 pos = transform.position;
+     
+        //int x = Mathf.FloorToInt((pos.x - CtrlGamePlay.Ins.initPoint.x) / CtrlGamePlay.Ins.offsetX);
+        //int y = Mathf.FloorToInt((CtrlGamePlay.Ins.initPoint.y - pos.y) / CtrlGamePlay.Ins.offsetY);
+      
+        if (point.x== PointInitCheck.x && point.y == PointInitCheck.y)
+        {
+            return false;
+        }
+        
+        return true;
     }
 
 
