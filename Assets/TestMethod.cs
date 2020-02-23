@@ -9,11 +9,12 @@ public class TestMethod : MonoBehaviour
     public Vector2 point;
     public int row;
     public int column;
-    public bool isCorrect = false; 
+    public bool isCorrect = false;
+    public SpriteRenderer imag;
     // Start is called before the first frame update
     void Start()
     {
-        
+       
     }
 
     // Update is called once per frame

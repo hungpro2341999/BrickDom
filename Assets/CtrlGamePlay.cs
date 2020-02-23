@@ -152,8 +152,10 @@ public class CtrlGamePlay : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Z))
         {
-            DestroyRow(rowDestroy);
-           
+            CheckDestroyRow();
+            
+        
+
         }
            
         if (ShapeClick != null)
@@ -164,12 +166,12 @@ public class CtrlGamePlay : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.L))
         {
-            //Test();
-            GenerateStartGame(3,true);
+            Test();
+           
         }
         if (Input.GetKeyDown(KeyCode.C))
         {
-            Debug.Log(Render(List_Shape[0].shape));
+           
         }
 
 
@@ -205,8 +207,9 @@ public class CtrlGamePlay : MonoBehaviour
             Time.timeScale = 8;
             if (IsListShapeMove())
             {
+                Debug.Log("Complete Move");
                 RefershBoard();
-                CheckDestroyRow();
+              
                 Event_Completed_Move_Down();
                 Debug.Log("Complete_Move");
                 // ActiveRigidBoy(false);
@@ -218,6 +221,8 @@ public class CtrlGamePlay : MonoBehaviour
              
                 // Destroy Row
                 isClick_up = false;
+                CheckDestroyRow();
+                SplitShape();
                 SplitShape();
             }
 
@@ -342,8 +347,8 @@ public class CtrlGamePlay : MonoBehaviour
     {
         for (int i = 0; i < List_Shape.Count; i++)
         {
-           // List_Shape[i].Body.velocity = new Vector3(0, -10, 0);
-            if (isDowmShape(List_Shape[i])!=0)
+            // List_Shape[i].Body.velocity = new Vector3(0, -10, 0);
+            if (isDowmShape(List_Shape[i]) != 0 && Vector3.Magnitude(List_Shape[i].Body.velocity) < 0.1f)
             {
                 return false;
             }
@@ -402,6 +407,9 @@ public class CtrlGamePlay : MonoBehaviour
         {
             Debug.Log(" NOTTHING ");
         }
+        ReflectShape();
+        SplitShape();
+        SplitShape();
     }
 
     public static Vector3 ScreenToWord(Vector2 posScreen)
@@ -490,11 +498,11 @@ public class CtrlGamePlay : MonoBehaviour
     public void SpawnShape()
     {
 
-        GenerateStartGame(Random.Range(1, 4),false);
+        //GenerateStartGame(Random.Range(1, 4),false);
     }
     public void SpawnStartGame()
     {
-        GenerateStartGame(Random.Range(1, 4), true);
+        //GenerateStartGame(Random.Range(1, 4), true);
     }
 
     public static Vector3 RandomPosShape()
@@ -633,9 +641,9 @@ public class CtrlGamePlay : MonoBehaviour
                 }
             }
         }
-        SplitShape();
+       
 
-        RefershBoard();
+      
 
 
     }
@@ -906,6 +914,7 @@ public class CtrlGamePlay : MonoBehaviour
     }
     public void SplitShape(Shape shape)
     {
+        int Color = shape.IDColor;
        // Debug.Log("INIT_1 : \n " + Render(shape.shape));
         shape.ReflectShape();
      //   Debug.Log("REFLECT : \n "+ Render(shape.shape));
@@ -1018,7 +1027,7 @@ public class CtrlGamePlay : MonoBehaviour
 
                     s +="\n" +  Render(ListToMatrix(shape_Split)) ;
                     Debug.Log(s);
-                    SpawnShape(ListToMatrix(shape_Split), pos);
+                    SpawnShape(ListToMatrix(shape_Split), pos,Color);
                     //if (i == GrounpRow.Count - 1)
                     //{
                     //    if (GrounpRow[i] != -1 && GrounpRow[indexSplit] != -1)
@@ -1117,8 +1126,9 @@ public class CtrlGamePlay : MonoBehaviour
     }
 
 
-    public void  SpawnShape(int[,] Type,Vector2 pos)
+    public void  SpawnShape(int[,] Type,Vector2 pos,int color)
     {
+
         int back = BackTo(Type);
         pos = new Vector2(pos.x += back * offsetX, pos.y);
         TypeShape type = CtrlGamePlay.Ins.MatrixToType(Type);
@@ -1126,7 +1136,7 @@ public class CtrlGamePlay : MonoBehaviour
        Type =  Shape.SplitMatrix(CtrlGamePlay.standardizedMatrix(Type));
         Debug.Log("INFOR SHAPE SPLIT : " + back + " :: " + type.ToString() + " :: " + roll);
 
-        InforShape infor = new InforShape(CtrlGamePlay.Ins.MatrixToType(Type), pos, Type, roll);
+        InforShape infor = new InforShape(CtrlGamePlay.Ins.MatrixToType(Type), pos, Type, roll,color);
 
         SpawnShape(infor);
    
@@ -1645,7 +1655,8 @@ public class CtrlGamePlay : MonoBehaviour
                     pos = CtrlGamePlay.Ins.RandomPosStart();
                     if (isSpawnCorrect_For_Start_Game(CloneBoard, type, pos, out shape, out roll))
                     {
-                        InforShape infor = new InforShape(type, pos, shape, roll);
+                        int color  = CtrlData.RandomColor(type, roll);
+                        InforShape infor = new InforShape(type, pos, shape, roll,color);
                         //    Debug.Log("Spawn SS : " + i);
                         //     Debug.Log("Board SS : " + "\n" + Render(CloneBoard));
                         InforShape.Add(infor);
@@ -1664,7 +1675,8 @@ public class CtrlGamePlay : MonoBehaviour
                     pos = CtrlGamePlay.RandomPosShape();
                     if (isSpawnCorrect(CloneBoard, type, pos, out shape, out roll))
                     {
-                        InforShape infor = new InforShape(type, pos, shape, roll);
+                        int color = CtrlData.RandomColor(type, roll);
+                        InforShape infor = new InforShape(type, pos, shape, roll,color);
                         //    Debug.Log("Spawn SS : " + i);
                         //     Debug.Log("Board SS : " + "\n" + Render(CloneBoard));
                         InforShape.Add(infor);
@@ -1689,18 +1701,22 @@ public class CtrlGamePlay : MonoBehaviour
         }
         //   Debug.Log("SPAWWN :" +InforShape.Count);
        
-        SpawnShape(InforShape,Start);
+     //   SpawnShape(InforShape,Start,0);
     }
-    public void SpawnShape(List<InforShape> ListInfor,bool isActive)
+    public void SpawnShape(List<InforShape> ListInfor,bool isActive,int Color)
     {
 
         for(int i = 0; i < ListInfor.Count; i++)
         {
+
+
             var a = Instantiate(PrebShape, ListInfor[i].pos, Quaternion.identity, null);
 
             a.GetComponent<Shape>().SetTypeShape(ListInfor[i].type, ListInfor[i].shape);
           
-            a.GetComponent<Shape>().Set_Up_Corrs(ListInfor[i].roll, ListInfor[i].type);
+            a.GetComponent<Shape>().Set_Up_Corrs(ListInfor[i].roll, ListInfor[i].type,Color);
+
+
             idShape++;
          //   a.GetComponent<Shape>().GetComponent<Rigidbody2D>().mass = (100000 - idShape*2);
             a.name = "Shape : " + idShape;
@@ -1719,7 +1735,7 @@ public class CtrlGamePlay : MonoBehaviour
     {
         var a = Instantiate(PrebShape, ListInfor.pos, Quaternion.identity, null);
         a.GetComponent<Shape>().SetTypeShape(ListInfor.type, ListInfor.shape);
-        a.GetComponent<Shape>().Set_Up_Corrs(ListInfor.roll, ListInfor.type);
+        a.GetComponent<Shape>().Set_Up_Corrs(ListInfor.roll, ListInfor.type,ListInfor.color);
         idShape++;
         a.name = "Shape : " + idShape;
         List_Shape.Add(a.GetComponent<Shape>());
@@ -1729,13 +1745,15 @@ public class CtrlGamePlay : MonoBehaviour
     public void Test()
     {
 
-        int i = rotaion ;
-        int[,] shape = Shape.RotationMaxtrix(CtrlData.Cube_Cross_2, i);
+        int i = Random.Range(0,2);
+        int[,] shape = Shape.RotationMaxtrix(CtrlData.Cube_Cross_3, i);
         shape = Shape.SplitMatrix(shape);
-        InforShape infor = new InforShape(TypeShape.crossBar_2, CtrlGamePlay.RandomPosShape(),shape, i);
+        int color = CtrlData.RandomColor(TypeShape.crossBar_2, i);
+        InforShape infor = new InforShape(TypeShape.crossBar_2, CtrlGamePlay.RandomPosShape(),shape, i,color);
         List<InforShape> ListInfor = new List<InforShape>();
         ListInfor.Add(infor);
-      //  SpawnShape(ListInfor);
+      
+        SpawnShape(ListInfor, true,color);
     }
 
 
@@ -2133,12 +2151,14 @@ public class CtrlGamePlay : MonoBehaviour
         public Vector3 pos;
         public int[,] shape;
         public int roll;
-       public InforShape(TypeShape type, Vector3 pos, int[,] shape,int roll)
+        public int color;
+       public InforShape(TypeShape type, Vector3 pos, int[,] shape,int roll,int color)
         {
             this.roll = roll;
             this.type = type;
             this.pos = pos;
             this.shape = shape;
+            this.color = color;
         }
     }
 

@@ -20,6 +20,17 @@ public class DataGame : ScriptableObject
     {
 
     }
+    public Sprite[] LoadShape(string s)
+    {
+        foreach(TypeShapeColor type in TypeShape)
+        {
+            if(type.name == s)
+            {
+                return type.Type;
+            }
+        }
+        return null;
+    }
    
         
 }
