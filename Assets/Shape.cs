@@ -21,7 +21,7 @@ public class Shape : MonoBehaviour
     public SpriteRenderer Img_Cube_Cross_3_Vertical;
     public SpriteRenderer Img_Cube_Cross_4_Horizontal;
     public SpriteRenderer Img_Cube_Cross_4_Vertical;
-  
+   
     public SpriteRenderer ImgCube_quare;
     public SpriteRenderer ImgCube_L2_0;
     public SpriteRenderer ImgCube_L2_90;
@@ -29,6 +29,7 @@ public class Shape : MonoBehaviour
     public SpriteRenderer ImgCube_L4_90;
     public SpriteRenderer ImgCube_L3_0;
     public SpriteRenderer ImgCube_L3_90;
+    public SpriteRenderer SpriteUse;
     public Color ColorShape;
     public int idShape;
     public int roll = 0;
@@ -46,6 +47,8 @@ public class Shape : MonoBehaviour
     public int BackTo = 0;
     public Vector2 PointInitCheck;
     public int IDColor = 0;
+    public bool isCubeStart = false;
+    public GameObject SimulateColumn;
 
     #region Move
 
@@ -159,34 +162,7 @@ public class Shape : MonoBehaviour
 
     }
    
-    public void SetWith_L3_0(int i)
-    {
-        switch (i)
-        {
-            case 0:
-
-                ImgCube_L3_90.gameObject.SetActive(true);
-               
-                break;
-            case 1:
-                ImgCube_L3_0.gameObject.SetActive(true);
-                ImgCube_L3_0.flipY = true;
-                break;
-            case 2:
-                ImgCube_L3_90.gameObject.SetActive(true);
-                ImgCube_L3_90.flipY = true;
-                ImgCube_L3_90.flipX = true;
-                break;
-            case 3:
-                ImgCube_L3_0.gameObject.SetActive(true);
-               
-                ImgCube_L3_0.flipX = true;
-                break;
-
-        }
-    }
-
-    public void SetWith_L3_90(int i)
+    public void SetWith_L3_0(int i,int color)
     {
         switch (i)
         {
@@ -194,21 +170,59 @@ public class Shape : MonoBehaviour
 
                 ImgCube_L3_90.gameObject.SetActive(true);
                 ImgCube_L3_90.flipX = true;
+                ImgCube_L3_90.sprite = CtrlData.Ins.DataGame.LoadShape("L3_270")[color];
+                SpriteUse = ImgCube_L3_90;
+                break;
+            case 1:
+                ImgCube_L3_0.gameObject.SetActive(true);
+                SpriteUse = ImgCube_L3_0;
+                ImgCube_L3_0.sprite = CtrlData.Ins.DataGame.LoadShape("L3_180")[color];
+                break;
+            case 2:
+                ImgCube_L3_90.gameObject.SetActive(true);
+                SpriteUse = ImgCube_L3_90;
+                ImgCube_L3_90.flipX = true;
+                ImgCube_L3_90.sprite = CtrlData.Ins.DataGame.LoadShape("L3_90")[color];
+                break;
+            case 3:
+                ImgCube_L3_0.gameObject.SetActive(true);
+               
+                ImgCube_L3_0.flipX = true;
+                SpriteUse = ImgCube_L3_0;
+                ImgCube_L3_0.sprite = CtrlData.Ins.DataGame.LoadShape("L3_0")[color];
+                break;
+
+        }
+    }
+
+    public void SetWith_L3_90(int i,int color)
+    {
+        switch (i)
+        {
+            case 0:
+
+                ImgCube_L3_90.gameObject.SetActive(true);
+                SpriteUse = ImgCube_L3_90;
+                ImgCube_L3_90.sprite = CtrlData.Ins.DataGame.LoadShape("L3_270")[color];
 
                 break;
             case 1:
                 ImgCube_L3_0.gameObject.SetActive(true);
-             
+                SpriteUse = ImgCube_L3_0;
+                ImgCube_L3_0.sprite = CtrlData.Ins.DataGame.LoadShape("L3_0")[color];
+
                 break;
             case 2:
                 ImgCube_L3_90.gameObject.SetActive(true);
-                ImgCube_L3_90.flipY = true;
-             
+
+                SpriteUse = ImgCube_L3_90;
+                ImgCube_L3_90.sprite = CtrlData.Ins.DataGame.LoadShape("L3_90")[color];
                 break;
             case 3:
                 ImgCube_L3_0.gameObject.SetActive(true);
-                ImgCube_L3_0.flipY = true;
+                SpriteUse = ImgCube_L3_0;
                 ImgCube_L3_0.flipX = true;
+                ImgCube_L3_0.sprite = CtrlData.Ins.DataGame.LoadShape("L3_180")[color];
                 break;
 
         }
@@ -216,53 +230,66 @@ public class Shape : MonoBehaviour
 
 
 
-    public void SetWith_1(int i)
+    public void SetWith_1(int i,int color)
     {
         switch (i)
         {
             case 0:
 
                 ImgCube_L4_90.gameObject.SetActive(true);
-                ImgCube_L4_90.flipY = true;
+              
                 ImgCube_L4_90.flipX = true;
+                ImgCube_L4_90.sprite = CtrlData.Ins.DataGame.LoadShape("L4_270")[color];
+                SpriteUse = ImgCube_L4_90;
+                break;
+            case 1:
+                ImgCube_L4_0.gameObject.SetActive(true);
+                ImgCube_L4_0.sprite = CtrlData.Ins.DataGame.LoadShape("L4_0")[color];
+                SpriteUse = ImgCube_L4_0;
+                break;
+            case 2:
+                ImgCube_L4_90.gameObject.SetActive(true);
+                ImgCube_L4_90.sprite = CtrlData.Ins.DataGame.LoadShape("L4_90")[color];
+                SpriteUse = ImgCube_L4_90;
+                break;
+            case 3:
+                ImgCube_L4_0.gameObject.SetActive(true);
+                ImgCube_L4_0.sprite = CtrlData.Ins.DataGame.LoadShape("L4_180")[color];
+                SpriteUse = ImgCube_L4_0;
+                ImgCube_L4_0.flipX = true;
+                break;
+
+        }
+    }
+    public void SetWith_2(int i,int color)
+    {
+        switch (i)
+        {
+            case 0:
+                ImgCube_L4_90.gameObject.SetActive(true);
+
+               
+
+                ImgCube_L4_90.sprite = CtrlData.Ins.DataGame.LoadShape("L4_270")[color];
+                SpriteUse = ImgCube_L4_90;
                 break;
             case 1:
                 ImgCube_L4_0.gameObject.SetActive(true);
                
-                break;
-            case 2:
-                ImgCube_L4_90.gameObject.SetActive(true);
-           
-                break;
-            case 3:
-                ImgCube_L4_0.gameObject.SetActive(true);
-                ImgCube_L4_0.flipY = true;
-                ImgCube_L4_0.flipX = true;
-                break;
-
-        }
-    }
-    public void SetWith_2(int i)
-    {
-        switch (i)
-        {
-            case 0:
-                ImgCube_L4_90.gameObject.SetActive(true);
-             
-                ImgCube_L4_90.flipY = true;
-                break;
-            case 1:
-                ImgCube_L4_0.gameObject.SetActive(true);
-                ImgCube_L4_0.flipY = true;
+                ImgCube_L4_0.sprite = CtrlData.Ins.DataGame.LoadShape("L4_180")[color];
+                SpriteUse = ImgCube_L4_0;
                 break;
             case 2:
                 ImgCube_L4_90.gameObject.SetActive(true);
                 ImgCube_L4_90.flipX = true;
+                ImgCube_L4_90.sprite = CtrlData.Ins.DataGame.LoadShape("L4_90")[color];
+                SpriteUse = ImgCube_L4_90;
                 break;
             case 3:
                 ImgCube_L4_0.gameObject.SetActive(true);
                 ImgCube_L4_0.flipX = true;
-             
+                ImgCube_L4_0.sprite = CtrlData.Ins.DataGame.LoadShape("L4_0")[color];
+                SpriteUse = ImgCube_L4_0;
                 break;
 
         }
@@ -618,6 +645,10 @@ public class Shape : MonoBehaviour
                       a.name = (x + y * shape.GetLength(1)).ToString();
                       ListShape.Add(a);
                       CtrlGamePlay.Ins.AddCubeIntoBoard(a);
+                    if (isCubeStart)
+                    {
+                        a.layer = 8;
+                    }
                 }
                 
             }
@@ -1000,6 +1031,7 @@ public class Shape : MonoBehaviour
         {
             if (roll == 0) 
             {
+                Debug.Log("21213231");
                 Cross_2_Vertical(Color);
             }
             else
@@ -1010,7 +1042,7 @@ public class Shape : MonoBehaviour
         }
         if(type == TypeShape.square)
         {
-            Square();
+            Square(Color);
             return;
         }
         if (type == TypeShape.crossBar_1)
@@ -1026,22 +1058,22 @@ public class Shape : MonoBehaviour
         }
         if (TypeShape == TypeShape.L4_90)
         {
-            SetWith_1(roll);
+            SetWith_1(roll,Color);
             return;
         }
         if (TypeShape == TypeShape.L_4_0)
         {
-            SetWith_2(roll);
+            SetWith_2(roll,Color);
             return;
         }
         if(TypeShape == TypeShape.L3_0)
         {
-            SetWith_L3_0(roll);
+            SetWith_L3_0(roll,Color);
         }
 
         if (TypeShape == TypeShape.L3_90)
         {
-            SetWith_L3_90(roll);
+            SetWith_L3_90(roll,Color);
         }
         if(TypeShape == TypeShape.crossBar_3)
         {
@@ -1075,31 +1107,35 @@ public class Shape : MonoBehaviour
 
         Img_Cube_Cross_2_90.gameObject.SetActive(true);
         Img_Cube_Cross_2_90.sprite = CtrlData.Ins.DataGame.LoadShape("2x1")[i];
+        SpriteUse = Img_Cube_Cross_2_90;
     }
     public void Cross_2_Vertical(int i)
     {
 
         Img_Cube_Cross_2_0.gameObject.SetActive(true);
         Debug.Log("Anh i : "+i);
-     //   Img_Cube_Cross_2_0.GetComponent<SpriteRenderer>().sprite  = CtrlData.Ins.DataGame.LoadShape("1x2")[i];
+        Img_Cube_Cross_2_0.GetComponent<SpriteRenderer>().sprite  = CtrlData.Ins.DataGame.LoadShape("1x2")[i];
+        SpriteUse = Img_Cube_Cross_2_0;
     }
     public void Cross_3_Horizontal(int i)
     {
         Img_Cube_Cross_3_Horizontal.gameObject.SetActive(true);
         Img_Cube_Cross_3_Horizontal.sprite = CtrlData.Ins.DataGame.LoadShape("1x3")[i];
+        SpriteUse = Img_Cube_Cross_3_Horizontal;
     }
     public void Cross_3_Vertical(int i)
     {
    
         Img_Cube_Cross_3_Vertical.gameObject.SetActive(true);
         Img_Cube_Cross_3_Vertical.sprite = CtrlData.Ins.DataGame.LoadShape("3x1")[i];
+        SpriteUse = Img_Cube_Cross_3_Vertical;
     }
 
     public void Cross_4_Horizontal(int i)
     {
         Img_Cube_Cross_4_Horizontal.gameObject.SetActive(true);
         Img_Cube_Cross_4_Horizontal.sprite = CtrlData.Ins.DataGame.LoadShape("1x4")[i];
-
+        SpriteUse = Img_Cube_Cross_4_Horizontal;
     }
 
     public void Cross_4_Vertical(int i)
@@ -1107,6 +1143,7 @@ public class Shape : MonoBehaviour
        
         Img_Cube_Cross_4_Vertical.gameObject.SetActive(true);
         Img_Cube_Cross_4_Vertical.sprite = CtrlData.Ins.DataGame.LoadShape("4x1")[i];
+        SpriteUse = Img_Cube_Cross_4_Vertical;
     }
 
     public void Cross_1(int i)
@@ -1117,11 +1154,14 @@ public class Shape : MonoBehaviour
 
         Debug.Log(i);
         Img_Cube_1x1.sprite = CtrlData.Ins.DataGame.LoadShape("1x1")[i];
+        SpriteUse = Img_Cube_1x1;
     }
 
-    public void Square()
+    public void Square(int color)
     {
         ImgCube_quare.gameObject.SetActive(true);
+        ImgCube_quare.sprite = CtrlData.Ins.DataGame.LoadShape("Square")[color];
+        SpriteUse = ImgCube_quare;
     }
 
     public void RollCube_3(int roll,int color)
@@ -1131,11 +1171,13 @@ public class Shape : MonoBehaviour
             case 0:
                 ImgCube_L2_90.gameObject.SetActive(true);
                 ImgCube_L2_90.sprite = CtrlData.Ins.DataGame.LoadShape("L2_90")[color];
+                SpriteUse = ImgCube_L2_90;
                 break;
             case 1:
                 ImgCube_L2_90.gameObject.SetActive(true);
                 ImgCube_L2_90.sprite = CtrlData.Ins.DataGame.LoadShape("L2_90")[color];
                 ImgCube_L2_90.flipX = true;
+                SpriteUse = ImgCube_L2_90;
 
                 break;
             case 2:
@@ -1146,10 +1188,16 @@ public class Shape : MonoBehaviour
                     ImgCube_L2_0.flipX = false;
                 }
                 ImgCube_L2_0.sprite = CtrlData.Ins.DataGame.LoadShape("L2_0")[color];
+                SpriteUse = ImgCube_L2_0;
                 break;
 
             case 3:
                 ImgCube_L2_0.gameObject.SetActive(true);
+                if(color == 4)
+                {
+                    ImgCube_L2_0.flipX = true;
+                }
+                SpriteUse = ImgCube_L2_0;
                 ImgCube_L2_0.sprite = CtrlData.Ins.DataGame.LoadShape("L2_0")[color];
                 break;
         }
@@ -1173,6 +1221,10 @@ public class Shape : MonoBehaviour
         }
         
         return true;
+    }
+    public int GetColumn(Shape shape)
+    {
+        return shape.shape.GetLength(1);
     }
 
 

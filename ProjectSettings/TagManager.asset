@@ -14,9 +14,9 @@ TagManager:
   - 
   - 
   - Cube
-  - 
-  - 
-  - 
+  - Simulate
+  - Effect
+  - Clone
   - 
   - 
   - 
@@ -40,4 +40,13 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Cube
+    uniqueID: 1527770269
+    locked: 0
+  - name: Simulate
+    uniqueID: 4076935707
+    locked: 0
+  - name: Clone
+    uniqueID: 738596679
     locked: 0

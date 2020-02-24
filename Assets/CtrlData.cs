@@ -5,6 +5,12 @@ using UnityEngine.UI;
 
 public class CtrlData : MonoBehaviour
 {
+    #region 
+    public List<GameObject> EffectGame = new List<GameObject>();
+
+
+
+    #endregion
     #region Cube
 
     public DataGame DataGame;
@@ -256,12 +262,16 @@ public class CtrlData : MonoBehaviour
                 switch (roll)
                 {
                     case 0:
+                        Color = L3_270[Random.Range(0, L3_270.Length)];
                         break;
                     case 1:
+                        Color = L3_180[Random.Range(0, L3_180.Length)];
                         break;
                     case 2:
+                        Color = L3_90[Random.Range(0, L3_90.Length)];
                         break;
                     case 3:
+                        Color = L3_0[Random.Range(0, L3_0.Length)];
                         break;
 
                 }
@@ -271,12 +281,16 @@ public class CtrlData : MonoBehaviour
                 switch (roll)
                 {
                     case 0:
+                        Color = 4;
                         break;
                     case 1:
+                        Color = 0;
                         break;
                     case 2:
+                        Color = L3_90[Random.Range(0, L3_90.Length)];
                         break;
                     case 3:
+                        Color = 3;
                         break;
 
                 }
@@ -285,12 +299,16 @@ public class CtrlData : MonoBehaviour
                 switch (roll)
                 {
                     case 0:
+                        Color = 4;
                         break;
                     case 1:
+                        Color = 3;
                         break;
                     case 2:
+                        Color = 1;
                         break;
                     case 3:
+                        Color = 0;
                         break;
 
                 }
@@ -299,12 +317,16 @@ public class CtrlData : MonoBehaviour
                 switch (roll)
                 {
                     case 0:
+                        Color = 4;
                         break;
                     case 1:
+                        Color = 0;
                         break;
                     case 2:
+                        Color = 1;
                         break;
                     case 3:
+                        Color = 3;
                         break;
 
                 }
@@ -312,13 +334,24 @@ public class CtrlData : MonoBehaviour
 
         
             case TypeShape.square:
-                Color =  Square[Random.Range(0, Square.Length)];
-
+             
+                Color = Square[Random.Range(0, Square.Length)];
                 break;
 
         }
         return Color;
 
+    }
+    public GameObject GetEffect(string name)
+    {
+        for(int i = 0; i < EffectGame.Count; i++)
+        {
+            if(EffectGame[i].name == name)
+            {
+                return EffectGame[i];
+            }
+        }
+        return null;
     }
 
 }
