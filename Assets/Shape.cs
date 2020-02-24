@@ -49,6 +49,7 @@ public class Shape : MonoBehaviour
     public int IDColor = 0;
     public bool isCubeStart = false;
     public GameObject SimulateColumn;
+    public Vector2 Point;
 
     #region Move
 
@@ -76,7 +77,7 @@ public class Shape : MonoBehaviour
     void Update()
     {
 
-
+        Point = CtrlGamePlay.PositonToPointMatrix(transform.position.x, transform.position.y);
 
         PushToBoard();
 
@@ -1224,6 +1225,7 @@ public class Shape : MonoBehaviour
     }
     public int GetColumn(Shape shape)
     {
+
         return shape.shape.GetLength(1);
     }
 

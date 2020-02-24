@@ -18,11 +18,10 @@ public class MoveFollowCube : MonoBehaviour
         {
             Vector3 pos = transform.position;
             pos.x = shape.transform.position.x;
-            
-         
-          Vector2  point =   CtrlGamePlay.PositonToMatrixRound(pos.x, pos.y);
-           // transform.position = CtrlGamePlay.MatrixToPoint(point.x, point.y);
-
+            pos.x =  Mathf.RoundToInt((pos.x - CtrlGamePlay.Ins.initPoint.x) / CtrlGamePlay.Ins.offsetX);
+            pos.x = CtrlGamePlay.Ins.initPoint.x + pos.x * CtrlGamePlay.Ins.offsetX;
+            transform.position = pos;
+          
 
         }
     }

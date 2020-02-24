@@ -819,6 +819,7 @@ MonoBehaviour:
   IDColor: 0
   isCubeStart: 0
   SimulateColumn: {fileID: 0}
+  Point: {x: 0, y: 0}
   posInit: {x: 0, y: 0, z: 0}
   PosTarget: {x: 0, y: 0, z: 0}
   PosDown: {x: 0, y: 0, z: 0}
@@ -2557,6 +2558,7 @@ MonoBehaviour:
   IDColor: 0
   isCubeStart: 0
   SimulateColumn: {fileID: 0}
+  Point: {x: 0, y: 0}
   posInit: {x: 0, y: 0, z: 0}
   PosTarget: {x: 0, y: 0, z: 0}
   PosDown: {x: 0, y: 0, z: 0}
@@ -2745,6 +2747,9 @@ MonoBehaviour:
   IsRandom: 0
   ShapeClone: {fileID: 0}
   SimulateColumn: {fileID: 1915259489}
+  SpeedMoveDown: 3
+  Point: {x: 0, y: 0}
+  Watting: 0
   PosInit: {x: 0, y: 0}
   PosCurr: {x: 0, y: 0}
   PosMouseInit: {x: 0, y: 0}

@@ -27,6 +27,9 @@ public class CtrlGamePlay : MonoBehaviour
     public bool IsRandom = false;
     public Shape ShapeClone;
     public GameObject SimulateColumn;
+    public float SpeedMoveDown = 0;
+    public Vector2 Point;
+    public bool Watting = false;
     #region localVariable
     bool initPos = false;
     public Vector2 PosInit;
@@ -126,39 +129,33 @@ public class CtrlGamePlay : MonoBehaviour
         string s =     Render(Board);
         Debug.Log(s);
 
-        ///
+      
         Event_Start_Game();
-        //ActiveRigidBoy(false);
-        //int x = Random.Range(0, Column);
-        //var a = Instantiate(PrebShape, null);
-        //a.name = "Shape : " + CtrlGamePlay.idShape;
-        //idShape++;
-        //a.GetComponent<Rigidbody2D>().mass -= idShape * 0.2f;
-        //List_Shape.Add(a.GetComponent<Shape>());
-        //a.GetComponent<Shape>().AddCubeToBoard();
+      
     }
 
     // Update is called once per frame
     void Update()
     {
-        //Time.timeScale = 4;
+       
+       
         #region
-        // RefershBoard();
+      
         if (Input.GetKeyDown(KeyCode.E))
         {
             SpawnShape();
         }
         if (Input.GetKeyDown(KeyCode.A))
         {
-           
-          CtrlGamePlay.Ins.GenerateStartGame(3, true);
+
+            SortShape();
 
         }
         if (Input.GetKeyDown(KeyCode.Z))
         {
-           
-            
-        
+
+
+            SimulateDown();
 
         }
            
@@ -195,7 +192,7 @@ public class CtrlGamePlay : MonoBehaviour
 
 
         }
-
+       
         if (Input.GetMouseButtonUp(0))
         {
 
@@ -243,6 +240,12 @@ public class CtrlGamePlay : MonoBehaviour
             }
 
         }
+        //////////////                MOVE DOWN  ///////////////////////
+        ///
+
+     
+
+
         if (!isClick_up)
         {
            // Time.timeScale = 4;
@@ -257,13 +260,13 @@ public class CtrlGamePlay : MonoBehaviour
             if (ShapeClick != null)
             {
                 Time.timeScale = 1;
-              
-                
 
-                ActiveRigidBoy(false);
+
+
+                //    ActiveRigidBoy(false);                                 //Reset
                 ShapeClick.PushToBoard();
                 Event_Completed_Change();
-                SimulateColumn.gameObject.SetActive(true);
+                SimulateColumn.gameObject.SetActive(true);                   
                 SimulateColumn.GetComponent<MoveFollowCube>().shape = ShapeClick;
                 SimulateColumn.GetComponent<MoveFollowCube>().ScaleX(ScaleShape(ShapeClick));
                 dis = PosMouseInit.x - Camera.main.ScreenToWorldPoint(Input.mousePosition).x;
@@ -298,8 +301,8 @@ public class CtrlGamePlay : MonoBehaviour
                 //}
                 if (ShapeClick.isShapeMove(point))
                 {
-                    SetUpAll();
-                    ActiveRigidBoy(true);
+                    // SetUpAll();                                                    //Reset
+                    //  ActiveRigidBoy(true);                                                 //Reset
                 }
                 SimulateColumn.gameObject.SetActive(false);
                 ShapeClick = null;
@@ -527,11 +530,11 @@ public class CtrlGamePlay : MonoBehaviour
     public void SpawnShape()
     {
 
-        GenerateStartGame(Random.Range(1, 4),false);
+      //  GenerateStartGame(Random.Range(1, 4),false);
     }
     public void SpawnStartGame()
     {
-        GenerateStartGame(Random.Range(1, 4), true);
+     //   GenerateStartGame(Random.Range(1, 4), true);
     }
 
     public static Vector3 RandomPosShape()
@@ -1271,7 +1274,7 @@ public class CtrlGamePlay : MonoBehaviour
     }
     public static bool isInMatrix(int x, int y, int[,] matrix)
     {
-        if (x < 0 || x > matrix.GetLength(0) || y < 0 || y > matrix.GetLength(1))
+        if (x < 0 || x >= matrix.GetLength(0) || y < 0 || y >= matrix.GetLength(1))
         {
             return false;
         }
@@ -1642,6 +1645,210 @@ public class CtrlGamePlay : MonoBehaviour
         return minY;
 
     }
+     public bool IsCanMove(DestroySelf Cube, int x, int y,int[,] Board)
+    {
+        if (!isInMatrix(x, y))
+        {
+            return false;
+        }
+
+
+        string s = "";
+        for (int j = 0; j < Row; j++)
+        {
+            s += "\n";
+            for (int i = 0; i < Column; i++)
+            {
+
+                
+                s += Board[j, i] + "  ";
+
+                if (i == x && j == y && Board[j, i] == 1 && !isCubeInShape(Cube, new Vector2(i, j)))
+                {
+                 //   Debug.Log(i + " " + j);
+                        
+                    return false;
+                }
+
+
+            }
+        }
+        //   Debug.Log(s);
+
+        return true;
+
+    }
+
+    public int isDowmShape(Shape shape,int[,] Board) 
+    {
+
+
+
+        int minY = 0;
+        List<Vector2> Point = new List<Vector2>();
+
+        bool isMove = true;
+        string s = "";
+        isMove = true;
+        s += "MOVE Down : \n";
+      
+            minY++;
+            for (int i = 0; i < shape.ListShape.Count; i++)
+            {
+                int x = (int)shape.ListShape[i].GetComponent<DestroySelf>().Point.x;
+                int y = (int)shape.ListShape[i].GetComponent<DestroySelf>().Point.y + 1;
+                s += " apply x : " + x + "y :" + y + "\n";
+                if (!IsCanMove(shape.ListShape[i].GetComponent<DestroySelf>(), x, y))
+                {
+
+                    isMove = false;
+                    minY--;
+                    minY = Mathf.Clamp(minY, 0, Row);
+                    s += " reject  x : " + x + "y :" + y + "\n";
+
+                  return 0;
+                 }
+            else
+            {
+                return 1;
+            }
+            }
+
+           return 1;
+
+       
+
+    }
+    public void SimulateDown()
+    {
+        SortShape();
+        List<Shape> ListShapeMove = new List<Shape>();
+        int[,] shape = CloneBoard(this.Board);
+        Debug.Log("INIT  : " + Render(shape));
+        List<List<Vector2>> Shapes = PushListCubeInList(List_Shape);
+
+        for(int i = 0; i < Shapes.Count; i++)
+        {
+            Debug.Log(" : " + i + "  :" + Render(shape));
+            if (isMoveDown(shape, 1, Shapes[i]))
+            {
+                
+                SimulateMoveDown(Shapes[i], 1, Board);
+                ListShapeMove.Add(List_Shape[i]);
+                Debug.Log(" : " + i + "  :" + Render(shape));
+            }
+            else
+            {
+                ResetMove(Shapes[i], Board);
+            }
+          
+
+        }
+
+        if (ListShapeMove.Count == 0)
+        {
+            Debug.Log("Khong Co");
+        }
+        Debug.Log("CANVAS : " + Render(shape));
+         for(int i = 0; i < ListShapeMove.Count; i++)
+        {
+            Debug.Log("Move : " + ListShapeMove[i].name);
+            StartCoroutine(MoveDownOneCube(ListShapeMove[i]));
+        }
+            
+
+           
+    }
+
+    public bool isMoveDown(int[,] Board,int space,List<Vector2> shape)
+    {
+        StartMove(shape, Board);
+        for (int i = 0; i < shape.Count; i++)
+        {
+         
+            if (CtrlGamePlay.isInMatrix((int)shape[i].y+space, (int)shape[i].x,Board))
+            {
+                if(Board[((int)shape[i].y + space), (int)shape[i].x] == 1)
+                {
+
+                    return false;
+                }
+               
+            }
+            else
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+   
+
+    public List<List<Vector2>> PushListCubeInList(List<Shape> list_shape)
+    {
+        List<List<Vector2>> ListShape = new List<List<Vector2>>();
+
+        for(int i = 0; i < list_shape.Count; i++)
+        {
+            List<Vector2> shape = new List<Vector2>();
+            for(int j = 0; j < list_shape[i].ListShape.Count; j++)
+            {
+                shape.Add(list_shape[i].ListShape[j].GetComponent<DestroySelf>().Point);
+            }
+            ListShape.Add(shape);
+        }
+        return ListShape;
+    }
+    public void StartMove(List<Vector2> Shape,int[,] Board)
+    {
+        for(int i = 0; i < Shape.Count; i++)
+        {
+            Vector2 point = Shape[i];
+            Board[(int)point.y, (int)point.x] = 0;
+        }
+    }
+    public void ResetMove(List<Vector2> Shape, int[,] Board)
+    {
+        for (int i = 0; i < Shape.Count; i++)
+        {
+            Vector2 point = Shape[i];
+            Board[(int)point.y, (int)point.x] = 1;
+        }
+    }
+
+    public void SimulateMoveDown(List<Vector2> shape, int space, int[,] Board)
+    {
+       
+        for (int i = 0; i < shape.Count; i++)
+        {
+            Vector2 point = shape[i];
+            Board[(int)point.y, (int)point.x] = 0;
+
+        }
+        for (int i = 0; i < shape.Count; i++)
+        {
+            Vector2 point = shape[i];
+            Board[((int)point.y + space), (int)point.x] = 1;
+        }
+
+    }
+    public IEnumerator MoveDownOneCube(Shape shape)
+    {
+        
+        float dis = 0;
+        float  space = offsetX/ SpeedMoveDown;
+        while (dis < offsetX)
+        {
+            shape.isMovingDown = true;
+            Vector3 pos = shape.transform.position;
+            pos.y -= space;
+            dis += space;
+            shape.transform.position = pos;
+            yield return new WaitForSeconds(0);
+        }
+        shape.isMovingDown = false;
+
+    }
 
 
 
@@ -1786,7 +1993,7 @@ public class CtrlGamePlay : MonoBehaviour
         List<InforShape> ListInfor = new List<InforShape>();
         ListInfor.Add(infor);
       
-        SpawnShape(ListInfor, true);
+        SpawnShape(ListInfor,false);
     }
 
 
@@ -2219,15 +2426,65 @@ public class CtrlGamePlay : MonoBehaviour
 
     }
 
-    
 
-    
-    
+
+
+
 
 
 
     #endregion
 
+    #region MoveDown
+
+    public IEnumerator MoveDown()
+
+    {
+        yield return new WaitForSeconds(0);
+    }
+    
+    public  void SortShape()
+    {
+        List<Shape> NewList = new List<Shape>();
+        List<Shape> List = List_Shape;
+        List<List<Shape>> ListRowShape = new List<List<Shape>>();
+        for(int i = Row-1; i >= 0; i--)
+        {
+            List<Shape> Row = new List<Shape>();
+            List<Shape> RowIsCheck = new List<Shape>();
+            // Get Row 
+            for (int j = 0; j < List.Count; j++)
+            {
+                if (List[j].Point.x == i)
+                {
+                    Row.Add(List[j]);
+                    RowIsCheck.Add(List[j]);
+                }
+            }
+           
+           for(int z = 0; z < RowIsCheck.Count; z++)
+            {
+                List.Remove(RowIsCheck[z]);
+            }
+            ListRowShape.Add(Row);
+
+        }
+        for(int i = 0; i < ListRowShape.Count ; i++)
+        {
+           for(int j = 0; j < ListRowShape[i].Count; j++)
+            {
+                NewList.Add(ListRowShape[i][j]);
+            }
+
+        }
+
+        List_Shape = NewList;
+
+
+
+    }
+  
+    #endregion
 
 }
 

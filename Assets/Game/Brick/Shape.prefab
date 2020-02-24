@@ -248,8 +248,7 @@ GameObject:
   - component: {fileID: 849059181560594131}
   - component: {fileID: 849059181560594129}
   - component: {fileID: 2993216344406228767}
-  - component: {fileID: 5061352769107215926}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Shape
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -325,12 +324,13 @@ MonoBehaviour:
   ListShape: []
   type: 0
   point: {x: 0, y: 0}
-  Body: {fileID: 5061352769107215926}
+  Body: {fileID: 0}
   BackTo: 0
   PointInitCheck: {x: 0, y: 0}
   IDColor: 0
   isCubeStart: 0
   SimulateColumn: {fileID: 0}
+  Point: {x: 0, y: 0}
   posInit: {x: 0, y: 0, z: 0}
   PosTarget: {x: 0, y: 0, z: 0}
   PosDown: {x: 0, y: 0, z: 0}
@@ -352,27 +352,6 @@ SortingGroup:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
---- !u!50 &5061352769107215926
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 849059181560594130}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 1
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0
-  m_GravityScale: 0.1
-  m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 0
-  m_CollisionDetection: 0
-  m_Constraints: 5
 --- !u!1 &921539499854532982
 GameObject:
   m_ObjectHideFlags: 0
