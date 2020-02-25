@@ -962,7 +962,7 @@ public class Shape : MonoBehaviour
 
     public void ActiveShape()
     {
-        Body.isKinematic = false;
+       // Body.isKinematic = false;
         gameObject.layer = 8;
         for(int i = 0; i < ListShape.Count; i++)
         {
