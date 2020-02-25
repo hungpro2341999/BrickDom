@@ -331,6 +331,7 @@ MonoBehaviour:
   isCubeStart: 0
   SimulateColumn: {fileID: 0}
   Point: {x: 0, y: 0}
+  nameSpriteUse: 
   posInit: {x: 0, y: 0, z: 0}
   PosTarget: {x: 0, y: 0, z: 0}
   PosDown: {x: 0, y: 0, z: 0}

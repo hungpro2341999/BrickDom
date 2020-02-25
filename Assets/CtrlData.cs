@@ -342,11 +342,11 @@ public class CtrlData : MonoBehaviour
         return Color;
 
     }
-    public GameObject GetEffect(string name)
+    public GameObject GetEffect(int id)
     {
         for(int i = 0; i < EffectGame.Count; i++)
         {
-            if(EffectGame[i].name == name)
+            if(i==id)
             {
                 return EffectGame[i];
             }

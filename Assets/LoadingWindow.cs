@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-public class LoadingWindow : Windown
+public class LoadingWindow : MonoBehaviour
 {
     public Image LoadingBar;
     public float time;
@@ -36,9 +36,9 @@ public class LoadingWindow : Windown
         {
             LoadingBar.fillAmount += Random.Range(0,0.05f);
 
-            yield return new WaitForSeconds(Random.Range(0,1f));
+            yield return new WaitForSeconds(Random.Range(0,0.2f));
         }
-        GameManager.Ins.StartGame();
+        GameManager.Ins.ActiveScreen(TypeScreen.PlayScreen);
 
 
 

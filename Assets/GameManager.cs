@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
 
     public static GameManager Ins = null;
     public List<Windown> Windowns = new List<Windown>();
+    public List<Screen> Screens = new List<Screen>();
     private void Awake()
     {
         if (Ins != null)
@@ -17,7 +18,8 @@ public class GameManager : MonoBehaviour
         {
             Ins = this;
         }
-        OpenWindow(TypeWindow.Loading);
+        CloseAll();
+        ActiveScreen(TypeScreen.LoadingScreen);
     }
     public bool isGameOver = false;
     public bool isGamePause = false;
@@ -28,6 +30,39 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         
+    }
+    public void ActiveScreen(TypeScreen type)
+    {
+        foreach(Screen s in Screens)
+        {
+            if (s.Type == type)
+            {
+                s.Open();
+                OpenScreen(type);
+            }
+            else
+            {
+                s.Close();
+            }
+        }
+    }
+
+    public void OpenScreen(TypeScreen type)
+    {
+        
+        switch (type)
+        {
+            case TypeScreen.LoadingScreen:
+
+                isGameOver = true;
+                isGameOver = true;
+                break;
+
+            case TypeScreen.PlayScreen:
+
+                StartGame();
+                break;
+        }
     }
 
     // Update is called once per frame
@@ -54,9 +89,16 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
+        isGameOver = false;
+        isGameOver = false;
         OpenWindow(TypeWindow.GamePlay);
         CtrlGamePlay.Ins.Start_Game();
       
+    }
+    public void CloseAll()
+    {
+        foreach (Windown w in Windowns)
+            w.Close();
     }
     public void OpenWindow(TypeWindow windown)
     {
@@ -72,5 +114,6 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+
   
 }

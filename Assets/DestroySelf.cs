@@ -16,7 +16,7 @@ public class DestroySelf : MonoBehaviour
 
         //Effect Destroy
 
-        Instantiate(CtrlData.Ins.GetEffect("Ex"), transform.position, Quaternion.identity, null);
+        Instantiate(CtrlData.Ins.GetEffect(shape.IDColor), transform.position, Quaternion.identity, null);
         isDestroy = true;
         GetComponentInParent<Shape>().RemoveCube(gameObject);
         Destroy(gameObject);

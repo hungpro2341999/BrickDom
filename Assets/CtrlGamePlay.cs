@@ -30,6 +30,9 @@ public class CtrlGamePlay : MonoBehaviour
     public float SpeedMoveDown = 0;
     public Vector2 Point;
     public bool Watting = false;
+    public float WaitTime = 0.4f;
+    private float TimeWait;
+    public float time;
     #region localVariable
     bool initPos = false;
     public Vector2 PosInit;
@@ -89,10 +92,13 @@ public class CtrlGamePlay : MonoBehaviour
         {
             Ins = this;
         }
+        Board = new int[Row, Column];
+        string s = Render(Board);
+        Debug.Log(s);
         Init_Event();
         Vector3 pos = transform.position;
         ClampY = PosInit.y - Row * offsetY;
-        Physics2D.gravity = new Vector3(0, -300, 0);
+        TimeWait = 0;
        
     }
     public void Init_Event()
@@ -119,26 +125,41 @@ public class CtrlGamePlay : MonoBehaviour
     {
         Reset_Game();
     }
+    public void Rest_Game()
+    {
+        Debug.Log("RestGame");
+        Reset_Game();
+        GameManager.Ins.StartGame();
+    }
     
 
     #endregion
     void Start()
     {
       //  Event_Completed_Move_Down();
-        Board = new int[Row,Column];
-        string s =     Render(Board);
-        Debug.Log(s);
+     
 
       
-        Event_Start_Game();
+     //   Event_Start_Game();
       
     }
 
     // Update is called once per frame
     void Update()
     {
-       
-       
+        if (!GameManager.Ins.isGameOver && !GameManager.Ins.isGamePause)
+            return;
+
+        if (TimeWait > 0)
+        {
+            TimeWait-=Time.deltaTime;
+            if (TimeWait <= 0)
+            {
+                SimulateDown();
+            }
+            return;
+        }
+    
         #region
       
         if (Input.GetKeyDown(KeyCode.E))
@@ -182,60 +203,118 @@ public class CtrlGamePlay : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
 
-            if (!IsListShapeMove())
+            if(!isClick_up)
             {
                 Event_Click_Down();
                 isClick_down = true;
             }
+              
+          
           
 
 
 
         }
-       
+        if (isClick_down)
+        {
+            int Direct = UpdatePoint(Input.mousePosition);
+            float dis = 0;
+            // RefershBoard();
+            if (ShapeClick != null)
+            {
+                Time.timeScale = 1;
+
+
+
+                //    ActiveRigidBoy(false);                                 //Reset
+                ShapeClick.PushToBoard();
+                Event_Completed_Change();
+                SimulateColumn.gameObject.SetActive(true);
+                SimulateColumn.GetComponent<MoveFollowCube>().shape = ShapeClick;
+                SimulateColumn.GetComponent<MoveFollowCube>().ScaleX(ScaleShape(ShapeClick));
+                dis = PosMouseInit.x - Camera.main.ScreenToWorldPoint(Input.mousePosition).x;
+                ShapeClick.MoveTo(dis);
+                //  Shape.transform.position = ScreenToWord(Input.mousePosition);
+                //   Debug.Log("Move");
+            }
+            else
+            {
+
+
+                ShapeSelect.text = "NULL";
+            }
+            Select.text += "\n Direct :" + Direct;
+
+        }
+
         if (Input.GetMouseButtonUp(0))
         {
 
+            if (!isClick_up)
+            {
 
-            Event_Click_Up();
-            isClick_down = false;
-            isClick_up = true;
-        //    ActiveRigidBoy(true);
+                Event_Click_Up();
+                isClick_down = false;
+                isClick_up = true;
+                if (ShapeClick != null)
+                {
+                    Vector2 point = ShapeClick.Snap();
+                  //  ShapeClone.gameObject.AddComponent<DestroySelf1>().Destroy();
+                    ShapeClick.ResetStatus();
+                    RefershBoard();
+                    if (ShapeClick.isShapeMove(point))
+                    {
+                        SimulateDown();
+                        SetUpAll();                                             
+                    }
+                    SimulateColumn.gameObject.SetActive(false);
+                    ShapeClick = null;
+                    //  Event_Completed_Change();
+
+
+
+                }
+            }
           
-            //AddForce();
-            return;
+          
+           
           
 
         }
         // Button_Up_And_Complete_Move_Down
         if (isClick_up)
         {
-            RefershBoard();
-           // Time.timeScale = 8;
+           
+         
             if (IsListShapeMove())
             {
-                Debug.Log("Complete Move");
+                
                 RefershBoard();
               
                 Event_Completed_Move_Down();
                 Debug.Log("Complete_Move");
-                // ActiveRigidBoy(false);
-                
-               
-              // Reset Staus
-            
+              
                 initPos = false;
-             
-                // Destroy Row
-             
-                CheckDestroyRow();
-                SplitShape();
-                SplitShape();
 
-                RefershBoard();
+                if (HasScore())
+                {
+                    CheckDestroyRow();
+                    SplitShape();
+                    SplitShape();
 
-                
-                isClick_up = false;
+                    RefershBoard();
+                    TimeWait = WaitTime;
+                }
+                else
+                {
+                    isClick_up = false;
+                }
+           
+              
+              
+              
+                    
+               
 
             }
 
@@ -246,87 +325,33 @@ public class CtrlGamePlay : MonoBehaviour
      
 
 
-        if (!isClick_up)
+
+        
+       
+    }
+    public bool HasScore()
+    {
+        int has = 0;
+        for(int i = 0; i < Board.GetLength(0); i++)
         {
-           // Time.timeScale = 4;
-           
-        }
-
-        if (isClick_down)
-        {
-            int Direct = UpdatePoint(Input.mousePosition);
-            float dis = 0;
-           // RefershBoard();
-            if (ShapeClick != null)
+            int count = 0;
+            for(int j = 0; j < Board.GetLength(1); j++)
             {
-                Time.timeScale = 1;
-
-
-
-                //    ActiveRigidBoy(false);                                 //Reset
-                ShapeClick.PushToBoard();
-                Event_Completed_Change();
-                SimulateColumn.gameObject.SetActive(true);                   
-                SimulateColumn.GetComponent<MoveFollowCube>().shape = ShapeClick;
-                SimulateColumn.GetComponent<MoveFollowCube>().ScaleX(ScaleShape(ShapeClick));
-                dis = PosMouseInit.x - Camera.main.ScreenToWorldPoint(Input.mousePosition).x;
-                ShapeClick.MoveTo(dis);
-                 //  Shape.transform.position = ScreenToWord(Input.mousePosition);
-             //   Debug.Log("Move");
-            }  
-            else
-            {
-
-
-                ShapeSelect.text = "NULL";
-            }
-            Select.text += "\n Direct :" + Direct;
-          
-        }
-        else
-        {
-            SimulateColumn.gameObject.SetActive(false);
-            if (ShapeClick != null)
-            {
-               Vector2 point =  ShapeClick.Snap();
-
-
-                //if (ShapeClick.isShapeMove(point))
-                //  {
-                ShapeClone.gameObject.AddComponent<DestroySelf1>().Destroy();
-                    ShapeClick.ResetStatus();
-
-                ShapeClick.isShapeMove(point);
-             
-                //}
-                if (ShapeClick.isShapeMove(point))
+                if (Board[i, j] == 1)
                 {
-                      SimulateDown();
-                       SetUpAll();                                                    //Reset
-                    //  ActiveRigidBoy(true);                                                 //Reset
+                    count++;
                 }
-                SimulateColumn.gameObject.SetActive(false);
-                ShapeClick = null;
-                //  Event_Completed_Change();
-
-
-
             }
-          
-            
-           
-               
-
-            // CheckDestroyRow();
-            //// Reset Staus
-            //ActiveShape(true);
-            //initPos = false;
-            //SplitShape();
-            //// Destroy Row
-
-    
-
+            if(count == Board.GetLength(1))
+            {
+                has++;
+            }
         }
+        if (has != 0)
+        {
+            return true;
+        }
+        return false;
     }
     public int ScaleShape(Shape shape)
     {
@@ -348,16 +373,7 @@ public class CtrlGamePlay : MonoBehaviour
     }
     public void SetUpMoveDown()
     {
-       // ActiveRigidBoy(true);
-        // RefershBoard();
-        //Debug.Log("SetUpMoveDown");
-        //for(int i = 0; i < List_Shape.Count; i++)
-        //{
-        //    int x = 0;
-        //        ClampShape_Down(List_Shape[i]);
-          
-          
-        //}
+      
     }
     public void ActiveRigidBoy(bool active)
     {
@@ -380,11 +396,8 @@ public class CtrlGamePlay : MonoBehaviour
     {
         for (int i = 0; i < List_Shape.Count; i++)
         {
-            // List_Shape[i].Body.velocity = new Vector3(0, -10, 0);
-            if (isDowmShape(List_Shape[i]) != 0)
-            {
+            if (List_Shape[i].isMovingDown)
                 return false;
-            }
         }
         return true;
     }
@@ -418,7 +431,7 @@ public class CtrlGamePlay : MonoBehaviour
              ClampShape(ShapeClick);
 
             ShapeClick.InitPoint();
-            CloneShape(ShapeClick);
+         //   CloneShape(ShapeClick);
 
 
         }
@@ -1732,19 +1745,19 @@ public class CtrlGamePlay : MonoBehaviour
         SortShape();
         List<Shape> ListShapeMove = new List<Shape>();
         int[,] shape = CloneBoard(this.Board);
-        Debug.Log("INIT  : " + Render(shape));
+       // Debug.Log("INIT  : " + Render(shape));
         List<List<Vector2>> Shapes = PushListCubeInList(List_Shape);
         List<int> ListMove = GenerateList(Shapes.Count);
         while(isCheckDown(shape,1,Shapes))
         for(int i = 0; i < Shapes.Count; i++)
         {
-            Debug.Log(" : " + i + "  :" + Render(shape));
+       //     Debug.Log(" : " + i + "  :" + Render(shape));
             if (isMoveDown(shape, 1, Shapes[i]))
             {
                 ListMove[i]++;
                 SimulateMoveDown(Shapes[i], 1, shape);
               //  ListShapeMove.Add(List_Shape[i]);
-                Debug.Log(" : " + i + "  :" + Render(shape));
+              //  Debug.Log(" : " + i + "  :" + Render(shape));
             }
             else
             {
@@ -1756,9 +1769,9 @@ public class CtrlGamePlay : MonoBehaviour
 
         if (ListShapeMove.Count == 0)
         {
-            Debug.Log("Khong Co");
+         //   Debug.Log("Khong Co");
         }
-        Debug.Log("CANVAS : " + Render(shape));
+      //  Debug.Log("CANVAS : " + Render(shape));
          for(int i = 0; i < List_Shape.Count; i++)
         {
           
@@ -2512,10 +2525,13 @@ public class CtrlGamePlay : MonoBehaviour
     public void CloneShape(Shape shape)
     {
         var a = Instantiate(shape.gameObject, shape.gameObject.transform.position, Quaternion.identity, null);
-        Color color = a.GetComponent<Shape>().SpriteUse.color;
-        color.a = 100;
-        a.GetComponent<Shape>().SpriteUse.color = color;
+        string nameSpriteUse = a.GetComponent<Shape>().nameSpriteUse;
         a.GetComponent<Shape>().enabled = false;
+        Color color = new Color(255, 255, 255, 100);
+        Debug.Log(nameSpriteUse);
+        a.transform.Find(nameSpriteUse).GetComponent<SpriteRenderer>().color = color;
+
+      
         a.gameObject.AddComponent<DestroySelf1>();
         ShapeClone = a.GetComponent<Shape>();
         a.gameObject.layer = 11;
@@ -2575,7 +2591,14 @@ public class CtrlGamePlay : MonoBehaviour
 
 
     }
-  
+    public void ContinueGame()
+    {
+        DestroyRow(8);
+        DestroyRow(9);
+        DestroyRow(10);
+
+    }
+
     #endregion
 
 }
