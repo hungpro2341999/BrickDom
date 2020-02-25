@@ -33,6 +33,7 @@ public class CtrlGamePlay : MonoBehaviour
     public float WaitTime = 0.4f;
     private float TimeWait;
     public float time;
+    public bool Moving = false;
     #region localVariable
     bool initPos = false;
     public Vector2 PosInit;
@@ -78,6 +79,7 @@ public class CtrlGamePlay : MonoBehaviour
     public int yy;
     public int rowDestroy;
     public int rotaion;
+    public int farme = 1;
   
     // Start is called before the first frame update
      
@@ -107,13 +109,18 @@ public class CtrlGamePlay : MonoBehaviour
         Event_Click_Up += SetUpMoveDown;
         Event_Completed_Move_Down += SpawnShape;
         Event_Start_Game +=SpawnStartGame;
+        Event_Start_Game += RefershBoard;
         Event_Start_Game += UnRigidBody;
         Event_Start_Game += SpawnShape;
         Event_Completed_Change += SetUpMoveDown;
-   
+        Event_Game_Over += Reset_Game;
+
+
 
 
     }
+
+    
 
     #region StatusGame
 
@@ -123,7 +130,7 @@ public class CtrlGamePlay : MonoBehaviour
     }
     public void Over_Game()
     {
-        Reset_Game();
+        Event_Game_Over();
     }
     public void Rest_Game()
     {
@@ -132,13 +139,15 @@ public class CtrlGamePlay : MonoBehaviour
         GameManager.Ins.StartGame();
     }
     
+    
 
     #endregion
     void Start()
     {
-      //  Event_Completed_Move_Down();
-     
+        //  Event_Completed_Move_Down();
 
+
+       
       
      //   Event_Start_Game();
       
@@ -149,6 +158,20 @@ public class CtrlGamePlay : MonoBehaviour
     {
         if (!GameManager.Ins.isGameOver && !GameManager.Ins.isGamePause)
             return;
+        //if (!Moving)
+        //{
+        //    if (farme % 5 != 0)
+        //    {
+        //        farme++;
+        //        if (farme % 5 == 0)
+        //        {
+        //            Moving = true;
+        //            RefershBoard();
+        //        }
+        //    }
+           
+        //}
+      
 
         if (TimeWait > 0)
         {
@@ -217,6 +240,7 @@ public class CtrlGamePlay : MonoBehaviour
         }
         if (isClick_down)
         {
+            RefershBoard();
             int Direct = UpdatePoint(Input.mousePosition);
             float dis = 0;
             // RefershBoard();
@@ -255,17 +279,28 @@ public class CtrlGamePlay : MonoBehaviour
 
                 Event_Click_Up();
                 isClick_down = false;
-                isClick_up = true;
+              
                 if (ShapeClick != null)
                 {
-                    Vector2 point = ShapeClick.Snap();
-                  //  ShapeClone.gameObject.AddComponent<DestroySelf1>().Destroy();
-                    ShapeClick.ResetStatus();
-                    RefershBoard();
-                    if (ShapeClick.isShapeMove(point))
+                    ShapeClick.isClick = false;
+                    Vector3 PointSnap = ShapeClick.transform.position;
+                    int offset = Mathf.RoundToInt((PointSnap.x - CtrlGamePlay.Ins.initPoint.x) / offsetX);
+                  
+                    PointSnap.x = CtrlGamePlay.Ins.initPoint.x + offset * offsetX;
+                    Debug.Log(" Offset :" + offset +"  " + PointSnap.x);
+                    ShapeClick.transform.position = PointSnap;
+                    RefershBoard();  
+                    if (offset != ShapeClick.PointInitCheck.y)
                     {
+                       
                         SimulateDown();
-                        SetUpAll();                                             
+                        SetUpAll();
+                        isClick_up = true;
+                    }
+                    else
+                    {
+                       
+                        isClick_up = false;
                     }
                     SimulateColumn.gameObject.SetActive(false);
                     ShapeClick = null;
@@ -291,7 +326,7 @@ public class CtrlGamePlay : MonoBehaviour
                 
                 RefershBoard();
               
-                Event_Completed_Move_Down();
+             
                 Debug.Log("Complete_Move");
               
                 initPos = false;
@@ -304,17 +339,30 @@ public class CtrlGamePlay : MonoBehaviour
 
                     RefershBoard();
                     TimeWait = WaitTime;
+                    return;
                 }
                 else
                 {
+                  
+                   
                     isClick_up = false;
                 }
-           
-              
-              
-              
-                    
-               
+
+                if (isGameOver())
+                {
+                    GameManager.Ins.isGameOver = false;
+                    GameManager.Ins.OpenWindow(TypeWindow.OverGame);
+                }
+                else
+                {
+                    Event_Completed_Move_Down();
+                }
+
+
+
+
+
+
 
             }
 
@@ -907,7 +955,7 @@ public class CtrlGamePlay : MonoBehaviour
         shape.SetUpClamp(ClampMinX, ClampMaxX);
 
         MoveSelect.text = s;
-        Debug.Log(s);
+       // Debug.Log(s);
 
 
     }
@@ -2059,6 +2107,7 @@ public class CtrlGamePlay : MonoBehaviour
           
             a.GetComponent<Shape>().Set_Up_Corrs(ListInfor[i].roll, ListInfor[i].type,ListInfor[i].color);
 
+            a.GetComponent<Shape>().PushToBoard();
 
             idShape++;
          //   a.GetComponent<Shape>().GetComponent<Rigidbody2D>().mass = (100000 - idShape*2);
@@ -2066,14 +2115,14 @@ public class CtrlGamePlay : MonoBehaviour
             List_Shape.Add(a.GetComponent<Shape>());
             if (isActive)
             {
-              //    a.GetComponent<Shape>().Body.isKinematic = false;
-                //a.gameObject.layer = 8;
-                //List<GameObject> Cubes = a.GetComponent<Shape>().ListShape;
-                //for (int j = 0; j<Cubes.Count; j++)
-                //{
+              
+                a.gameObject.layer = 8;
+              
+                for (int j = 0; j<Cubes.Count; j++)
+                {
                 
-                //    Cubes[i].layer = 8;
-                //}
+                    Cubes[i].layer = 8;
+                }
                 
             }
           

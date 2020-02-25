@@ -34,9 +34,9 @@ public class LoadingWindow : MonoBehaviour
     {
         while (LoadingBar.fillAmount!=1)
         {
-            LoadingBar.fillAmount += Random.Range(0,0.05f);
-
-            yield return new WaitForSeconds(Random.Range(0,0.2f));
+            //      LoadingBar.fillAmount += Random.Range(0,0.05f);
+            LoadingBar.fillAmount = 1;
+                 yield return new WaitForSeconds(Random.Range(0,0.2f));
         }
         GameManager.Ins.ActiveScreen(TypeScreen.PlayScreen);
 

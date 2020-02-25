@@ -64,7 +64,10 @@ public class Shape : MonoBehaviour
     public float ClampMoveMaxX = 0;
     public float ClampMoveMinY = 0;
     public bool isMovingDown = false;
-
+    private void Awake()
+    {
+       
+    }
     #endregion
     // Start is called before the first frame update
     void Start()
@@ -77,7 +80,7 @@ public class Shape : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+     
         Point = CtrlGamePlay.PositonToPointMatrix(transform.position.x, transform.position.y);
 
         PushToBoard();
@@ -743,7 +746,7 @@ public class Shape : MonoBehaviour
         m_isMove = true;
         posInit = transform.position;
         
-        PointInitCheck = CtrlGamePlay.PositonToMatrix(transform.position.y, transform.position.x);
+        PointInitCheck = CtrlGamePlay.PositonToPointMatrix(transform.position.x, transform.position.y);
      //   CtrlGamePlay.Ins.TextPointInit.text = "Init : " + PointInitCheck.x + "  " + PointInitCheck.y;
 
       
@@ -770,7 +773,7 @@ public class Shape : MonoBehaviour
         Vector2 pos = transform.position;
         Vector2 point =  CtrlGamePlay.PositonToMatrixRound(pos.x, pos.y);
       //  Debug.Log("POS SNAP "+point.ToString());
-        transform.position = new Vector3(CtrlGamePlay.Ins.initPoint.x + point.x * CtrlGamePlay.Ins.offsetX,pos.y);
+        transform.position = new Vector3(CtrlGamePlay.Ins.initPoint.x + point.x * CtrlGamePlay.Ins.offsetX, CtrlGamePlay.Ins.initPoint.y-point.y * CtrlGamePlay.Ins.offsetY);
         //  Debug.Log("POSITON SNAP : "+ CtrlGamePlay.MatrixToPoint((int)point.x, (int)point.y));
         //  Debug.Log("POSITON SNAP : "+ CtrlGamePlay.MatrixToPoint((int)point.x, (int)point.y));
         return point;
@@ -1231,7 +1234,7 @@ public class Shape : MonoBehaviour
         //int x = Mathf.FloorToInt((pos.x - CtrlGamePlay.Ins.initPoint.x) / CtrlGamePlay.Ins.offsetX);
         //int y = Mathf.FloorToInt((CtrlGamePlay.Ins.initPoint.y - pos.y) / CtrlGamePlay.Ins.offsetY);
       
-        if (point.x== PointInitCheck.x && point.y == PointInitCheck.y)
+        if (point.y == PointInitCheck.y)
         {
             return false;
         }
