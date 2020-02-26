@@ -29,6 +29,9 @@ public class Shape : MonoBehaviour
     public SpriteRenderer ImgCube_L4_90;
     public SpriteRenderer ImgCube_L3_0;
     public SpriteRenderer ImgCube_L3_90;
+
+    public List<SpriteRenderer> List_Image = new List<SpriteRenderer>();
+
     public SpriteRenderer SpriteUse;
     public Color ColorShape;
     public int idShape;
@@ -51,6 +54,7 @@ public class Shape : MonoBehaviour
     public GameObject SimulateColumn;
     public Vector2 Point;
     public string nameSpriteUse;
+    
 
     #region Move
 
@@ -73,7 +77,24 @@ public class Shape : MonoBehaviour
     void Start()
     {
 
-        Body = GetComponent<Rigidbody2D>();
+       
+    }
+    public void Init_List_Image()
+    {
+        List_Image.Add(Img_Cube_Cross_1x1);
+        List_Image.Add(Img_Cube_Cross_2_0);
+        List_Image.Add(Img_Cube_Cross_2_90);
+        List_Image.Add(Img_Cube_Cross_3_Horizontal);
+        List_Image.Add(Img_Cube_Cross_3_Vertical);
+        List_Image.Add(Img_Cube_Cross_4_Horizontal);
+        List_Image.Add(Img_Cube_Cross_4_Vertical);
+        List_Image.Add(ImgCube_quare);
+        List_Image.Add(ImgCube_L2_0);
+        List_Image.Add(ImgCube_L2_90);
+        List_Image.Add(ImgCube_L4_0);
+        List_Image.Add(ImgCube_L4_90);
+        List_Image.Add(ImgCube_L3_0);
+        List_Image.Add(ImgCube_L3_90);
     }
 
 
@@ -101,10 +122,56 @@ public class Shape : MonoBehaviour
 
             transform.position = Vector3.MoveTowards(transform.position, PosTarget, Time.deltaTime * Speed);
         }
-
+        if (ListShape.Count <= 0)
+        {
+            DestroyAllCubeAndShape();
+        }
 
 
     }
+    public SpriteRenderer Img_Curent()
+    {
+        foreach(SpriteRenderer s in List_Image)
+        {
+            if (s.gameObject.activeSelf)
+            {
+                return s;
+            }
+        }
+        return null;
+    }
+    public void InitImageUse()
+    {
+        Init_List_Image();
+        SpriteUse = Img_Curent();
+     
+
+    }
+    public void FadeShape()
+    {
+
+        SpriteRenderer FadeShape = SpriteUse;
+        Color color = FadeShape.color;
+        Debug.Log(gameObject.name + "  ::  " + FadeShape.name);
+     
+
+        SpriteUse.color = new Color(color.r,color.g,color.b, 0.5f);
+    }
+    public void NormlizeColor()
+    {
+        SpriteRenderer FadeShape = SpriteUse;
+        Debug.Log(gameObject.name + "  ::  " + FadeShape.name);
+        Color color = FadeShape.color;
+      
+
+
+        SpriteUse.color = new Color(color.r, color.g, color.b,1);
+    }
+    public void GrayShape(float time)
+    {
+        SpriteUse.GetComponent<TurnToGray>().Start_Turn_To_Gray(time);
+    }
+
     private void FixedUpdate()
     {
         {

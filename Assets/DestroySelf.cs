@@ -21,6 +21,19 @@ public class DestroySelf : MonoBehaviour
         GetComponentInParent<Shape>().RemoveCube(gameObject);
         Destroy(gameObject);
     }
+    public void StartDestroy(float time)
+    {
+        StartCoroutine(DestroyCube(time));
+    }
+
+    public IEnumerator DestroyCube(float time)
+    {
+        yield return new WaitForSeconds(time);
+        Instantiate(CtrlData.Ins.GetEffect(5), transform.position, Quaternion.identity, null);
+        isDestroy = true;
+        GetComponentInParent<Shape>().RemoveCube(gameObject);
+        Destroy(gameObject);
+    }
     public Vector2 GetPoint()
     {
         return Point;

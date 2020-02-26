@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum TypeScreen {LoadingScreen,PlayScreen}
-public class Screen : MonoBehaviour
+public class Screen1 : MonoBehaviour
 {
 
     public TypeScreen Type;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public enum TypeWindow {GamePlay,OverGame,PauseGame,Loading,HighScore}
+public enum TypeWindow {GamePlay,OverGame,PauseGame,Loading,HighScore,Continue}
 public class Windown : MonoBehaviour
 {
     public TypeWindow TypeWindown; 

@@ -7,7 +7,7 @@ public class GameManager : MonoBehaviour
 
     public static GameManager Ins = null;
     public List<Windown> Windowns = new List<Windown>();
-    public List<Screen> Screens = new List<Screen>();
+    public List<Screen1> Screens = new List<Screen1>();
     private void Awake()
     {
         if (Ins != null)
@@ -33,7 +33,7 @@ public class GameManager : MonoBehaviour
     }
     public void ActiveScreen(TypeScreen type)
     {
-        foreach(Screen s in Screens)
+        foreach(Screen1 s in Screens)
         {
             if (s.Type == type)
             {
@@ -114,6 +114,17 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+    public void CloseWindow(TypeWindow windown)
+    {
+        foreach (Windown w in Windowns)
+        {
+            if (w.TypeWindown == windown)
+            {
+                w.Close();
+            }
+        }
+    }
 
-  
+
+
 }

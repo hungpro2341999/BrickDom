@@ -10,12 +10,18 @@ public class AnimSetting : MonoBehaviour
     public RectTransform Status3;
     public static bool IsPause = false;
 
-    //Sound
+    
+
+    
 
     public Transform Btn_Pause;
     public Transform Btn_Resume;
-    // Start is called before the first frame update
-    void Start()
+
+    //Sound
+    public RectTransform OnSound;
+    public RectTransform OffSoud;
+   // Start is called before the first frame update
+   void Start()
     {
 
        
@@ -91,5 +97,33 @@ public class AnimSetting : MonoBehaviour
                        }
             );
        
-    }     
+    }
+    public void ChanceSound()
+    {
+        CtrlData.Ins.ChangeSound();
+
+        if (CtrlData.Ins.IsSound())
+        {
+            OnSound.gameObject.SetActive(true);
+            OffSoud.gameObject.SetActive(false);
+        }
+        else
+        {
+            OnSound.gameObject.SetActive(false);
+            OffSoud.gameObject.SetActive(true);
+        }
+    }
+    private void OnEnable()
+    {
+        if (CtrlData.Ins.IsSound())
+        {
+            OnSound.gameObject.SetActive(true);
+            OffSoud.gameObject.SetActive(false);
+        }
+        else
+        {
+            OnSound.gameObject.SetActive(false);
+            OffSoud.gameObject.SetActive(true);
+        }
+    }
 }

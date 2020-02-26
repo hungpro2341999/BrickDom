@@ -5,6 +5,13 @@ using UnityEngine.UI;
 
 public class CtrlData : MonoBehaviour
 {
+    #region
+    public static int CountPlay = 1;
+    public const string Key_HighScore = "Key_High_Score";
+    public const string Key_Sound = "Key_Sound";
+
+    #endregion
+
     #region 
     public List<GameObject> EffectGame = new List<GameObject>();
 
@@ -125,6 +132,64 @@ public class CtrlData : MonoBehaviour
 
 
     public static List<int[,]> ShapeType = new List<int[,]>();
+
+    public void InitKey()
+    {
+        if (!PlayerPrefs.HasKey(Key_HighScore))
+        {
+            PlayerPrefs.SetInt(Key_HighScore, 0);
+        }
+       if (!PlayerPrefs.HasKey(Key_Sound))
+        {
+
+            PlayerPrefs.SetInt(Key_Sound, 1);
+        }
+    }
+
+    public bool SetHighScore(int Score)
+    {
+        int HighScore = PlayerPrefs.GetInt(Key_HighScore);
+        if (Score > HighScore)
+        {
+            PlayerPrefs.SetInt(Key_HighScore, Score);
+
+            return true;
+        }
+        else
+        {
+
+            return false;
+        }
+    }
+
+
+    // 1 On
+    // 0 Off
+    public void ChangeSound()
+    {
+        if (PlayerPrefs.GetInt(Key_Sound) == 1)
+        {
+            PlayerPrefs.SetInt(Key_Sound, 0);
+        }
+        else
+        {
+            PlayerPrefs.SetInt(Key_Sound, 1);
+        }
+    }
+    public bool IsSound()
+    {
+        if (PlayerPrefs.GetInt(Key_Sound) == 1)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+   
+
     public static TypeShape GetShapeType(int i)
     {
         TypeShape type = TypeShape.None;
