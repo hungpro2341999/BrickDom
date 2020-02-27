@@ -44,9 +44,12 @@ TagManager:
   - name: Cube
     uniqueID: 1527770269
     locked: 0
-  - name: Simulate
+  - name: 
     uniqueID: 4076935707
     locked: 0
-  - name: Clone
+  - name: Simulate
     uniqueID: 738596679
+    locked: 0
+  - name: Clone
+    uniqueID: 3182067675
     locked: 0

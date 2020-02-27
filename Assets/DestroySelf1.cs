@@ -15,8 +15,18 @@ public class DestroySelf1 : MonoBehaviour
     {
         
     }
-    public void Destroy()
+    public void DestroyObj()
     {
         Destroy(gameObject);
     }
+    private IEnumerator StartDestroy(float time)
+    {
+        yield return new WaitForSeconds(time);
+        DestroyObj();
+    }
+    public void StartDelayDestroy(float time)
+    {
+        StartDestroy(time);
+    }
+
 }
