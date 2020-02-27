@@ -8,19 +8,26 @@ public class AnimButton : MonoBehaviour, IPointerDownHandler,IPointerUpHandler
 {
     RectTransform UI;
     float time;
+    private void Awake()
+    {
+         UI = GetComponent<RectTransform>();
+    }
     private void Start()
     {
-        time = 0.5f;
-        UI.GetComponent<RectTransform>();
+        time = 0.2f;
+      
     }
     public void OnPointerDown(PointerEventData pointerEventData)
     {
+        UI =  GetComponent<RectTransform>();
         Debug.Log("Click");
-        StartAnim(Vector3.one * 1.2f);
+        StartAnim(Vector3.one * 1.1f);
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
+
+        UI = GetComponent<RectTransform>();
         StartAnim(Vector3.one);
     }
     public void StartAnim(Vector3 target)

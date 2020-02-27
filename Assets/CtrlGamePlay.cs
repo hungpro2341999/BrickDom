@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class CtrlGamePlay : MonoBehaviour
 {
@@ -301,12 +302,13 @@ public class CtrlGamePlay : MonoBehaviour
       
         if (Input.GetKeyDown(KeyCode.M))
         {
-            SetUpDestroyAllCube();
+            Suggeset(List_Shape[0], 3);
         }
         if (Input.GetKeyDown(KeyCode.A))
         {
 
-            Rest_Game();
+            StartSuggestionsLeft();
+            SuggestRight();
 
         }
         if (Input.GetKeyDown(KeyCode.Z))
@@ -1952,8 +1954,10 @@ public class CtrlGamePlay : MonoBehaviour
         {
          //   Debug.Log("Khong Co");
         }
-      //  Debug.Log("CANVAS : " + Render(shape));
-         for(int i = 0; i < List_Shape.Count; i++)
+        //  Debug.Log("CANVAS : " + Render(shape));
+        Debug.Log("Nornal : \n" + Render(Board));
+        Debug.Log("RESULT MOVE : \n" + Render(shape));
+        for (int i = 0; i < List_Shape.Count; i++)
         {
           
             StartCoroutine(MoveDownOneCube(List_Shape[i],ListMove[i]));
@@ -2063,6 +2067,32 @@ public class CtrlGamePlay : MonoBehaviour
         }
         return ListShape;
     }
+
+    public List<List<Vector2>> ShapeNotActive(List<Shape> list_shape)
+    {
+        List<List<Vector2>> ShapeNotActive = new List<List<Vector2>>();
+        for (int i = 0; i < list_shape.Count; i++)
+        {
+            if (list_shape[i].gameObject.layer != 8)
+            {
+                List<Vector2> shape = new List<Vector2>();
+                for (int j = 0; j < list_shape[i].ListShape.Count; j++)
+                {
+                   shape.Add(list_shape[i].ListShape[j].GetComponent<DestroySelf>().Point);
+                }
+                if (shape.Count != 0)
+                {
+                    ShapeNotActive.Add(shape);
+                }
+            }
+           
+        }
+        Debug.Log(ShapeNotActive.Count);
+        return ShapeNotActive;
+
+    }
+
+
     public List<List<Shape>> SortListByRow(List<Shape> list_shape) 
     {
         List<List<Shape>> ListShape = new List<List<Shape>>();
@@ -2792,76 +2822,443 @@ public class CtrlGamePlay : MonoBehaviour
 
     }
     
-    public void StartSuggestions()
+    public void StartSuggestionsLeft()
     {
+        bool FindOut = true;
+
         SortShape();
-        int[,] CLoneBoard = CloneBoard(Board);
-        for(int i = 0; i < List_Shape.Count; i++)
+
+        List<Shape> ListShapeMove = new List<Shape>();
+        int[,] shape = CloneBoard(Board);
+        List<List<Vector2>> Shapes = PushListCubeInList(List_Shape);
+        List<List<Vector2>> ShapesNotActive = ShapeNotActive(List_Shape);
+
+
+      
+            for (int i=0;i< ShapesNotActive.Count;i++)
+            {
+            string s = "";
+            s += RenderListShape(ShapesNotActive[i]) + "\n";
+           //     Debug.Log(s);
+            }
+        Debug.Log("///////////////////");
+        for (int i = 0; i < Shapes.Count; i++)
         {
-            for(int j = 0; j < Direct.Length; j++)
+            string s = "";
+            s += RenderListShape(Shapes[i]) + "\n";
+         //   Debug.Log(s);
+        }
+
+        Debug.Log("LEFT  MOVE "+ ShapesNotActive.Count);
+        for (int i = 0; i < Shapes.Count; i++)
+        {
+            if (IsInList(ShapesNotActive, Shapes[i]))
+            {
+            //    Debug.Log("yes");
+            }
+            else
+            {
+             //   Debug.Log("no");
+            }
+
+
+        }
+
+
+        for (int i = 0; i < Shapes.Count; i++)
+        {
+
+            if (IsInList(ShapesNotActive, Shapes[i]))
+                continue;
+            List<List<Vector2>> ListShapeGame = new List<List<Vector2>>(Shapes);
+
+            int[,] BoardClone = CloneBoard(Board);
+            Debug.Log("_________________________________");
+            Debug.Log("BOARD_CURR : \n " + Render(BoardClone));
+            Debug.Log("_________________________________");
+            List<Vector2> Cube = ListShapeGame[i];
+
+            Vector2 point = SimulateMoveLeftRight(CloneShapeList(Cube), CloneBoard(BoardClone));
+            string s = "";
+
+            //for (int z = 0; z < Cube.Count; z++)
+            //{
+            //    s += "  " + Cube[z].x + "   " + Cube[z].y + " \n";
+            //}
+            //Debug.Log("Shape Curennt : " + s);
+
+            for (int left = 0; left < point.x; left++)
             {
 
+                InputToBoard(Cube, BoardClone, -1);
+                Debug.Log("CHAGE _ BOARD : \n " + Render(BoardClone));
+                if (Suggestions(CloneBoard(BoardClone), CloneAllListShape(ListShapeGame)))
+                {
+                    Suggeset(List_Shape[i], -left);
+                    Debug.Log("FIND OUTTTTTTTTTTTTT !!!!!!!!!!!!");
+
+                    return;
+
+                }
             }
+
         }
-       
+
+        //Debug.Log("RIGHT MOVE ");
+
+        //for (int i = 0; i < Shapes.Count; i++)
+        //{
+
+        //    if (IsInList(ShapesNotActive, Shapes[i]))
+        //        continue;
+        //    List<List<Vector2>> ListShapeGame = new List<List<Vector2>>(Shapes);
+
+        //    int[,] BoardClone = CloneBoard(Board);
+        //    Debug.Log("_________________________________");
+        //    Debug.Log("BOARD_CURR : \n " + Render(BoardClone));
+        //    Debug.Log("_________________________________");
+        //    List<Vector2> Cube = ListShapeGame[i];
+
+        //    Vector2 point = SimulateMoveLeftRight(CloneShapeList(Cube), CloneBoard(BoardClone));
+        //    string s = "";
+
+        //    //for (int z = 0; z < Cube.Count; z++)
+        //    //{
+        //    //    s += "  " + Cube[z].x + "   " + Cube[z].y + " \n";
+        //    //}
+        //    //Debug.Log("Shape Curennt : " + s);
+
+        //    for (int left = 0; left < point.y; left++)
+        //    {
+
+        //        InputToBoard(Cube, BoardClone, 1);
+        //        Debug.Log("CHAGE _ BOARD : \n " + Render(BoardClone));
+        //        if (Suggestions(CloneBoard(BoardClone), CloneAllListShape(ListShapeGame)))
+        //        {
+        //            Suggeset(List_Shape[i], left);
+        //            Debug.Log("FIND OUTTTTTTTTTTTTT !!!!!!!!!!!!");
+
+        //            return;
+
+        //        }
+        //    }
+
+        //}
+
+
+        Debug.Log("Kong Co SUGGESET");
+
 
     }
-   
-    public bool SimulateMoveTo(List<Vector2> shape, Vector2 direct, int[,] Board)
+    public void SuggestRight()
     {
+        bool FindOut = true;
 
+        SortShape();
+
+        List<Shape> ListShapeMove = new List<Shape>();
+        int[,] shape = CloneBoard(Board);
+        List<List<Vector2>> Shapes = PushListCubeInList(List_Shape);
+        List<List<Vector2>> ShapesNotActive = ShapeNotActive(List_Shape);
+
+
+
+        for (int i = 0; i < ShapesNotActive.Count; i++)
+        {
+            string s = "";
+            s += RenderListShape(ShapesNotActive[i]) + "\n";
+            //     Debug.Log(s);
+        }
+        Debug.Log("///////////////////");
+        for (int i = 0; i < Shapes.Count; i++)
+        {
+            string s = "";
+            s += RenderListShape(Shapes[i]) + "\n";
+            //   Debug.Log(s);
+        }
+
+        Debug.Log("LEFT  MOVE " + ShapesNotActive.Count);
+        for (int i = 0; i < Shapes.Count; i++)
+        {
+            if (IsInList(ShapesNotActive, Shapes[i]))
+            {
+                //    Debug.Log("yes");
+            }
+            else
+            {
+                //   Debug.Log("no");
+            }
+
+
+        }
+
+
+        for (int i = 0; i < Shapes.Count; i++)
+        {
+
+            if (IsInList(ShapesNotActive, Shapes[i]))
+                continue;
+            List<List<Vector2>> ListShapeGame = new List<List<Vector2>>(Shapes);
+
+            int[,] BoardClone = CloneBoard(Board);
+            Debug.Log("_________________________________");
+            Debug.Log("BOARD_CURR : \n " + Render(BoardClone));
+            Debug.Log("_________________________________");
+            List<Vector2> Cube = ListShapeGame[i];
+
+            Vector2 point = SimulateMoveLeftRight(CloneShapeList(Cube), CloneBoard(BoardClone));
+            string s = "";
+
+            //for (int z = 0; z < Cube.Count; z++)
+            //{
+            //    s += "  " + Cube[z].x + "   " + Cube[z].y + " \n";
+            //}
+            //Debug.Log("Shape Curennt : " + s);
+
+            for (int left = 0; left < point.x; left++)
+            {
+
+                InputToBoard(Cube, BoardClone, -1);
+                Debug.Log("CHAGE _ BOARD : \n " + Render(BoardClone));
+                if (Suggestions(CloneBoard(BoardClone), CloneAllListShape(ListShapeGame)))
+                {
+                    Suggeset(List_Shape[i], -left);
+                    Debug.Log("FIND OUTTTTTTTTTTTTT !!!!!!!!!!!!");
+
+                    return;
+
+                }
+            }
+
+        }
+    }
+   
+    
+    public string  RenderListShape(List<Vector2> shape)
+    {
+        string s = "";
+        for(int i = 0; i < shape.Count; i++)
+        {
+            s+=shape[i].x +"  "+shape[i].y+"\n";
+        }
+        return s;
+        
+    }
+
+    public bool IsInList(List<List<Vector2>> ListShape, List<Vector2> shape)
+    {
+        bool HasIn = false;
+        for(int i = 0; i < ListShape.Count; i++)
+        {
+         if(shape.Count == ListShape[i].Count)
+            {
+                for (int j = 0; j < shape.Count; j++)
+                {
+                    if (shape[j].x == ListShape[i][j].x && shape[j].y == ListShape[i][j].y)
+                    {
+                        return true;
+                    }
+                }
+            }
+            
+        }
+        return false;
+       
+    }
+
+    public  List<List<Vector2>> CloneListShape(List<List<Vector2>> listShape)
+    {
+        List<List<Vector2>> ListClone = new List<List<Vector2>>(listShape);
+
+        return ListClone;
+    }
+   public void InputToBoard(List<Vector2> shape, int[,] Board,int Space)
+    {
         for (int i = 0; i < shape.Count; i++)
         {
+          
+
             Vector2 point = shape[i];
+
+           
+          //  Debug.Log(point.y + "  " + point.x);
             Board[(int)point.y, (int)point.x] = 0;
             
         }
         for (int i = 0; i < shape.Count; i++)
         {
-            Vector2 point = shape[i];
-            
-             if(Board[((int)point.y + (int)direct.y), (int)point.x+ (int)direct.x]== 1)
+            Vector2 Point = shape[i];
+            Point.x  += Space;
+
+            shape[i] = Point;
+        }
+
+
+        for (int i = 0; i < shape.Count; i++)
+        {
+
+            Vector2 Point = shape[i];
+
+            Board[(int)Point.y, (int)Point.x] = 1;
+           
+        }
+      
+    }
+   
+
+    public bool Suggestions(int[,] Board,List<List<Vector2>> List_Shape)
+    {
+       
+
+        Debug.Log("Nornal : \n" + Render(Board));
+        SortShape();
+      
+        while (isCheckDown(CloneBoard(Board), 1,List_Shape))
+            for (int i = 0; i < List_Shape.Count; i++)
             {
+                //     Debug.Log(" : " + i + "  :" + Render(shape));
+                if (isMoveDown(Board, 1, List_Shape[i]))
+                {
+                  
+                    SimulateMoveDown(List_Shape[i], 1, Board);
+                    //  ListShapeMove.Add(List_Shape[i]);
+                    //  Debug.Log(" : " + i + "  :" + Render(shape));
+                }
+                else
+                {
+                    ResetMove(List_Shape[i], Board);
+                }
+
 
             }
-            shape[i] = new Vector2((int)point.x+direct.x, ((int)point.y + direct.y));
+
+       
+        //  Debug.Log("CANVAS : " + Render(shape));
+      
+        Debug.Log("RESULT MOVE : \n" + Render(Board));
+        
+
+        return IsHasSuggest(Board);
+
+
+    }
+
+    public List<List<Vector2>> CloneAllListShape(List<List<Vector2>> ListShape)
+    {
+        List<List<Vector2>> list = new List<List<Vector2>>();
+
+        for(int i = 0; i < ListShape.Count; i++)
+        {
+            List<Vector2> Shape = new List<Vector2>();
+            for(int j = 0; j < ListShape[i].Count; j++)
+            {
+                Vector2 Point = ListShape[i][j];
+                Shape.Add(Point);
+            }
+            list.Add(Shape);
+            
+        }
+        return list;
+    }
+  
+    private bool InputToBoard(List<Vector2> shape, int[,] Board)
+    {
+        for (int i = 0; i < shape.Count; i++)
+        {
+            int row = (int)shape[i].y;
+            int col = (int)shape[i].x;
+           if(isInMatrix(row,col,Board))
+            {
+              
+                if (Board[row, col] == 1)
+                {
+                    return false;
+                }
+                
+            }
+            else
+            {
+                return false;
+            }
+
+         
         }
         return true;
 
     }
 
-    public bool Suggestions(int[,] Board)
+    
+
+ 
+    public Vector2 SimulateMoveLeftRight(List<Vector2> shape,int[,] Board)
     {
+        int left  = 0;
+        int right = 0;
+        string s = "";
 
-       
-        List<Shape> ListShapeMove = new List<Shape>();
-        int[,] shape = CloneBoard(Board);
+        for(int i = 0; i < shape.Count; i++)
+        {
+            s += "  " + shape[i].x + "   " + shape[i].y + " \n";
+        }
 
-        List<List<Vector2>> Shapes = PushListCubeInList(List_Shape);
-        List<int> ListMove = GenerateList(Shapes.Count);
-        while (isCheckDown(shape, 1, Shapes))
-            for (int i = 0; i < Shapes.Count; i++)
+        List<Vector2> BackUp = CloneShapeList(shape);
+         
+        for (int i = 0; i < shape.Count; i++)
+        {
+            Vector2 point = shape[i];
+            Board[(int)point.y, (int)point.x] = 0;
+
+        }
+        // Right
+        while (InputToBoard(shape, Board))
+        {
+            for(int i = 0; i < shape.Count; i++)
             {
-
-                if (isMoveDown(shape, 1, Shapes[i]))
-                {
-                    ListMove[i]++;
-                    SimulateMoveDown(Shapes[i], 1, shape);
-
-                }
-                else
-                {
-                    ResetMove(Shapes[i], shape);
-                }
-
-
+                Vector2 Point = shape[i];
+                Point.x++;
+                shape[i] = Point;
             }
+            right++;
+        }
+        right--;
+        shape = BackUp;
+        for (int i = 0; i < shape.Count; i++)
+        {
+            Vector2 point = shape[i];
+            Board[(int)point.y, (int)point.x] = 0;
+
+        }
+        while (InputToBoard(shape, Board))
+        {
+            for (int i = 0; i < shape.Count; i++)
+            {
+                Vector2 Point = shape[i];
+                Point.x--;
+                shape[i] = Point;
+            }
+            left++;
+        }
+        left--;
+        // Left
+
+        shape = BackUp;
+        s+="\n" +" " + left + "  " + right;
+        Debug.Log(s);
+        return new Vector2(left,right);
 
       
-        return IsHasSuggest(shape);
-
-
     }
+    public List<Vector2> CloneShapeList(List<Vector2> shape)
+    {
+        List<Vector2> list = new List<Vector2>();
+        for(int i = 0; i < shape.Count; i++)
+        {
+            Vector2 Point = shape[i];
+            list.Add(Point);
+        }
+        return list;
+    }
+
 
     public bool IsHasSuggest(int[,] Board)
     {
@@ -2884,6 +3281,29 @@ public class CtrlGamePlay : MonoBehaviour
         }
         return false;
     }
+    public void Suggeset(Shape shape,int end)
+    {
+
+        int Pointend = (int)shape.Point.y + end;
+        Vector2 PosStart = shape.transform.position;
+        float x = CtrlGamePlay.Ins.initPoint.x + Pointend * CtrlGamePlay.Ins.offsetX;
+        
+
+        Vector2 PosEnd = new Vector2(x, PosStart.y);
+        
+        var a = Instantiate(shape.gameObject, shape.transform.position, Quaternion.identity, transGameplay);
+        a.gameObject.layer = 0;
+        a.GetComponent<Shape>().enabled = false;
+        a.AddComponent<LoopMove>();
+        a.GetComponent<LoopMove>().SetUp(PosStart, PosEnd,Mathf.Abs(end));
+        
+
+
+
+
+
+    }
+    
 
 
 
