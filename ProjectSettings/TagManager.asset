@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Effects
   layers:
   - Default
   - TransparentFX
@@ -17,8 +18,8 @@ TagManager:
   - Simulate
   - Effect
   - Clone
-  - 
-  - 
+  - Score
+  - Direct
   - 
   - 
   - 
@@ -41,15 +42,18 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Cube
-    uniqueID: 1527770269
+  - name: Direct
+    uniqueID: 1098932691
     locked: 0
-  - name: 
-    uniqueID: 4076935707
+  - name: Score
+    uniqueID: 1527770269
     locked: 0
   - name: Simulate
     uniqueID: 738596679
     locked: 0
   - name: Clone
     uniqueID: 3182067675
+    locked: 0
+  - name: Cube
+    uniqueID: 4076935707
     locked: 0

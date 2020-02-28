@@ -6,6 +6,7 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Data/File")]
 public class DataGame : ScriptableObject
 {
+    
     [SerializeField]
     public List<TypeShapeColor> TypeShape = new List<TypeShapeColor>();
   

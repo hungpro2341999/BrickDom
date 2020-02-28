@@ -8,9 +8,13 @@ public class CtrlGamePlay : MonoBehaviour
 {
 
     //Score:
+    
     public int Round = 0;
-
+    public int Combo = 0;
     //
+    public GameObject BoxSuggestRight;
+    public GameObject BoxSuggestLeft;
+    public GameObject DirectSuggset;
     public Transform transGameplay;
     public float TimeTurnToGray = 0.2f;
     public float TimeDestroy = 0.2f;
@@ -49,7 +53,7 @@ public class CtrlGamePlay : MonoBehaviour
           new Vector2(0,-1),
            new Vector2(-1,0),
     };
-
+    
     public List<GameObject> Suggest = new List<GameObject>();
     public List<Shape> CloneListDestroy = new List<Shape>();
     #region localVariable
@@ -216,7 +220,7 @@ public class CtrlGamePlay : MonoBehaviour
 
 
 
-        GameManager.Ins.CloseWindow(TypeWindow.Continue);
+        GameManager.Ins.OpenWindow(TypeWindow.GamePlay);
 
     }
     
@@ -237,6 +241,9 @@ public class CtrlGamePlay : MonoBehaviour
         Invoke("StartDestroyAllCube", totalTime);
 
     }
+
+    
+
     public void StartDestroyAllCube()
     {
         //List<List<DestroySelf>> CubeSort = SortCube();
@@ -373,12 +380,9 @@ public class CtrlGamePlay : MonoBehaviour
     
         #region
       
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            Suggeset(List_Shape[0],2,false);
-        }
         if (Input.GetKeyDown(KeyCode.A))
         {
+            DestroyAll();
             bool FindOut = false;
             if (!StartSuggestionsLeft(FindOut))
             {
@@ -404,15 +408,14 @@ public class CtrlGamePlay : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.L))
         {
-            Test();
+            Suggeset_Ver_2(List_Shape[0], 2, true);
+
+          //  Test();
            
         }
-        if (Input.GetKeyDown(KeyCode.C))
+        if (Input.GetKeyDown(KeyCode.D))
         {
-            DestroyAll();
-            DestroyRow(13);
-            SplitShape();
-            SplitShape();
+            
         }
 
 
@@ -489,7 +492,8 @@ public class CtrlGamePlay : MonoBehaviour
                     RefershBoard();  
                     if (offset != ShapeClick.PointInitCheck.y)
                     {
-                       
+                        
+
                         SimulateDown();
                         SetUpAll();
                         isClick_up = true;
@@ -531,6 +535,7 @@ public class CtrlGamePlay : MonoBehaviour
 
                 if (HasScore())
                 {
+
                     CheckDestroyRow();
                     SplitShape();
                     SplitShape();
@@ -541,9 +546,10 @@ public class CtrlGamePlay : MonoBehaviour
                 }
                 else
                 {
-                  
+                    Round = 0;
                    
                     isClick_up = false;
+                    Combo = 0;
                 }
 
                 if (isGameOver())
@@ -552,7 +558,16 @@ public class CtrlGamePlay : MonoBehaviour
                     GameManager.Ins.isGameOver = false;
                     if (CtrlData.CountPlay % 2 != 0)
                     {
-                        GameManager.Ins.OpenWindow(TypeWindow.Continue);
+
+                        if (CtrlData.Ins.SetHighScore(DataPlayer.Score))
+                        {
+                            GameManager.Ins.OpenWindow(TypeWindow.HighScore);
+                        }
+                        else
+                        {
+                            GameManager.Ins.OpenWindow(TypeWindow.Continue);
+                        }
+                      
                     }
                     else
                     {
@@ -590,6 +605,8 @@ public class CtrlGamePlay : MonoBehaviour
 
     public bool HasScore()
     {
+        Round++;
+        
         int has = 0;
         for(int i = 0; i < Board.GetLength(0); i++)
         {
@@ -699,7 +716,7 @@ public class CtrlGamePlay : MonoBehaviour
     public void CheckDestroyRow()
     {
         int[] row;
-      
+        int Score;
         if (DestroyAtRow(out row))
         {
 
@@ -719,6 +736,38 @@ public class CtrlGamePlay : MonoBehaviour
         {
             CloneShape(CloneListDestroy[i], 0.065f);
         }
+        if(row !=null)
+        {
+
+          
+
+            if (row.Length>0)
+            {
+                Combo += row.Length;
+                if ( Combo > 1)
+                {
+
+
+                    CtrlData.Ins.VisibleCombo(Combo);
+
+                    CtrlData.Ins.VisibleScore(14*Combo);
+
+                    DataPlayer.Score += 14 * Combo;
+
+                    DataPlayer.Ins.SetScore();
+
+                }
+                else
+                {
+                    
+                    CtrlData.Ins.VisibleScore(14);
+                    DataPlayer.Score += 14;
+                    DataPlayer.Ins.SetScore();
+                }
+              
+            }
+        }
+     
         ReflectShape();
         SplitShape();
         SplitShape();
@@ -810,11 +859,11 @@ public class CtrlGamePlay : MonoBehaviour
     public void SpawnShape()
     {
 
-        GenerateStartGame(Random.Range(1, 4),false);
+        GenerateStartGame(Random.Range(2,5),false);
     }
     public void SpawnStartGame()
     {
-        GenerateStartGame(Random.Range(1, 4), true);
+        GenerateStartGame(Random.Range(2,4), true);
     }
 
     public static Vector3 RandomPosShape()
@@ -3011,7 +3060,7 @@ public class CtrlGamePlay : MonoBehaviour
                     {
                         continue;
                     }
-                    Suggeset(List_Shape[i],left,false);
+                    Suggeset_Ver_2(List_Shape[i],left,false);
                     
                  
                //     Debug.Log("FIND OUTTTTTTTTTTTTT !!!!!!!!!!!!");
@@ -3112,7 +3161,7 @@ public class CtrlGamePlay : MonoBehaviour
                         continue;
                     }
                     FindOut = true;
-                    Suggeset(List_Shape[i],left,true);
+                    Suggeset_Ver_2(List_Shape[i],left,true);
                     Debug.Log("FIND OUNT RIGHT : " + left);
                     Debug.Log("FIND OUTTTTTTTTTTTTT !!!!!!!!!!!!");
                     count++;
@@ -3410,9 +3459,126 @@ public class CtrlGamePlay : MonoBehaviour
 
 
     }
+    public void Suggeset_Ver_2(Shape shape, int end, bool Right)
+    {
+        int Pointend;
+        if (Right)
+        {
+            Pointend = (int)shape.Point.y + end;
+        }
+        else
+        {
+
+            Pointend = (int)shape.Point.y - end;
+        }
+
+        Vector2 PosStart = shape.transform.position;
+        float x = CtrlGamePlay.Ins.initPoint.x + Pointend * CtrlGamePlay.Ins.offsetX;
+
+
+        Vector2 PosEnd = new Vector2(x, PosStart.y);
+
+        var a = Instantiate(shape.gameObject, shape.transform.position, Quaternion.identity, transGameplay);
+        if (Right)
+        {
+            var b = Instantiate(BoxSuggestRight, shape.transform.position, Quaternion.identity, null);
+            b.transform.localScale = new Vector2(shape.shape.GetLength(1) + end, shape.shape.GetLength(0));
+            b.AddComponent<DestroySelf1>();
+            b.gameObject.layer = 11;
+           
+            Suggest.Add(b);
+            var c = Instantiate(DirectSuggset,GetPosition(shape.ListShape,shape.shape,true), Quaternion.identity, null);
+            c.AddComponent<DestroySelf1>();
+            c.GetComponent<SpriteRenderer>().flipX = true;
+            c.AddComponent<LoopMove>();
+            c.GetComponent<LoopMove>().SetUp(c.transform.position, (Vector2)c.transform.position + Vector2.right * 0.3f, 0.8f);
+            Suggest.Add(c);
+
+         
+        }
+        else
+        {
+            Vector2 pos = shape.transform.position;
+            pos = new Vector2(shape.transform.position.x + shape.shape.GetLength(1) * offsetX,pos.y);
+            var b = Instantiate(BoxSuggestLeft,pos, Quaternion.identity, null);
+            b.transform.localScale = new Vector2(shape.shape.GetLength(1) + end, shape.shape.GetLength(0));
+            b.gameObject.layer = 11;
+            b.AddComponent<DestroySelf1>();
+            Suggest.Add(b);
+            var c = Instantiate(DirectSuggset, GetPosition(shape.ListShape,shape.shape, false), Quaternion.identity, null);
+            c.AddComponent<DestroySelf1>();
+            c.AddComponent<LoopMove>();
+            c.GetComponent<LoopMove>().SetUp(c.transform.position, (Vector2)c.transform.position + Vector2.left*0.3f ,0.8f);
+            Suggest.Add(c);
+
+          
+        }
+        
+     
+        a.gameObject.layer = 11;
+        for (int i = 0; i < a.GetComponent<Shape>().ListShape.Count; i++)
+        {
+            a.GetComponent<Shape>().ListShape[i].gameObject.layer = 11;
+            a.GetComponent<Shape>().ListShape[i].GetComponent<BoxCollider2D>().enabled = false;
+        }
+
+        a.GetComponent<Shape>().FadeShape();
+        a.GetComponent<Shape>().enabled = false;
+        a.AddComponent<LoopMove>();
+        a.AddComponent<DestroySelf1>();
+        Suggest.Add(a);
+        a.gameObject.SetActive(false);
+        a.GetComponent<LoopMove>().SetUp(PosStart, PosEnd, Mathf.Abs(end));
+
+
+
+
+
+
+    }
+
+    public Vector2 GetPosition(List<GameObject> Cube, int[,] shape,bool max)
+    {
+        int p = 0;
+        if (max)
+        {
+            p = shape.GetLength(0)-1;
+        }
+        else
+        {
+            p = 0;
+        }
+      
+
+        for(int i = 0; i < shape.GetLength(0); i++) 
+        {
+            int x = shape.GetLength(1) * i + p;
+
+           for(int j = 0; j < Cube.Count; j++)
+            {
+                if(x.ToString() == Cube[j].gameObject.name)
+                {
+                    return new Vector2((initPoint.x + offsetX * Cube[j].GetComponent<DestroySelf>().Point.x) + offsetX / 2,(initPoint.y - offsetY * Cube[j].GetComponent<DestroySelf>().Point.y) - offsetY / 2);
+                }
+            }
+        }
+
+            //for(int j = 0;j < Cube.Count; j++)
+            //{
+            //  int index = 
+            ////if (shape[j, p] != 0)
+            ////{
+            ////    return new Vector2((initPoint.x + offsetX * p)+offsetX/2,(initPoint.y-offsetY*j)-offsetY/2);
+            ////}
+             
+            //}
+        return Vector2.zero;
+    }
+
     
-    
-    
+
+
+
 
 
 

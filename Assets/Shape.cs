@@ -737,14 +737,26 @@ public class Shape : MonoBehaviour
 
     public static TypeShape RandomShape()
     {
+        int r = Random.Range(0, 100);
         TypeShape type = TypeShape.None;
         while (type == TypeShape.None || type == TypeShape.L3_0 || type == TypeShape.L3_90)
         {
-
+            if(r>=0 && r <= 50)
+            {
+             return     DataPlayer.Ins.RandomType(DataPlayer.Type_1);
+            }
+            else if(r>50 && r <= 80)
+            {
+                return DataPlayer.Ins.RandomType(DataPlayer.Type_2);
+            }
+            else
+            {
+                return DataPlayer.Ins.RandomType(DataPlayer.Type_3);
+            }
           
-            System.Array values = System.Enum.GetValues(typeof(TypeShape));
+            //System.Array values = System.Enum.GetValues(typeof(TypeShape));
 
-            type = (TypeShape)values.GetValue(UnityEngine.Random.Range(0, values.Length));
+            //type = (TypeShape)values.GetValue(UnityEngine.Random.Range(0, values.Length));
          
         }
         return type;

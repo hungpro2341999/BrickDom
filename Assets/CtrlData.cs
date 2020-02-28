@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class CtrlData : MonoBehaviour
 {
     #region
     public static int CountPlay = 1;
     public const string Key_HighScore = "Key_High_Score";
     public const string Key_Sound = "Key_Sound";
-
+    public Transform UI;
     #endregion
 
     #region 
@@ -129,13 +130,22 @@ public class CtrlData : MonoBehaviour
     public List<Sprite> Img_Cube_Cross_2 = new List<Sprite>();
     public List<Sprite> Img_Cube_Cross_3 = new List<Sprite>();
     public List<Sprite> Img_Cube_Cross_4 = new List<Sprite>();
-
+    
 
     public static List<int[,]> ShapeType = new List<int[,]>();
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            CtrlData.Ins.VisibleCombo(1);
+        }
+    }
+    
     public void InitKey()
     {
-        if (!PlayerPrefs.HasKey(Key_HighScore))
+        PlayerPrefs.DeleteKey(Key_HighScore);
+          if (!PlayerPrefs.HasKey(Key_HighScore))
         {
             PlayerPrefs.SetInt(Key_HighScore, 0);
         }
@@ -160,6 +170,11 @@ public class CtrlData : MonoBehaviour
 
             return false;
         }
+    }
+    public int GetHighScore()
+    {
+        return PlayerPrefs.GetInt(Key_HighScore);
+      
     }
 
 
@@ -187,8 +202,20 @@ public class CtrlData : MonoBehaviour
             return false;
         }
     }
+    public void VisibleScore(int Score)
+    {
+       var a =  Instantiate(GetEffect(6), new Vector3(Screen.width/2,Screen.height/2,0), Quaternion.identity, UI);
+       a.GetComponent<Text>().text = Score.ToString();
 
-   
+    }
+    public void VisibleCombo(int i)
+    {
+
+        var a = Instantiate(GetEffect(7), new Vector3(Screen.width / 2, Screen.height / 2, 0), Quaternion.identity, UI);
+        a.transform.Find("Text").GetComponent<Text>().text = "c" + i;
+
+    }
+    
 
     public static TypeShape GetShapeType(int i)
     {
@@ -256,6 +283,7 @@ public class CtrlData : MonoBehaviour
         ShapeType.Add(Cube_3);//7
         ShapeType.Add(Cube_L3_0);//8
         ShapeType.Add(Cube_L3_90);//9
+        InitKey();
     }
     // Start is called before the first frame update
     public static int RandomColor(TypeShape type,int roll)

@@ -37,7 +37,7 @@ public class LoopMove : MonoBehaviour
 
         }
     }
-    public void SetUp(Vector2 Start, Vector2 End,int speed)
+    public void SetUp(Vector2 Start, Vector2 End,float speed)
     {
         this.PStart = Start;
         this.End = End;
