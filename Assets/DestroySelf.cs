@@ -38,5 +38,6 @@ public class DestroySelf : MonoBehaviour
     {
         return Point;
     }
+    
    
 }

@@ -111,7 +111,7 @@ public class CtrlGamePlay : MonoBehaviour
     {
         for(int i = 0; i < Suggest.Count; i++)
         {
-             
+            
             Suggest[i].GetComponent<DestroySelf1>().DestroyObj();
             
         }
@@ -189,10 +189,10 @@ public class CtrlGamePlay : MonoBehaviour
         GameManager.Ins.isGameOver = true;
         GameManager.Ins.isGamePause = true;
         Board = new int[Row, Column];
-   
+
+        DestroyAll_Ver_1();
+        GameManager.Ins.OpenWindow(TypeWindow.GamePlay);
       
-       
-        GameManager.Ins.StartGame();
         
     }
     
@@ -382,7 +382,7 @@ public class CtrlGamePlay : MonoBehaviour
       
         if (Input.GetKeyDown(KeyCode.A))
         {
-            DestroyAll();
+          
             bool FindOut = false;
             if (!StartSuggestionsLeft(FindOut))
             {
@@ -396,7 +396,7 @@ public class CtrlGamePlay : MonoBehaviour
         {
 
 
-            SimulateDown();
+            DestroyAll_Ver_1();
 
         }
            
@@ -559,23 +559,33 @@ public class CtrlGamePlay : MonoBehaviour
                     if (CtrlData.CountPlay % 2 != 0)
                     {
 
-                        if (CtrlData.Ins.SetHighScore(DataPlayer.Score))
+                        if (CtrlData.Ins.Set_High_Score(CtrlData.Score))
                         {
+                            
                             GameManager.Ins.OpenWindow(TypeWindow.HighScore);
                         }
                         else
                         {
+                           
                             GameManager.Ins.OpenWindow(TypeWindow.Continue);
                         }
                       
                     }
                     else
                     {
+                        if (CtrlData.Ins.Set_High_Score(CtrlData.Score))
+                        {
+                           
+                            GameManager.Ins.OpenWindow(TypeWindow.HighScore);
+                        }
+                        else
+                        {
+                            SetUpDestroyAllCube();
+                        }
                       
-                        SetUpDestroyAllCube();
                     }
                     CtrlData.CountPlay++;
-                  //  GameManager.Ins.OpenWindow(TypeWindow.OverGame);
+                  
                 }
                 else
                 {
@@ -752,17 +762,17 @@ public class CtrlGamePlay : MonoBehaviour
 
                     CtrlData.Ins.VisibleScore(14*Combo);
 
-                    DataPlayer.Score += 14 * Combo;
+                    CtrlData.Score += 14 * Combo;
 
-                    DataPlayer.Ins.SetScore();
+                    CtrlData.Ins.SetScore();
 
                 }
                 else
                 {
                     
                     CtrlData.Ins.VisibleScore(14);
-                    DataPlayer.Score += 14;
-                    DataPlayer.Ins.SetScore();
+                    CtrlData.Score += 14;
+                    CtrlData.Ins.SetScore();
                 }
               
             }
@@ -860,10 +870,12 @@ public class CtrlGamePlay : MonoBehaviour
     {
 
         GenerateStartGame(Random.Range(2,5),false);
+        RefershBoard();
     }
     public void SpawnStartGame()
     {
         GenerateStartGame(Random.Range(2,4), true);
+        RefershBoard();
     }
 
     public static Vector3 RandomPosShape()
@@ -1217,14 +1229,14 @@ public class CtrlGamePlay : MonoBehaviour
 
         }
 
-        MoveSelect.text = "LEFT : " + minX + "RIGHT :  " + maxX + "\n";
+      //  MoveSelect.text = "LEFT : " + minX + "RIGHT :  " + maxX + "\n";
         float ClampMinX = minX * offsetX;
         float ClampMaxX = maxX * offsetY;
 
-        MoveSelect.text += ClampMinX + " :: " + ClampMaxX;
+     //   MoveSelect.text += ClampMinX + " :: " + ClampMaxX;
         shape.SetUpClamp(ClampMinX, ClampMaxX);
 
-        MoveSelect.text = s;
+      //  MoveSelect.text = s;
        // Debug.Log(s);
 
 
@@ -1657,7 +1669,19 @@ public class CtrlGamePlay : MonoBehaviour
         return ListRow;
 
     }
-    
+    public void DestroyAll_Ver_1()
+    {
+
+        for (int i = 0; i < Board.GetLength(0); i++)
+        {
+            DestroyRow(i);
+        }
+        List_Shape = new List<Shape>();
+        Cubes = new List<GameObject>();
+        Board = new int[Row, Column];
+        Event_Start_Game();
+    }
+
 
 
 
@@ -3583,6 +3607,9 @@ public class CtrlGamePlay : MonoBehaviour
 
 
     #endregion
+
+
+   
 
 }
 

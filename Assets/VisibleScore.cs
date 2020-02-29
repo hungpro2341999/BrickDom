@@ -20,6 +20,6 @@ public class VisibleScore : MonoBehaviour
     }
     private void OnEnable()
     {
-        Score.text = DataPlayer.Score.ToString();
+        Score.text = CtrlData.Score.ToString();
     }
 }

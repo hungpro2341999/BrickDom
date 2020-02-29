@@ -7,8 +7,9 @@ using UnityEngine.UI;
 public class CtrlData : MonoBehaviour
 {
     #region
+    public static int Score;
     public static int CountPlay = 1;
-    public const string Key_HighScore = "Key_High_Score";
+    public const string Key_HighScore = "Key_High_Score_Hight";
     public const string Key_Sound = "Key_Sound";
     public Transform UI;
     #endregion
@@ -82,13 +83,13 @@ public class CtrlData : MonoBehaviour
                     { 0, 1, 0, 0} ,
                     { 0, 1, 0, 0} ,
             };
-  public static int[,] Cube_L3_0 = new int[4, 4]
-          {
+    public static int[,] Cube_L3_0 = new int[4, 4]
+            {
                     { 1, 1, 0, 0} ,
                     { 1, 0, 0, 0} ,
                     { 1, 0, 0, 0} ,
                     { 0, 0, 0, 0} ,
-          };
+            };
     public static int[,] Cube_L3_90 = new int[4, 4]
           {
                     { 1, 1, 0, 0} ,
@@ -96,28 +97,28 @@ public class CtrlData : MonoBehaviour
                     { 0, 1, 0, 0} ,
                     { 0, 0, 0, 0} ,
           };
-    
-    public  const int NotRoll = 0;
-    public  const int Roll_Cross = 2;
-    public  const int Roll_Cube_L = 4;
+
+    public const int NotRoll = 0;
+    public const int Roll_Cross = 2;
+    public const int Roll_Cube_L = 4;
     public static int[] RollCorss_1x1 = new int[5] { 0, 1, 2, 3, 4 };
-    public static int[] RollCorss_1x2 = new int[5] { 0,1,2,3,4};
+    public static int[] RollCorss_1x2 = new int[5] { 0, 1, 2, 3, 4 };
     public static int[] RollCorss_2x1 = new int[5] { 0, 1, 2, 3, 4 };
-    public static int[] RollCorss_1x3 = new int[4] { 0,1,3,4 };
+    public static int[] RollCorss_1x3 = new int[4] { 0, 1, 3, 4 };
     public static int[] RollCorss_3x1 = new int[4] { 0, 1, 2, 4 };
     public static int[] RollCorss_1x4 = new int[3] { 0, 1, 3 };
-    public static int[] RollCorss_4x1 = new int[1] {2};
-    public static int[] L2_0 = new int[2] {2,4 };
+    public static int[] RollCorss_4x1 = new int[1] { 2 };
+    public static int[] L2_0 = new int[2] { 2, 4 };
     public static int[] L2_90 = new int[2] { 2, 3 };
-    public static int[] L3_0 = new int[1] {0};
-    public static int[] L3_90 = new int[1] {1};
-    public static int[] L3_180 = new int[1] {3};
-    public static int[] L3_270 = new int[1] {4};
-    public static int[] L4_0 = new int[1] {0};
-    public static int[] L4_90 = new int[1] {1};
-    public static int[] L4_180 = new int[1] {3};
-    public static int[] L4_270 = new int[1] {4};
-    public static int[] Square = new int[5] {0,1,2,3,4};
+    public static int[] L3_0 = new int[1] { 0 };
+    public static int[] L3_90 = new int[1] { 1 };
+    public static int[] L3_180 = new int[1] { 3 };
+    public static int[] L3_270 = new int[1] { 4 };
+    public static int[] L4_0 = new int[1] { 0 };
+    public static int[] L4_90 = new int[1] { 1 };
+    public static int[] L4_180 = new int[1] { 3 };
+    public static int[] L4_270 = new int[1] { 4 };
+    public static int[] Square = new int[5] { 0, 1, 2, 3, 4 };
     public static int[] T_0 = new int[1] { 2 };
     public static int[] T_90 = new int[1] { 3 };
     public static int[] T_180 = new int[1] { 4 };
@@ -125,44 +126,76 @@ public class CtrlData : MonoBehaviour
 
     #endregion
     public static CtrlData Ins;
-    public List<Sprite>  Img_Cube_3 = new List<Sprite>();
-    public List<Sprite>  Img_Cube_L_4 = new List<Sprite>();
+    public List<Sprite> Img_Cube_3 = new List<Sprite>();
+    public List<Sprite> Img_Cube_L_4 = new List<Sprite>();
     public List<Sprite> Img_Cube_Cross_2 = new List<Sprite>();
     public List<Sprite> Img_Cube_Cross_3 = new List<Sprite>();
     public List<Sprite> Img_Cube_Cross_4 = new List<Sprite>();
-    
+
 
     public static List<int[,]> ShapeType = new List<int[,]>();
 
+    public Text TScore;
+    public Text THighScore;
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.M))
         {
-            CtrlData.Ins.VisibleCombo(1);
+            Debug.Log(GetHighScore());
+            // CtrlData.Ins.VisibleCombo(1);
+         //   DataPlayer.Ins.SetHighScore(1000);
         }
     }
-    
+    public void ResetScore()
+    {
+        CtrlData.Score = 0;
+        TScore.text = "0";
+    }
     public void InitKey()
     {
-        PlayerPrefs.DeleteKey(Key_HighScore);
-          if (!PlayerPrefs.HasKey(Key_HighScore))
+
+        if (!PlayerPrefs.HasKey(Key_HighScore))
         {
             PlayerPrefs.SetInt(Key_HighScore, 0);
+            int Score = GetHighScore();
+
+            THighScore.text = Score.ToString();
         }
-       if (!PlayerPrefs.HasKey(Key_Sound))
+        else
         {
+            int Score = GetHighScore();
+
+           THighScore.text = Score.ToString();
+
+        }
+        if (!PlayerPrefs.HasKey(Key_Sound))
+        {
+
 
             PlayerPrefs.SetInt(Key_Sound, 1);
         }
     }
+    public void SetTextScore(int Score)
+    {
+        TScore.text = Score.ToString();
+    }
+    public void SetHighScore(int Score)
+    {
+        THighScore.text = Score.ToString();
+    }
+    public void SetScore()
+    {
+        TScore.text = Score.ToString();
+    }
 
-    public bool SetHighScore(int Score)
+
+    public bool Set_High_Score(int Score)
     {
         int HighScore = PlayerPrefs.GetInt(Key_HighScore);
         if (Score > HighScore)
         {
             PlayerPrefs.SetInt(Key_HighScore, Score);
-
+            THighScore.text = GetHighScore().ToString();
             return true;
         }
         else
@@ -284,6 +317,11 @@ public class CtrlData : MonoBehaviour
         ShapeType.Add(Cube_L3_0);//8
         ShapeType.Add(Cube_L3_90);//9
         InitKey();
+     
+    }
+    private void Start()
+    {
+        CtrlGamePlay.Ins.Event_Start_Game += ResetScore;
     }
     // Start is called before the first frame update
     public static int RandomColor(TypeShape type,int roll)
