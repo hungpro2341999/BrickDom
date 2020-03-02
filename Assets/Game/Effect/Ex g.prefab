@@ -48,7 +48,7 @@ ParticleSystem:
   ringBufferLoopRange: {x: 0, y: 1}
   looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   useRigidbodyForVelocity: 1
@@ -4894,7 +4894,7 @@ ParticleSystem:
   ringBufferLoopRange: {x: 0, y: 1}
   looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   useRigidbodyForVelocity: 1
@@ -9705,7 +9705,7 @@ ParticleSystem:
   ringBufferLoopRange: {x: 0, y: 1}
   looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   useRigidbodyForVelocity: 1
@@ -14535,7 +14535,7 @@ ParticleSystem:
   ringBufferLoopRange: {x: 0, y: 1}
   looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   useRigidbodyForVelocity: 1
@@ -19206,7 +19206,7 @@ ParticleSystem:
   ringBufferLoopRange: {x: 0, y: 1}
   looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   useRigidbodyForVelocity: 1
@@ -28909,7 +28909,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8176938253009521553}
   - component: {fileID: 27011108230213398}
-  - component: {fileID: 1496498553640125323}
+  - component: {fileID: 4045415971253959658}
   m_Layer: 10
   m_Name: Ex g
   m_TagString: Untagged
@@ -28948,7 +28948,7 @@ SortingGroup:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
---- !u!114 &1496498553640125323
+--- !u!114 &4045415971253959658
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -28960,6 +28960,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2618f6381b84fc5439eee9615f065c37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  destroy: 0
-  time: 0
+  m_transform: {fileID: 8176938253009521553}
+  obj: {fileID: 9213801572151565396}
   timeLife: 1.5
+  partice: []

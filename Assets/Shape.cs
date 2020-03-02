@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 
 public enum TypeShape {crossBar_1,crossBar_2,crossBar_3, crossBar_4, square,three_cube,L_4_0,L4_90,L3_0,L3_90,T,None}
-public class Shape : MonoBehaviour
+public class Shape : PoolItem
 {
 
     // 0 Green
@@ -57,7 +57,8 @@ public class Shape : MonoBehaviour
     public string nameSpriteUse;
     public bool isEff = false;
     public int CubeStart;
-
+    public List<GameObject> Eff = new List<GameObject>();
+   
     #region Move
 
     public Vector3 posInit;
@@ -99,6 +100,28 @@ public class Shape : MonoBehaviour
         List_Image.Add(ImgCube_L3_90);
         List_Image.Add(ImgCube_T0);
         List_Image.Add(ImgCube_T90);
+    }
+    public void Reset()
+    {
+        Img_Cube_1x1.gameObject.SetActive(false);
+
+
+       Img_Cube_Cross_1x1.gameObject.SetActive(false);
+       Img_Cube_Cross_2_0.gameObject.SetActive(false);
+      Img_Cube_Cross_2_90.gameObject.SetActive(false);
+       Img_Cube_Cross_3_Horizontal.gameObject.SetActive(false);
+       Img_Cube_Cross_3_Vertical.gameObject.SetActive(false);
+      Img_Cube_Cross_4_Horizontal.gameObject.SetActive(false);
+      Img_Cube_Cross_4_Vertical.gameObject.SetActive(false);
+       ImgCube_quare.gameObject.SetActive(false);
+        ImgCube_L2_0.gameObject.SetActive(false);
+       ImgCube_L2_90.gameObject.SetActive(false);
+       ImgCube_L4_0.gameObject.SetActive(false);
+        ImgCube_L4_90.gameObject.SetActive(false);
+       ImgCube_L3_0.gameObject.SetActive(false);
+        ImgCube_L3_90.gameObject.SetActive(false);
+        ImgCube_T0.gameObject.SetActive(false);
+        ImgCube_T90.gameObject.SetActive(false);
     }
 
 
@@ -215,22 +238,7 @@ public class Shape : MonoBehaviour
     }
 
  
-    public void Reset()
-    {
-    //    Img_Cube_Cross_1.gameObject.SetActive(false);
-    //    Img_Cube_Cross_2_0.gameObject.SetActive(false);
-    //    Img_Cube_Cross_2_90.gameObject.SetActive(false);
-    //    Img_Cube_Cross_3_Horizontal.gameObject.SetActive(false);
-    //    Img_Cube_Cross_3_Vertical.gameObject.SetActive(false);
-    //    Img_Cube_Cross_4_Horizontal.gameObject.SetActive(false);
-    //    Img_Cube_Cross_4_Vertical.gameObject.SetActive(false);
-    //    Img_Cube_3.gameObject.SetActive(false);
-    //    ImgCube_quare.gameObject.SetActive(false);
-    //    ImgCube_L4_0.gameObject.SetActive(false);
-    //    ImgCube_L4_90.gameObject.SetActive(false);
-    //    ImgCube_L3_0.gameObject.SetActive(false);
-    //    ImgCube_L3_90.gameObject.SetActive(false);
-    }
+   
     
     
 
@@ -824,7 +832,7 @@ public class Shape : MonoBehaviour
         {
             CtrlGamePlay.Ins.List_Shape.Remove(this);
 
-            Destroy(gameObject);
+            OnDespawn();
         }
       
        
@@ -1013,7 +1021,7 @@ public class Shape : MonoBehaviour
             CtrlGamePlay.Ins.Cubes.Remove(ListShape[i]);
         }
         CtrlGamePlay.Ins.List_Shape.Remove(this);
-        Destroy(gameObject);
+        OnDespawn();
     }
     public static int[,] RotationMaxtrix(int[,] Matrix,int countRoll)
     {
@@ -1405,7 +1413,45 @@ public class Shape : MonoBehaviour
         }
        
     }
+    public override void OnSpawn()
+    {
+        gameObject.layer = 0;
+        if (isCubeStart)
+        {
+            if (SpriteUse != null)
+            {
+                Color c = SpriteUse.color;
+                c.a = 1;
+                SpriteUse.color = c;
+                isCubeStart = false;
+            }
+        }
+        if (isEff)
+        {
+            if (SpriteUse != null)
+            {
+                SpriteUse.GetComponent<_2dxFX_GoldFX>().enabled = false;
+            }
+            isEff = false;
+        }
+        Reset();
+        for(int i = 0; i < ListShape.Count; i++)
+        {
+            ListShape[i].SetActive(false);
+        }
 
+        ListShape = new List<GameObject>();
+        
+       
+       
+
+
+    }
+    public override void OnDespawn()
+    {
+        gameObject.SetActive(false);
+       
+    }
 
 
 

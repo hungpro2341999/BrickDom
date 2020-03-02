@@ -30,7 +30,10 @@ public class DestroySelf : MonoBehaviour
 
         if (!shape.isEff)
         {
-            Instantiate(CtrlData.Ins.GetEffect(shape.IDColor), transform.position, Quaternion.identity, null);
+           var a = Poolers.Ins.GetObject(CtrlData.Ins.GetEffect(shape.IDColor), transform.position, Quaternion.identity);
+            a.GetComponent<DestroyParice>().OnSpawn();
+
+            //  Instantiate(CtrlData.Ins.GetEffect(shape.IDColor), transform.position, Quaternion.identity, null);
         }
            
         
@@ -41,7 +44,9 @@ public class DestroySelf : MonoBehaviour
     }
     public void StartSuperEff()
     {
-        Instantiate(CtrlData.Ins.GetEffect(8), transform.position, Quaternion.identity, null);
+       // Instantiate(CtrlData.Ins.GetEffect(8), transform.position, Quaternion.identity, null);
+       var a =   Poolers.Ins.GetObject(CtrlData.Ins.GetEffect(8), transform.position, Quaternion.identity);
+        a.GetComponent<DestroyParice>().OnSpawn();
         shape.StartFade();
     }
     public void StartDestroy(float time)
@@ -54,7 +59,9 @@ public class DestroySelf : MonoBehaviour
     {
         yield return new WaitForSeconds(time);
 
-        Instantiate(CtrlData.Ins.GetEffect(5), transform.position, Quaternion.identity, null);
+        //  Instantiate(CtrlData.Ins.GetEffect(5), transform.position, Quaternion.identity, null);
+       var a=  Poolers.Ins.GetObject(CtrlData.Ins.GetEffect(5), transform.position, Quaternion.identity);
+        a.GetComponent<DestroyParice>().OnSpawn();
         isDestroy = true;
         GetComponentInParent<Shape>().RemoveCube(gameObject);
         Destroy(gameObject);

@@ -2524,9 +2524,10 @@ private float timeSugg = 0;
 
         for(int i = 0; i < ListInfor.Count; i++)
         {
+            var a = Poolers.Ins.GetObject(CtrlGamePlay.Ins.PrebShape, ListInfor[i].pos, Quaternion.identity);
 
-
-            var a = Instantiate(PrebShape, ListInfor[i].pos, Quaternion.identity,transGameplay);
+            a.GetComponent<Shape>().OnSpawn();
+          //  var a = Instantiate(PrebShape, ListInfor[i].pos, Quaternion.identity,transGameplay);
             a.GetComponent<Shape>().isCubeStart = isActive;
             
             a.GetComponent<Shape>().SetTypeShape(ListInfor[i].type, ListInfor[i].shape);
@@ -2580,7 +2581,9 @@ private float timeSugg = 0;
     }
     public void SpawnShape(InforShape ListInfor)
     {
-        var a = Instantiate(PrebShape, ListInfor.pos, Quaternion.identity, null);
+        //  var a = Instantiate(PrebShape, ListInfor.pos, Quaternion.identity, null);
+        var a = Poolers.Ins.GetObject(PrebShape, ListInfor.pos, Quaternion.identity);
+        a.OnSpawn();
         a.GetComponent<Shape>().SetTypeShape(ListInfor.type, ListInfor.shape);
         a.GetComponent<Shape>().Set_Up_Corrs(ListInfor.roll, ListInfor.type,ListInfor.color);
         idShape++;
