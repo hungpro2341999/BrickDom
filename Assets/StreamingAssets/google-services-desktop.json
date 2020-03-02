@@ -1,0 +1,504 @@
+{
+  "project_info": {
+    "project_number": "717788056762",
+    "firebase_url": "https://legendary-35a23.firebaseio.com",
+    "project_id": "legendary-35a23",
+    "storage_bucket": "legendary-35a23.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:717788056762:android:c268b742e1fd7809",
+        "android_client_info": {
+          "package_name": "com.LEGENDARY.Outsiders.Stickman.Revenge"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "717788056762-3bs73qvssr359188hmqkitlmfo22d1q6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMdMDp7Y3hDuNS4OBbgqz0Nt348c3Ofic"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "717788056762-3bs73qvssr359188hmqkitlmfo22d1q6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:717788056762:android:72f138c796be7920",
+        "android_client_info": {
+          "package_name": "com.ONET.pikachu"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "717788056762-3bs73qvssr359188hmqkitlmfo22d1q6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMdMDp7Y3hDuNS4OBbgqz0Nt348c3Ofic"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "717788056762-3bs73qvssr359188hmqkitlmfo22d1q6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:717788056762:android:a4c2ad286437fb6f578683",
+        "android_client_info": {
+          "package_name": "com.color.ring.puzzle.match"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "717788056762-3bs73qvssr359188hmqkitlmfo22d1q6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMdMDp7Y3hDuNS4OBbgqz0Nt348c3Ofic"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "717788056762-3bs73qvssr359188hmqkitlmfo22d1q6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:717788056762:android:9b72d904dfb8c3ec578683",
+        "android_client_info": {
+          "package_name": "com.duel.stick.fighting.warriors.online"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "717788056762-3bs73qvssr359188hmqkitlmfo22d1q6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMdMDp7Y3hDuNS4OBbgqz0Nt348c3Ofic"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "717788056762-3bs73qvssr359188hmqkitlmfo22d1q6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:717788056762:android:912fa9ccd750e5f5",
+        "android_client_info": {
+          "package_name": "com.game.galaxyshooter.alienattack.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "717788056762-3bs73qvssr359188hmqkitlmfo22d1q6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMdMDp7Y3hDuNS4OBbgqz0Nt348c3Ofic"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "717788056762-3bs73qvssr359188hmqkitlmfo22d1q6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:717788056762:android:ab7759b89ebe1e23578683",
+        "android_client_info": {
+          "package_name": "com.knives.io.meme.troll"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "717788056762-3bs73qvssr359188hmqkitlmfo22d1q6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMdMDp7Y3hDuNS4OBbgqz0Nt348c3Ofic"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "717788056762-3bs73qvssr359188hmqkitlmfo22d1q6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:717788056762:android:4ab434c716c1b754",
+        "android_client_info": {
+          "package_name": "com.legend.word.connect.link.puzzlegame"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "717788056762-3bs73qvssr359188hmqkitlmfo22d1q6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMdMDp7Y3hDuNS4OBbgqz0Nt348c3Ofic"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "717788056762-3bs73qvssr359188hmqkitlmfo22d1q6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:717788056762:android:492270bafa933f92",
+        "android_client_info": {
+          "package_name": "com.legendary.shadow.fight"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "717788056762-3bs73qvssr359188hmqkitlmfo22d1q6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMdMDp7Y3hDuNS4OBbgqz0Nt348c3Ofic"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "717788056762-3bs73qvssr359188hmqkitlmfo22d1q6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:717788056762:android:83477663199e983d578683",
+        "android_client_info": {
+          "package_name": "com.outsiders.premium.stick.fight"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "717788056762-3bs73qvssr359188hmqkitlmfo22d1q6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMdMDp7Y3hDuNS4OBbgqz0Nt348c3Ofic"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "717788056762-3bs73qvssr359188hmqkitlmfo22d1q6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:717788056762:android:8516ded0d83b1650",
+        "android_client_info": {
+          "package_name": "com.poly.puzzle.artbook.draw.color"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "717788056762-3bs73qvssr359188hmqkitlmfo22d1q6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMdMDp7Y3hDuNS4OBbgqz0Nt348c3Ofic"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "717788056762-3bs73qvssr359188hmqkitlmfo22d1q6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:717788056762:android:7a8b4488d28be6a2578683",
+        "android_client_info": {
+          "package_name": "com.rush.astro.stick.running.man"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "717788056762-3bs73qvssr359188hmqkitlmfo22d1q6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMdMDp7Y3hDuNS4OBbgqz0Nt348c3Ofic"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "717788056762-3bs73qvssr359188hmqkitlmfo22d1q6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:717788056762:android:abb735d27785ca5e",
+        "android_client_info": {
+          "package_name": "com.shadow.combat.fight"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "717788056762-3bs73qvssr359188hmqkitlmfo22d1q6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMdMDp7Y3hDuNS4OBbgqz0Nt348c3Ofic"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "717788056762-3bs73qvssr359188hmqkitlmfo22d1q6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:717788056762:android:0468cbd8c798ac69",
+        "android_client_info": {
+          "package_name": "com.shootmerge.puzzle2048"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "717788056762-3bs73qvssr359188hmqkitlmfo22d1q6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMdMDp7Y3hDuNS4OBbgqz0Nt348c3Ofic"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "717788056762-3bs73qvssr359188hmqkitlmfo22d1q6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:717788056762:android:e094778311c73293578683",
+        "android_client_info": {
+          "package_name": "com.supreme.stick.fighting.warriors.battle"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "717788056762-3bs73qvssr359188hmqkitlmfo22d1q6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMdMDp7Y3hDuNS4OBbgqz0Nt348c3Ofic"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "717788056762-3bs73qvssr359188hmqkitlmfo22d1q6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:717788056762:android:2e7c0fff89dad632",
+        "android_client_info": {
+          "package_name": "com.topfreegame.puzzle.jewels.gameclassic"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "717788056762-3bs73qvssr359188hmqkitlmfo22d1q6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMdMDp7Y3hDuNS4OBbgqz0Nt348c3Ofic"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "717788056762-3bs73qvssr359188hmqkitlmfo22d1q6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:717788056762:android:9687af7f142af93f578683",
+        "android_client_info": {
+          "package_name": "com.us.brick.block.drop.puzzle"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "717788056762-3bs73qvssr359188hmqkitlmfo22d1q6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMdMDp7Y3hDuNS4OBbgqz0Nt348c3Ofic"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "717788056762-3bs73qvssr359188hmqkitlmfo22d1q6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:717788056762:android:6d7438afc0b65bb1578683",
+        "android_client_info": {
+          "package_name": "com.yasuo.zed.fighting.stickman.fighter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "717788056762-3bs73qvssr359188hmqkitlmfo22d1q6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMdMDp7Y3hDuNS4OBbgqz0Nt348c3Ofic"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "717788056762-3bs73qvssr359188hmqkitlmfo22d1q6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

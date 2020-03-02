@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 
-public enum TypeShape {crossBar_1,crossBar_2,crossBar_3, crossBar_4, square,three_cube,L_4_0,L4_90,L3_0,L3_90,None}
+public enum TypeShape {crossBar_1,crossBar_2,crossBar_3, crossBar_4, square,three_cube,L_4_0,L4_90,L3_0,L3_90,T,None}
 public class Shape : MonoBehaviour
 {
 
@@ -29,7 +29,8 @@ public class Shape : MonoBehaviour
     public SpriteRenderer ImgCube_L4_90;
     public SpriteRenderer ImgCube_L3_0;
     public SpriteRenderer ImgCube_L3_90;
-
+    public SpriteRenderer ImgCube_T90;
+    public SpriteRenderer ImgCube_T0;
     public List<SpriteRenderer> List_Image = new List<SpriteRenderer>();
 
     public SpriteRenderer SpriteUse;
@@ -54,7 +55,8 @@ public class Shape : MonoBehaviour
     public GameObject SimulateColumn;
     public Vector2 Point;
     public string nameSpriteUse;
-    
+    public bool isEff = false;
+    public int CubeStart;
 
     #region Move
 
@@ -95,6 +97,8 @@ public class Shape : MonoBehaviour
         List_Image.Add(ImgCube_L4_90);
         List_Image.Add(ImgCube_L3_0);
         List_Image.Add(ImgCube_L3_90);
+        List_Image.Add(ImgCube_T0);
+        List_Image.Add(ImgCube_T90);
     }
 
 
@@ -129,6 +133,7 @@ public class Shape : MonoBehaviour
 
 
     }
+    
     public SpriteRenderer Img_Curent()
     {
         foreach(SpriteRenderer s in List_Image)
@@ -152,7 +157,7 @@ public class Shape : MonoBehaviour
 
         SpriteRenderer FadeShape = SpriteUse;
         Color color = FadeShape.color;
-        Debug.Log(gameObject.name + "  ::  " + FadeShape.name);
+     //   Debug.Log(gameObject.name + "  ::  " + FadeShape.name);
      
 
         SpriteUse.color = new Color(color.r,color.g,color.b, 0.5f);
@@ -160,7 +165,7 @@ public class Shape : MonoBehaviour
     public void NormlizeColor()
     {
         SpriteRenderer FadeShape = SpriteUse;
-        Debug.Log(gameObject.name + "  ::  " + FadeShape.name);
+      //  Debug.Log(gameObject.name + "  ::  " + FadeShape.name);
         Color color = FadeShape.color;
       
 
@@ -674,7 +679,14 @@ public class Shape : MonoBehaviour
                 this.idShape++;
             }
         }
+        CubeStart = ListShape.Count;
     }
+
+    public bool HasCut()
+    {
+        return CubeStart == ListShape.Count;
+    }
+
     public void GenerateShape_Ver_2()
     {
 
@@ -742,9 +754,27 @@ public class Shape : MonoBehaviour
         while (type == TypeShape.None || type == TypeShape.L3_0 || type == TypeShape.L3_90)
         {
 
-            System.Array values = System.Enum.GetValues(typeof(TypeShape));
 
-            type = (TypeShape)values.GetValue(UnityEngine.Random.Range(0, values.Length));
+            if (r >= 0 && r <= 80 - (CtrlData.Level * 2))
+            {
+
+                type = CtrlData.Ins.Type_Ver_1[Random.Range(0, CtrlData.Ins.Type_Ver_1.Count)];
+            }
+            else if (r > 80 - (CtrlData.Level * 2) && r < 100 - (CtrlData.Level * 2))
+            {
+                type = CtrlData.Ins.Type_Ver_2[Random.Range(0, CtrlData.Ins.Type_Ver_2.Count)];
+            }
+            else
+            {
+                type = CtrlData.Ins.Type_Ver_3[Random.Range(0, CtrlData.Ins.Type_Ver_3.Count)];
+            }
+          
+
+           
+
+            //System.Array values = System.Enum.GetValues(typeof(TypeShape));
+
+            //type = (TypeShape)values.GetValue(UnityEngine.Random.Range(0, values.Length));
 
         }
         return type;
@@ -909,9 +939,9 @@ public class Shape : MonoBehaviour
     public void ReflectShape() 
     {
         string s = "";
-
+        
      //   Debug.Log(Render(shape));
-        ResetMatrix(shape);
+        ResetMatrix(ref shape);
       //  shape = extendMatrix(shape);
    //     Debug.Log(Render(shape));
       //   Debug.Log(shape.GetLength(0) + "  " + shape.GetLength(1));
@@ -951,7 +981,7 @@ public class Shape : MonoBehaviour
       
     }
    
-    public static void ResetMatrix(int[,] matrix)
+    public static void ResetMatrix(ref int[,] matrix)
     {
         for(int i=0;i< matrix.GetLength(1); i++)
         {
@@ -1169,6 +1199,10 @@ public class Shape : MonoBehaviour
                 Cross_4_Vertical(Color);
             }
         }
+        if(TypeShape == TypeShape.T)
+        {
+            Set_Cube_T(roll, Color);
+        }
 
 
     }
@@ -1231,7 +1265,7 @@ public class Shape : MonoBehaviour
 
         Img_Cube_Cross_1x1.gameObject.SetActive(true);
 
-        Debug.Log(i);
+     //   Debug.Log(i);
         Img_Cube_1x1.sprite = CtrlData.Ins.DataGame.LoadShape("1x1")[i];
         SpriteUse = Img_Cube_1x1;
         nameSpriteUse = Img_Cube_1x1.name;
@@ -1288,12 +1322,52 @@ public class Shape : MonoBehaviour
                 break;
         }
     }
-  
+
+    public void Set_Cube_T(int roll, int color)
+    {
+        switch (roll)
+        {
+            case 0:
+                ImgCube_T0.gameObject.SetActive(true);
+                ImgCube_T0.sprite = CtrlData.Ins.DataGame.LoadShape("T_180")[color];
+                SpriteUse = ImgCube_T0;
+               
+
+                break;
+            case 1:
+                ImgCube_T90.gameObject.SetActive(true);
+                ImgCube_T90.sprite = CtrlData.Ins.DataGame.LoadShape("T_0")[color];
+               
+                SpriteUse = ImgCube_T90;
+              
+                break;
+            case 2:
+                ImgCube_T0.gameObject.SetActive(true);
+              
+               
+                ImgCube_T0.sprite = CtrlData.Ins.DataGame.LoadShape("T_90")[color];
+                SpriteUse = ImgCube_T0;
+              
+              
+                break;
+
+            case 3:
+             
+                ImgCube_T90.gameObject.SetActive(true);
+                ImgCube_T90.sprite = CtrlData.Ins.DataGame.LoadShape("T_0")[color];
+                ImgCube_T90.flipX = true;
+                SpriteUse = ImgCube_T90;
+
+                break;
+        }
+    }
+
+
 
 
     #endregion
-    
-   
+
+
     public bool isShapeMove(Vector2 point)
     {
         Vector2 pos = transform.position;
@@ -1312,6 +1386,24 @@ public class Shape : MonoBehaviour
     {
 
         return shape.shape.GetLength(1);
+    }
+    public void StartFade()
+    {
+        StartCoroutine(Fade());
+    }
+    public IEnumerator Fade()
+    {
+        Color color = SpriteUse.color;
+        while (color.a >= 0.1f)
+        {
+            color = SpriteUse.color;
+
+            color.a -= 0.5f * Time.deltaTime;
+
+            SpriteUse.color = color;
+            yield return new WaitForSeconds(0);
+        }
+       
     }
 
 

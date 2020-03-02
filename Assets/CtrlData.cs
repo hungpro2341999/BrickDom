@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class CtrlData : MonoBehaviour
 {
     #region
+    public static int Level;
     public static int Score;
     public static int CountPlay = 1;
     public const string Key_HighScore = "Key_High_Score_Hight";
@@ -97,6 +98,13 @@ public class CtrlData : MonoBehaviour
                     { 0, 1, 0, 0} ,
                     { 0, 0, 0, 0} ,
           };
+    public static int[,] T = new int[4, 4]
+         {
+                    { 1, 1, 1, 0} ,
+                    { 0, 1, 0, 0} ,
+                    { 0, 0, 0, 0} ,
+                    { 0, 0, 0, 0} ,
+         };
 
     public const int NotRoll = 0;
     public const int Roll_Cross = 2;
@@ -132,6 +140,9 @@ public class CtrlData : MonoBehaviour
     public List<Sprite> Img_Cube_Cross_3 = new List<Sprite>();
     public List<Sprite> Img_Cube_Cross_4 = new List<Sprite>();
 
+    public List<TypeShape> Type_Ver_1;
+    public List<TypeShape> Type_Ver_2;
+    public List<TypeShape> Type_Ver_3;
 
     public static List<int[,]> ShapeType = new List<int[,]>();
 
@@ -148,11 +159,23 @@ public class CtrlData : MonoBehaviour
     }
     public void ResetScore()
     {
+        CtrlData.Level = 0;
         CtrlData.Score = 0;
         TScore.text = "0";
     }
     public void InitKey()
     {
+        
+        Type_Ver_1.Add(TypeShape.crossBar_1);
+        Type_Ver_1.Add(TypeShape.crossBar_2);
+        Type_Ver_2.Add(TypeShape.crossBar_3);
+        Type_Ver_2.Add(TypeShape.three_cube);
+        Type_Ver_2.Add(TypeShape.T);
+       
+        Type_Ver_2.Add(TypeShape.square);
+        Type_Ver_3.Add(TypeShape.crossBar_4);
+        Type_Ver_3.Add(TypeShape.L4_90);
+        Type_Ver_3.Add(TypeShape.L_4_0);
 
         if (!PlayerPrefs.HasKey(Key_HighScore))
         {
@@ -468,6 +491,26 @@ public class CtrlData : MonoBehaviour
              
                 Color = Square[Random.Range(0, Square.Length)];
                 break;
+            case TypeShape.T:
+                switch (roll)
+                {
+                    case 0:
+                        Color = 4;
+                        break;
+                    case 1:
+                        Color = 2;
+                        break;
+                    case 2:
+                        Color = 3;
+                        break;
+                    case 3:
+                        Color = 2;
+                        break;
+
+                }
+
+                break;
+              
 
         }
         return Color;
