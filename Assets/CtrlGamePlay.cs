@@ -1825,7 +1825,7 @@ private float timeSugg = 0;
             case TypeShape.three_cube:
                 matrix = CtrlData.ShapeType[7];
                 roll = CtrlData.Roll_Cube_L;
-                break;
+                break;  
             case TypeShape.square:
                 matrix = CtrlData.ShapeType[6];
                 roll = CtrlData.NotRoll;
@@ -1836,8 +1836,9 @@ private float timeSugg = 0;
        
         for(int i = 0; i < roll; i++)
         {
-            string s = Render(Shape.SplitMatrix(SimulateRoll(i,type,false)));
-      //      Debug.Log(s1 + "\n" + s);
+            string s  =  CtrlData.Ins.GetSimulateRoll(type,i);
+           //  Render(Shape.SplitMatrix(SimulateRoll(i,type,false)));
+           //  Debug.Log(s1 + "\n" + s);
             if (s == s1)
             {
                 return true;
