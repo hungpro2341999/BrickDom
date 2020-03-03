@@ -7,11 +7,18 @@ public class Poolers : MonoBehaviour
 {
     public static Poolers Ins;
     public Dictionary<GameObject, List<PoolItem>> pool;
+    
+
 
     private void Awake()
     {
         Ins = this;
         pool = new Dictionary<GameObject, List<PoolItem>>();
+
+        CtrlGamePlay.Ins.SpawnInit();
+
+
+
     }
 
     public PoolItem GetObject(GameObject obj)

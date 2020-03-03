@@ -10,10 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1907660925426459430}
   - component: {fileID: 2663414615688649990}
-  - component: {fileID: 1335945122688399210}
   - component: {fileID: 8201157071468604714}
   - component: {fileID: 3498094684710742670}
-  - component: {fileID: 5640838255485561874}
+  - component: {fileID: 1932517409279484232}
   m_Layer: 0
   m_Name: ComBo
   m_TagString: Untagged
@@ -62,20 +61,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &1335945122688399210
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2663414615688649991}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cdaf2ecfee391544ca52f02584f8ce77, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  destroy: 1
-  time: 1.2
 --- !u!210 &8201157071468604714
 SortingGroup:
   m_ObjectHideFlags: 0
@@ -85,7 +70,7 @@ SortingGroup:
   m_GameObject: {fileID: 2663414615688649991}
   m_Enabled: 1
   m_SortingLayerID: 1527770269
-  m_SortingLayer: 1
+  m_SortingLayer: 2
   m_SortingOrder: 0
 --- !u!222 &3498094684710742670
 CanvasRenderer:
@@ -95,7 +80,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2663414615688649991}
   m_CullTransparentMesh: 0
---- !u!114 &5640838255485561874
+--- !u!114 &1932517409279484232
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -104,11 +89,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 2663414615688649991}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cdaf2ecfee391544ca52f02584f8ce77, type: 3}
+  m_Script: {fileID: 11500000, guid: 910111a12adf5834582cbaa301d44a60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_transform: {fileID: 1907660925426459430}
+  obj: {fileID: 2663414615688649991}
   destroy: 1
-  time: 1
+  time: 1.5
 --- !u!1 &2781698330311277545
 GameObject:
   m_ObjectHideFlags: 0
@@ -9488,5 +9475,5 @@ SortingGroup:
   m_GameObject: {fileID: 8012967381941352276}
   m_Enabled: 1
   m_SortingLayerID: 1527770269
-  m_SortingLayer: 1
+  m_SortingLayer: 2
   m_SortingOrder: 0

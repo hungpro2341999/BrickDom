@@ -148,6 +148,24 @@ public class CtrlData : MonoBehaviour
 
     public Text TScore;
     public Text THighScore;
+
+    public void SpawnInit()
+    {
+        for(int i = 0; i < EffectGame.Count; i++)
+        {
+            for(int j = 0; j < 8; j++)
+            {
+                var a = Poolers.Ins.GetObject(EffectGame[0]);
+                if (a.GetComponent<DestroyParice>() != null)
+                {
+                    a.GetComponent<DestroyParice>().AddEff();
+                }
+                
+            }
+        }
+        Poolers.Ins.ClearAll();
+    }
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.M))
@@ -163,6 +181,7 @@ public class CtrlData : MonoBehaviour
         CtrlData.Score = 0;
         TScore.text = "0";
     }
+    
     public void InitKey()
     {
         
@@ -260,14 +279,16 @@ public class CtrlData : MonoBehaviour
     }
     public void VisibleScore(int Score)
     {
-       var a =  Instantiate(GetEffect(6), new Vector3(Screen.width/2,Screen.height/2,0), Quaternion.identity, UI);
-       a.GetComponent<Text>().text = Score.ToString();
+        var a = Poolers.Ins.GetObject(GetEffect(6), new Vector3(Screen.width / 2, Screen.height / 2, 0), Quaternion.identity);
+        a.OnSpawn();
+        a.GetComponent<Text>().text = Score.ToString();
 
     }
     public void VisibleCombo(int i)
     {
-
-        var a = Instantiate(GetEffect(7), new Vector3(Screen.width / 2, Screen.height / 2, 0), Quaternion.identity, UI);
+        var a = Poolers.Ins.GetObject(GetEffect(7), new Vector3(Screen.width / 2, Screen.height / 2, 0), Quaternion.identity);
+        //   var a = Instantiate(GetEffect(7), new Vector3(Screen.width / 2, Screen.height / 2, 0), Quaternion.identity, UI);
+        a.OnSpawn();
         a.transform.Find("Text").GetComponent<Text>().text = "c" + i;
 
     }
@@ -340,10 +361,11 @@ public class CtrlData : MonoBehaviour
         ShapeType.Add(Cube_L3_0);//8
         ShapeType.Add(Cube_L3_90);//9
         InitKey();
-     
+        
     }
     private void Start()
     {
+        SpawnInit();
         CtrlGamePlay.Ins.Event_Start_Game += ResetScore;
     }
     // Start is called before the first frame update

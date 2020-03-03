@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DestroySelf : MonoBehaviour
+public class DestroySelf : PoolItem
 {
    public Vector2 Point;
    public Shape shape;
     public bool isDestroy = false;
     private void Start()
     {
-        shape = GetComponentInParent<Shape>();
+      
     }
 
     public void StartDestroy_Ver_2(float time,bool eff)
@@ -40,7 +40,9 @@ public class DestroySelf : MonoBehaviour
         //Instantiate(CtrlData.Ins.GetEffect(shape.IDColor), transform.position, Quaternion.identity, null);
         isDestroy = true;
         shape.RemoveCube(this.gameObject);
-        DestroyImmediate(this.gameObject);
+
+        gameObject.SetActive(false);
+      //  DestroyImmediate(this.gameObject);
     }
     public void StartSuperEff()
     {
@@ -64,12 +66,18 @@ public class DestroySelf : MonoBehaviour
         a.GetComponent<DestroyParice>().OnSpawn();
         isDestroy = true;
         GetComponentInParent<Shape>().RemoveCube(gameObject);
-        Destroy(gameObject);
+        gameObject.transform.parent = null;
+        gameObject.SetActive(false);
     }
     public Vector2 GetPoint()
     {
         return Point;
     }
+    public override void OnSpawn()
+    {
+        
+        isDestroy = false;
     
-   
+    }
+
 }

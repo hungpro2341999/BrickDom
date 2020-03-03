@@ -80,27 +80,57 @@ public class Shape : PoolItem
     void Start()
     {
 
-       
+        transform.parent = CtrlGamePlay.Ins.transGameplay;
     }
     public void Init_List_Image()
     {
+
+        if (!List_Image.Contains(Img_Cube_Cross_1x1))
         List_Image.Add(Img_Cube_Cross_1x1);
-        List_Image.Add(Img_Cube_Cross_2_0);
-        List_Image.Add(Img_Cube_Cross_2_90);
-        List_Image.Add(Img_Cube_Cross_3_Horizontal);
-        List_Image.Add(Img_Cube_Cross_3_Vertical);
-        List_Image.Add(Img_Cube_Cross_4_Horizontal);
-        List_Image.Add(Img_Cube_Cross_4_Vertical);
-        List_Image.Add(ImgCube_quare);
-        List_Image.Add(ImgCube_L2_0);
-        List_Image.Add(ImgCube_L2_90);
-        List_Image.Add(ImgCube_L4_0);
-        List_Image.Add(ImgCube_L4_90);
-        List_Image.Add(ImgCube_L3_0);
-        List_Image.Add(ImgCube_L3_90);
-        List_Image.Add(ImgCube_T0);
-        List_Image.Add(ImgCube_T90);
+        if (!List_Image.Contains(Img_Cube_Cross_2_0))
+            List_Image.Add(Img_Cube_Cross_2_0);
+        if (!List_Image.Contains(Img_Cube_Cross_2_90))
+            List_Image.Add(Img_Cube_Cross_2_90);
+        if (!List_Image.Contains(Img_Cube_Cross_3_Horizontal))
+            List_Image.Add(Img_Cube_Cross_3_Horizontal);
+        if (!List_Image.Contains(Img_Cube_Cross_3_Vertical))
+            List_Image.Add(Img_Cube_Cross_3_Vertical);
+        if (!List_Image.Contains(Img_Cube_Cross_4_Horizontal))
+            List_Image.Add(Img_Cube_Cross_4_Horizontal);
+        if (!List_Image.Contains(Img_Cube_Cross_4_Vertical))
+            List_Image.Add(Img_Cube_Cross_4_Vertical);
+        if (!List_Image.Contains(ImgCube_quare))
+            List_Image.Add(ImgCube_quare);
+        if (!List_Image.Contains(ImgCube_L2_0))
+            List_Image.Add(ImgCube_L2_0);
+        if (!List_Image.Contains(ImgCube_L2_90))
+            List_Image.Add(ImgCube_L2_90);
+        if (!List_Image.Contains(ImgCube_L4_0))
+            List_Image.Add(ImgCube_L4_0);
+        if (!List_Image.Contains(ImgCube_L4_90))
+            List_Image.Add(ImgCube_L4_90);
+        if (!List_Image.Contains(ImgCube_L3_0))
+            List_Image.Add(ImgCube_L3_0);
+        if (!List_Image.Contains(ImgCube_L3_90))
+            List_Image.Add(ImgCube_L3_90);
+        if (!List_Image.Contains(ImgCube_T0))
+            List_Image.Add(ImgCube_T0);
+        if (!List_Image.Contains(ImgCube_T90))
+            List_Image.Add(ImgCube_T90);
     }
+    public void Restor_Img()
+    {
+        if (List_Image.Count <= 0)
+        {
+            Init_List_Image();
+        }
+
+     
+         
+
+
+    }
+
     public void Reset()
     {
         Img_Cube_1x1.gameObject.SetActive(false);
@@ -123,7 +153,7 @@ public class Shape : PoolItem
         ImgCube_T0.gameObject.SetActive(false);
         ImgCube_T90.gameObject.SetActive(false);
     }
-
+    
 
     // Update is called once per frame
     void Update()
@@ -564,164 +594,21 @@ public class Shape : PoolItem
         return s;
         //    Debug.Log(s);
     }
-    private bool SetShape()
-    {
+    
+   
 
-
-        transform.position = CtrlGamePlay.RandomPosShape();
-        Render(shape);
-
-        for (int y = 0; y < shape.GetLength(0); y++)
-        {
-
-            for (int x = 0; x < shape.GetLength(1); x++)
-            {
-                if (shape[y, x] != 0)
-                {
-                    //  PointShape[x,y] = new Vector3(y * offsetX, -x * offsetY);
-
-                    //var a = Instantiate(PrebShape, transform);
-                    //a.transform.localPosition = new Vector3(x * offsetX, -y * offsetY);
-                    //Vector2 point = CtrlGamePlay.PositonToMatrixRound(a.transform.position.x, a.transform.position.y);
-                    //Debug.Log(point.ToString() + "   " + CtrlGamePlay.isInMatrix((int)point.x, (int)point.y));
-
-                    //i++;
-                    //a.name = "Shape " + i;
-
-                    //ListShape.Add(a);
-
-                    //    var a = Instantiate(PrebShape, transform);
-                    Vector3 pos = new Vector3(transform.position.x + y * CtrlGamePlay.Ins.offsetX, transform.position.y - x * CtrlGamePlay.Ins.offsetY);
-                    Vector2 point = CtrlGamePlay.PositonToMatrixRound(pos.x, pos.y);
-                    //    Debug.Log(point.x + "  " + point.y + " : " + CtrlGamePlay.isInMatrix((int)point.x, (int)point.y));
-                    if (!CtrlGamePlay.isInMatrix((int)point.x, (int)point.y) || CtrlGamePlay.Ins.Board[y, x] == 1)
-                    {
-                        return false;
-                    }
-
-
-                    //  Debug.Log(point.ToString() + "   " + CtrlGamePlay.isInMatrix((int)point.x, (int)point.y));
-
-
-
-
-                }
-
-            }
-        }
-
-        return true;
-
-    }
-    private bool SetShape_1()
-    {
-
-
-        transform.position = CtrlGamePlay.RandomPosShape();
-        Render(shape);
-
-        for (int y = 0; y < shape.GetLength(0); y++)
-        {
-
-            for (int x = 0; x < shape.GetLength(1); x++)
-            {
-                if (shape[y, x] != 0)
-                {
-                    //  PointShape[x,y] = new Vector3(y * offsetX, -x * offsetY);
-
-                    //var a = Instantiate(PrebShape, transform);
-                    //a.transform.localPosition = new Vector3(x * offsetX, -y * offsetY);
-                    //Vector2 point = CtrlGamePlay.PositonToMatrixRound(a.transform.position.x, a.transform.position.y);
-                    //Debug.Log(point.ToString() + "   " + CtrlGamePlay.isInMatrix((int)point.x, (int)point.y));
-
-                    //i++;
-                    //a.name = "Shape " + i;
-
-                    //ListShape.Add(a);
-
-                    //    var a = Instantiate(PrebShape, transform);
-                    Vector3 pos = new Vector3(transform.position.x + x * CtrlGamePlay.Ins.offsetX, transform.position.y - y * CtrlGamePlay.Ins.offsetY);
-                    Vector2 point = CtrlGamePlay.PositonToMatrixRound(pos.x, pos.y);
-                    //    Debug.Log(point.x + "  " + point.y + " : " + CtrlGamePlay.isInMatrix((int)point.x, (int)point.y));
-                    if (!CtrlGamePlay.isInMatrix((int)point.x, (int)point.y))
-                    {
-                        return false;
-                    }
-
-
-                    //  Debug.Log(point.ToString() + "   " + CtrlGamePlay.isInMatrix((int)point.x, (int)point.y));
-
-
-
-
-                }
-
-            }
-        }
-
-        return true;
-
-    }
-
-    public void SetGenerateShape()
-    {
-        //   shape = extendMatrix(shape);
-        //  shape = SplitMatrix(shape);
-        shape = CtrlGamePlay.RemoveRow(shape);
-        for (int y = 0; y < shape.GetLength(0); y++)
-        {
-          
-
-            for (int x = 0; x < shape.GetLength(1); x++)
-            {
-                if (shape[y, x] != 0)
-                {
-
-                    var a = Instantiate(PrebShape, transform);
-                    a.transform.localPosition = new Vector3(x * CtrlGamePlay.Ins.offsetX, -y * CtrlGamePlay.Ins.offsetY);
-                    a.name = idShape.ToString();
-                    ListShape.Add(a);
-                   
-
-                }
-                this.idShape++;
-            }
-        }
-        CubeStart = ListShape.Count;
-    }
+   
 
     public bool HasCut()
     {
         return CubeStart == ListShape.Count;
     }
 
-    public void GenerateShape_Ver_2()
-    {
-
-        // Debug.Log("SHAPGENERATE ");
-        //   Debug.Log(Render(shape));
-        for (int y = 0; y < shape.GetLength(0); y++)
-        {
-
-            for (int x = 0; x < shape.GetLength(1); x++)
-            {
-                if (shape[y, x] != 0)
-                {
-
-                    var a = Instantiate(PrebShape, transform);
-                    a.transform.localPosition = new Vector3(x * CtrlGamePlay.Ins.offsetY, -y * CtrlGamePlay.Ins.offsetX);
-                    a.name = idShape.ToString();
-                    ListShape.Add(a);
-
-                }
-                this.idShape++;
-            }
-        }
-    }
+   
     public void GenerateShape()
     {
-    //    Debug.Log("SHAPGENERATE ");
-      //  Debug.Log(Render(shape));
+       Debug.Log("SHAPGENERATE : "+gameObject.name);
+        Debug.Log(Render(shape));
       
         for (int y = 0; y < shape.GetLength(0); y++)
         {
@@ -732,20 +619,34 @@ public class Shape : PoolItem
                 if (shape[y, x] != 0)
                 {
 
-                      var a = Instantiate(PrebShape, transform);
+                    var a = Poolers.Ins.GetObject(PrebShape);
+                    a.OnSpawn();
+                    a.transform.parent = transform;
+                    a.GetComponent<DestroySelf>().shape = this;
                       a.transform.localPosition = new Vector3(x * CtrlGamePlay.Ins.offsetY, -y *CtrlGamePlay.Ins.offsetX);
                       a.name = (x + y * shape.GetLength(1)).ToString();
-                      ListShape.Add(a);
-                      CtrlGamePlay.Ins.AddCubeIntoBoard(a);
+                      ListShape.Add(a.gameObject);
+                      CtrlGamePlay.Ins.AddCubeIntoBoard(a.gameObject);
                     if (isCubeStart)
                     {
-                        a.layer = 8;
+                        a.gameObject.layer = 8;
+                    }
+                    else
+                    {
+                        a.gameObject.layer = 0;
                     }
                 }
                 
             }
+         
         }
-      
+        for(int i = 0; i < ListShape.Count; i++)
+        {
+            ListShape[i].gameObject.SetActive(true);
+        }
+        CubeStart = ListShape.Count;
+
+
 
     }
     public void SetTypeShape(TypeShape type, int[,] shape)
@@ -1019,6 +920,8 @@ public class Shape : PoolItem
         for(int i=0;i< ListShape.Count; i++)
         {
             CtrlGamePlay.Ins.Cubes.Remove(ListShape[i]);
+            ListShape[i].transform.parent = null;
+            ListShape[i].gameObject.SetActive(false);
         }
         CtrlGamePlay.Ins.List_Shape.Remove(this);
         OnDespawn();
@@ -1292,6 +1195,7 @@ public class Shape : PoolItem
         switch (roll)
         {
             case 0:
+                ImgCube_L2_90.flipX = false;
                 ImgCube_L2_90.gameObject.SetActive(true);
                 ImgCube_L2_90.sprite = CtrlData.Ins.DataGame.LoadShape("L2_90")[color];
                 SpriteUse = ImgCube_L2_90;
@@ -1299,6 +1203,7 @@ public class Shape : PoolItem
 
                 break;
             case 1:
+                ImgCube_L2_90.flipX = false;
                 ImgCube_L2_90.gameObject.SetActive(true);
                 ImgCube_L2_90.sprite = CtrlData.Ins.DataGame.LoadShape("L2_90")[color];
                 ImgCube_L2_90.flipX = true;
@@ -1306,6 +1211,7 @@ public class Shape : PoolItem
                 nameSpriteUse = ImgCube_L2_90.name;
                 break;
             case 2:
+                ImgCube_L2_0.flipX = false;
                 ImgCube_L2_0.gameObject.SetActive(true);
                 ImgCube_L2_0.flipX = true;
                 if(color == 4)
@@ -1319,6 +1225,7 @@ public class Shape : PoolItem
                 break;
 
             case 3:
+                ImgCube_L2_0.flipX = false;
                 ImgCube_L2_0.gameObject.SetActive(true);
                 if(color == 4)
                 {
@@ -1336,6 +1243,7 @@ public class Shape : PoolItem
         switch (roll)
         {
             case 0:
+                ImgCube_T0.flipX = false;
                 ImgCube_T0.gameObject.SetActive(true);
                 ImgCube_T0.sprite = CtrlData.Ins.DataGame.LoadShape("T_180")[color];
                 SpriteUse = ImgCube_T0;
@@ -1343,6 +1251,7 @@ public class Shape : PoolItem
 
                 break;
             case 1:
+                ImgCube_T90.flipX = false;
                 ImgCube_T90.gameObject.SetActive(true);
                 ImgCube_T90.sprite = CtrlData.Ins.DataGame.LoadShape("T_0")[color];
                
@@ -1350,6 +1259,7 @@ public class Shape : PoolItem
               
                 break;
             case 2:
+                ImgCube_T0.flipX = false;
                 ImgCube_T0.gameObject.SetActive(true);
               
                
@@ -1360,7 +1270,7 @@ public class Shape : PoolItem
                 break;
 
             case 3:
-             
+                ImgCube_T90.flipX = false;
                 ImgCube_T90.gameObject.SetActive(true);
                 ImgCube_T90.sprite = CtrlData.Ins.DataGame.LoadShape("T_0")[color];
                 ImgCube_T90.flipX = true;
@@ -1413,8 +1323,14 @@ public class Shape : PoolItem
         }
        
     }
+    
     public override void OnSpawn()
     {
+        for(int i = 0; i < List_Image.Count; i++)
+        {
+            List_Image[i].gameObject.GetComponent<TurnToGray>().Reset();
+        }
+        transform.parent = CtrlGamePlay.Ins.transGameplay;
         gameObject.layer = 0;
         if (isCubeStart)
         {
@@ -1435,10 +1351,10 @@ public class Shape : PoolItem
             isEff = false;
         }
         Reset();
-        for(int i = 0; i < ListShape.Count; i++)
-        {
-            ListShape[i].SetActive(false);
-        }
+        //for(int i = 0; i < ListShape.Count; i++)
+        //{
+        //    ListShape[i].SetActive(false);
+        //}
 
         ListShape = new List<GameObject>();
         

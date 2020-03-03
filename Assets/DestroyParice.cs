@@ -5,12 +5,12 @@ using UnityEngine;
 public class DestroyParice  : PoolItem
 {
     public float timeLife = 1.5f;
-    public ParticleSystem[] partice;
+    public ParticleSystem[] partice = null;
     
     // Start is called before the first frame update
     void Start()
     {
-        
+        transform.parent = CtrlGamePlay.Ins.transGameplay;
     }
 
     // Update is called once per frame
@@ -19,17 +19,22 @@ public class DestroyParice  : PoolItem
         if (isDoneEff())
         {
             OnDespawn();
-            Debug.Log("xong");
+          //  Debug.Log("xong");
         }
         else
         {
-            Debug.Log("Chua xong eff");
+        //    Debug.Log("Chua xong eff");
         }
 
     }
     public override void OnSpawn()
     {
-        partice = GetComponentsInChildren<ParticleSystem>();
+
+        if (partice.Length<=0)
+        {
+            partice = GetComponentsInChildren<ParticleSystem>();
+        }
+       
         StartEff();
 
     }
@@ -57,4 +62,9 @@ public class DestroyParice  : PoolItem
         }
         return true;
     }
+    public void AddEff()
+    {
+        partice = GetComponentsInChildren<ParticleSystem>();
+    }
+  
 }

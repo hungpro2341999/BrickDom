@@ -30,6 +30,14 @@ public class TurnToGray : MonoBehaviour
             yield return new WaitForSeconds(0);
         }
     }
+    public void Reset()
+    {
+        if (gray == null)
+        {
+            gray = GetComponent<_2dxFX_GrayScale>();
+        }
+        gray._EffectAmount = 0;
+    }
 
 }
 

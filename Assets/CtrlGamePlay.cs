@@ -30,6 +30,7 @@ public class CtrlGamePlay : MonoBehaviour
     public float offsetX;
     public float offsetY;
     public GameObject PrebShape;
+    public GameObject PrebCube;
     public List<GameObject> Cubes = new List<GameObject>();
     public List<Shape> List_Shape = new List<Shape>();
     public List<Shape> ListSplitShape = new List<Shape>();
@@ -108,6 +109,26 @@ private float timeSugg = 0;
     public int rotaion;
     public int farme = 1;
   
+    public void SpawnInit()
+    {
+        for(int i = 0; i < 10; i++)
+        {
+          var a =   Poolers.Ins.GetObject(PrebShape,Vector2.zero,Quaternion.identity);
+            a.gameObject.SetActive(true);
+         
+            Debug.Log("" + i);
+          
+        }
+        for (int i = 0; i < Row*Column; i++)
+        {
+            var a = Poolers.Ins.GetObject(PrebCube, Vector2.zero, Quaternion.identity);
+            a.gameObject.SetActive(true);
+
+            Debug.Log("" + i);
+
+        }
+        Poolers.Ins.ClearAll();
+    }
     // Start is called before the first frame update
      public void DestroyAll()
     {
@@ -149,6 +170,7 @@ private float timeSugg = 0;
         Vector3 pos = transform.position;
         ClampY = PosInit.y - Row * offsetY;
         TimeWait = 0;
+       
        
     }
     public void Init_Event()
@@ -201,29 +223,33 @@ private float timeSugg = 0;
     
     public void ReviceGame()
     {
-        GameManager.Ins.isGameOver = true;
-        TimeWait = 0.4f;
-        int a = Random.Range(2,5);
+
+
+        int a = Random.Range(2, 5);
         int start = Random.Range(6, 9);
-        for(int i = 0; i < a; i++)
+        for (int i = 0; i < a; i++)
         {
-           
+
             DestroyRow(start);
-            
+
             start--;
         }
-        SplitShape();
-        RefershBoard();
-        
-       
+        DestroyAndSplitShape();
+        TimeWait = 0.4f;
+
+
         isClick_up = true;
 
 
 
-
+        GameManager.Ins.isGameOver = true;
         GameManager.Ins.OpenWindow(TypeWindow.GamePlay);
 
+
+
+
     }
+   
     
     public void SetUpDestroyAllCube()
     {
@@ -247,17 +273,7 @@ private float timeSugg = 0;
 
     public void StartDestroyAllCube()
     {
-        //List<List<DestroySelf>> CubeSort = SortCube();
-        //float totaltime = CubeSort.Count * TimeDestroy;
-        //for(int i = 0; i < CubeSort.Count; i++)
-        //{
-        //    float delay = i * TimeDestroy;
-        //    for(int j = 0; j < CubeSort[i].Count; j++)
-        //    {
-        //        CubeSort[i][j].StartDestroy(delay);
-        //    }
-        //}
-
+      
         List<List<Shape>> ShapeRow = SortListByRow(List_Shape);
         float totalTime = List_Shape.Count * TimeTurnToGray;
         for (int i = 0; i < ShapeRow.Count; i++)
@@ -352,13 +368,7 @@ private float timeSugg = 0;
     #endregion
     void Start()
     {
-        //  Event_Completed_Move_Down();
-
-
-       
-      
-     //   Event_Start_Game();
-      
+        Application.targetFrameRate = 60;
     }
 
     // Update is called once per frame
@@ -393,11 +403,11 @@ private float timeSugg = 0;
         
 
         }
-        if (Input.GetKeyDown(KeyCode.Z))
+        if (Input.GetKeyDown(KeyCode.Q))
         {
 
 
-            Test();
+         
 
         }
            
@@ -410,9 +420,9 @@ private float timeSugg = 0;
         if (Input.GetKeyDown(KeyCode.L))
         {
 
-            Suggeset_Ver_2(List_Shape[0], 2, true);
 
-          //  Test();
+
+          Test();
            
         }
         if (Input.GetKeyDown(KeyCode.D))
@@ -568,8 +578,8 @@ private float timeSugg = 0;
                     {
                         
                         HasCubeEff =  CountEff();
-                        TimeWait = 1f;
-                        Invoke("DestroyAndSplitShape", 0.9f);
+                        TimeWait = 0.6f;
+                        Invoke("DestroyAndSplitShape", 0.5f);
                         return;
                     }
                     else
@@ -598,6 +608,7 @@ private float timeSugg = 0;
                     GameManager.Ins.isGameOver = false;
                     if (CtrlData.CountPlay % 2 != 0)
                     {
+                        ManagerAds.Ins.ShowInterstitial();
 
                         if (CtrlData.Ins.Set_High_Score(CtrlData.Score))
                         {
@@ -745,26 +756,21 @@ private float timeSugg = 0;
     }
     public void SplitShape()
     {
+
         ReflectShape();
-        for (int i = 0; i < List_Shape.Count; i++)
-        {
-            List_Shape[i].ReflectShape();
-            Debug.Log(List_Shape[i].name + "\n" + Render(List_Shape[i].shape));
-            
-        }
         Debug.Log("-----------SPLIT SHAPE----------");
        
         List<Shape> listSplit = GetListShapeSplit(List_Shape);
         for (int i = 0; i < listSplit.Count; i++)
         {
-            
+            listSplit[i].ReflectShape();
             SplitShape(listSplit[i]);
           
         }
-      
-        
-           
-       
+        ReflectShape();
+
+
+
 
 
 
@@ -833,7 +839,7 @@ private float timeSugg = 0;
         {
             if (RowHasEff(row[i]))
             {
-              
+                count++;
             }
         }
         return count;
@@ -1147,15 +1153,12 @@ private float timeSugg = 0;
 
                 if (Cubes[x].GetComponent<DestroySelf>().Point == new Vector2((float)i,row))
                 {
-                    shape = Cubes[x].GetComponent<DestroySelf>().shape;
+                  
 
-                    if (!CloneListDestroy.Contains(shape))
-                    {
-                        CloneListDestroy.Add(shape);
-                    }
+                 
                     Cubes[x].GetComponent<DestroySelf>().Destroy();
                   
-                       Debug.Log(shape.name);
+                      
 
 
                 }
@@ -1489,6 +1492,7 @@ private float timeSugg = 0;
                    //   Debug.Log("LIST : " + i);
                    // Debug.Log(RenderList(shapeSplit[i]));
                 }
+
                 for (int i = 0; i < shapeSplit.Count; i++)
                 {
                     List<List<int>> shape_Split = new List<List<int>>();
@@ -2151,6 +2155,7 @@ private float timeSugg = 0;
 
     public void SimulateDown()
     {
+        SetUpAll();
         SortShape();
         List<Shape> ListShapeMove = new List<Shape>();
         int[,] shape = CloneBoard(this.Board);
@@ -2375,7 +2380,7 @@ private float timeSugg = 0;
     }
     public IEnumerator MoveDownOneCube(Shape shape,int Space)
     {
-        
+       
         float dis = 0;
         float  space = offsetX/ SpeedMoveDown;
         if (Space != 0)
@@ -2544,8 +2549,18 @@ private float timeSugg = 0;
                 {
                     if (ListInfor[i].roll == 0)
                     {
+                        
                         a.GetComponent<Shape>().isEff = true;
-                        a.GetComponent<Shape>().SpriteUse.gameObject.AddComponent<_2dxFX_GoldFX>();
+                        var aa = a.GetComponent<Shape>().SpriteUse.gameObject.GetComponent<_2dxFX_GoldFX>();
+                        if (aa != null)
+                        {
+                            aa.enabled = true;
+                        }
+                        else
+                        {
+                            a.GetComponent<Shape>().SpriteUse.gameObject.AddComponent<_2dxFX_GoldFX>();
+                        }
+                           
                     }
                    
                 }
@@ -2590,17 +2605,18 @@ private float timeSugg = 0;
         a.name = "Shape : " + idShape;
         List_Shape.Add(a.GetComponent<Shape>());
         a.GetComponent<Shape>().ActiveShape();
+        a.GetComponent<Shape>().NormlizeColor();
     }
 
     public void Test()
     {
 
         //int i = 3;
-        int i = Random.Range(0,4);
-        int[,] shape = Shape.RotationMaxtrix(CtrlData.T, i);
+        int i = 3;
+        int[,] shape = Shape.RotationMaxtrix(CtrlData.Cube_3, i);
         shape = Shape.SplitMatrix(shape);
-        int color = CtrlData.RandomColor(TypeShape.T , i);
-        InforShape infor = new InforShape(TypeShape.T, CtrlGamePlay.RandomPosShape(),shape, i,color);
+        int color = CtrlData.RandomColor(TypeShape.three_cube , i);
+        InforShape infor = new InforShape(TypeShape.three_cube, CtrlGamePlay.RandomPosShape(),shape, i,color);
         List<InforShape> ListInfor = new List<InforShape>();
         ListInfor.Add(infor);
       

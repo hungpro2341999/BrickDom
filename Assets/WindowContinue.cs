@@ -35,7 +35,7 @@ public class WindowContinue : Windown
             {
                
                 delay -= Time.deltaTime;
-                AnimCountText.localScale = Vector2.zero;
+                AnimCountText.localScale = Vector2.one;
             }
             else
             {
@@ -55,7 +55,7 @@ public class WindowContinue : Windown
 
     private void OnEnable()
     {
-        AnimCountText.localScale = Vector2.zero;
+        AnimCountText.localScale = Vector2.one;
         Complete = false;
         count = 0;
 
