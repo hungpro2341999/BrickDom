@@ -526,7 +526,7 @@ private float timeSugg = 0;
                     int offset = Mathf.RoundToInt((PointSnap.x - CtrlGamePlay.Ins.initPoint.x) / offsetX);
                   
                     PointSnap.x = CtrlGamePlay.Ins.initPoint.x + offset * offsetX;
-                    Debug.Log(" Offset :" + offset +"  " + PointSnap.x);
+               //     Debug.Log(" Offset :" + offset +"  " + PointSnap.x);
                     ShapeClick.transform.position = PointSnap;
                     RefershBoard();  
                     if (offset != ShapeClick.PointInitCheck.y)
@@ -767,7 +767,7 @@ private float timeSugg = 0;
             SplitShape(listSplit[i]);
           
         }
-        ReflectShape();
+       // ReflectShape();
 
 
 
@@ -1442,7 +1442,7 @@ private float timeSugg = 0;
 
 
      
-        Debug.Log("INIT_1 : " +shape.name+ "\n" + Render(shape.shape));
+    //    Debug.Log("INIT_1 : " +shape.name+ "\n" + Render(shape.shape));
       
      
         int colum = shape.shape.GetLength(1);
@@ -1483,7 +1483,7 @@ private float timeSugg = 0;
                 Debug.Log("CUT : " + shape.name);
 
                 ShapeSplit.Add(GrounpRow);
-                Debug.Log(RenderList(GrounpRow));
+      //          Debug.Log(RenderList(GrounpRow));
                 List<int> SplitRow = new List<int>();
                 int indexSplit = 0;
                 List<List<int>> shapeSplit = Split(GrounpRow);
@@ -1504,8 +1504,8 @@ private float timeSugg = 0;
                     }
                     string s = "Shape Split : ";
 
-                    s +="\n" +  Render(ListToMatrix(shape_Split)) ;
-                    Debug.Log(s);
+               //     s +="\n" +  Render(ListToMatrix(shape_Split)) ;
+               //     Debug.Log(s);
                     SpawnShape(ListToMatrix(shape_Split), pos,Color);
                  
                       
@@ -1582,10 +1582,10 @@ private float timeSugg = 0;
         pos = new Vector2(pos.x += back * offsetX, pos.y);
         TypeShape type = CtrlGamePlay.Ins.MatrixToType(Type);
         int roll = RollShape(type, Type);
-       Type =  Shape.SplitMatrix(CtrlGamePlay.standardizedMatrix(Type));
+        Type =  Shape.SplitMatrix(CtrlGamePlay.standardizedMatrix(Type));
         Debug.Log("INFOR SHAPE SPLIT : " + back + " :: " + type.ToString() + " :: " + roll);
 
-        InforShape infor = new InforShape(CtrlGamePlay.Ins.MatrixToType(Type), pos, Type, roll,color);
+        InforShape infor = new InforShape(type, pos, Type, roll,color);
 
         SpawnShape(infor);
    
@@ -1837,7 +1837,7 @@ private float timeSugg = 0;
         for(int i = 0; i < roll; i++)
         {
             string s = Render(Shape.SplitMatrix(SimulateRoll(i,type,false)));
-            Debug.Log(s1 + "\n" + s);
+      //      Debug.Log(s1 + "\n" + s);
             if (s == s1)
             {
                 return true;
@@ -2431,7 +2431,7 @@ private float timeSugg = 0;
     {
         int[,] backup = CtrlGamePlay.CloneBoard(Board);
         int[,] CloneBoard = CtrlGamePlay.CloneBoard(Board);
-        Debug.Log("Board Clone : "+"\n"+ Render(CloneBoard));
+    //    Debug.Log("Board Clone : "+"\n"+ Render(CloneBoard));
 
         bool isCorrect = false;
         List<InforShape> InforShape = new List<InforShape>();
@@ -2674,8 +2674,8 @@ private float timeSugg = 0;
         int[,] shape = SimulateRoll(0, type, true, out indexRoll);
         Roll = indexRoll;
         shape = Shape.SplitMatrix(shape);
-          Debug.Log("Board :::: " +Render(Clone));
-            Debug.Log(Render(shape));
+    //      Debug.Log("Board :::: " +Render(Clone));
+     //       Debug.Log(Render(shape));
         int Ground = 0;
         for (int i = 0; i < shape.GetLength(0); i++)
         {
@@ -2819,17 +2819,19 @@ private float timeSugg = 0;
         }
         shape_Clone = standardizedMatrix(matrix);
         shape_Clone = Shape.SplitMatrix(shape_Clone);
+
+        string s1 = Render(shape_Clone);
         for (int i = 0; i < roll; i++)
         {
 
-            string s  = Render(Shape.SplitMatrix(SimulateRoll(i, TypeShape,false)));
-            string s1 = Render(shape_Clone);
-            Debug.Log(s + "\n" + s1);
+            //  string s  = Render(Shape.SplitMatrix(SimulateRoll(i, TypeShape,false)));
+            string s = CtrlData.Ins.GetSimulateRoll(TypeShape, i);
+            //  Debug.Log(s + "\n" + s1);
 
             if (s == s1)
             {
                
-                Debug.Log("Roll Lan thu : " + i);
+             //   Debug.Log("Roll Lan thu : " + i);
                 return i;
             }
             

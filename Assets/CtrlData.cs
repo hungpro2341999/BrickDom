@@ -139,7 +139,7 @@ public class CtrlData : MonoBehaviour
     public List<Sprite> Img_Cube_Cross_2 = new List<Sprite>();
     public List<Sprite> Img_Cube_Cross_3 = new List<Sprite>();
     public List<Sprite> Img_Cube_Cross_4 = new List<Sprite>();
-
+    public List<int> indexRoll = new List<int>();
     public List<TypeShape> Type_Ver_1;
     public List<TypeShape> Type_Ver_2;
     public List<TypeShape> Type_Ver_3;
@@ -149,6 +149,7 @@ public class CtrlData : MonoBehaviour
     public Text TScore;
     public Text THighScore;
 
+    public Dictionary<TypeShape, List<string>> InfoRollShape;
     public void SpawnInit()
     {
         for(int i = 0; i < EffectGame.Count; i++)
@@ -170,9 +171,7 @@ public class CtrlData : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.M))
         {
-            Debug.Log(GetHighScore());
-            // CtrlData.Ins.VisibleCombo(1);
-         //   DataPlayer.Ins.SetHighScore(1000);
+            View();
         }
     }
     public void ResetScore()
@@ -184,7 +183,7 @@ public class CtrlData : MonoBehaviour
     
     public void InitKey()
     {
-        
+        InitMatrixRoll();
         Type_Ver_1.Add(TypeShape.crossBar_1);
         Type_Ver_1.Add(TypeShape.crossBar_2);
         Type_Ver_2.Add(TypeShape.crossBar_3);
@@ -195,6 +194,18 @@ public class CtrlData : MonoBehaviour
         Type_Ver_3.Add(TypeShape.crossBar_4);
         Type_Ver_3.Add(TypeShape.L4_90);
         Type_Ver_3.Add(TypeShape.L_4_0);
+
+        //AllTypeShape.Add(TypeShape.crossBar_1);
+        //AllTypeShape.Add(TypeShape.crossBar_2);
+        //AllTypeShape.Add(TypeShape.crossBar_3);
+        //AllTypeShape.Add(TypeShape.three_cube);
+        //AllTypeShape.Add(TypeShape.T);
+        //AllTypeShape.Add(TypeShape.square);
+        //AllTypeShape.Add(TypeShape.crossBar_4);
+        //AllTypeShape.Add(TypeShape.L4_90);
+        //AllTypeShape.Add(TypeShape.L_4_0);
+        //AllTypeShape.Add(TypeShape.L);
+
 
         if (!PlayerPrefs.HasKey(Key_HighScore))
         {
@@ -296,7 +307,8 @@ public class CtrlData : MonoBehaviour
 
     public static TypeShape GetShapeType(int i)
     {
-        TypeShape type = TypeShape.None;
+       
+       TypeShape type = TypeShape.None;
         switch (i)
         {
             case 0:
@@ -548,6 +560,129 @@ public class CtrlData : MonoBehaviour
             }
         }
         return null;
+    }
+    
+
+    public void InitMatrixRoll()
+    {
+        InfoRollShape = new Dictionary<TypeShape, List<string>>();
+        for(int i = 0; i < 10; i++)
+        {
+            InfoRollShape.Add(GetShapeType(i), new List<string>());
+        }
+        for(int i = 0; i < InfoRollShape.Count; i++)
+        {
+            switch (i)
+            {
+                case 0:
+                    string ss = "1";
+                    InfoRollShape[TypeShape.crossBar_1].Add(ss);
+                    break;
+                case 1:
+
+                    for (int j = 0; j < 2; j++)
+                    {
+
+                        string s1 = CtrlGamePlay.Render(Shape.SplitMatrix(CtrlGamePlay.SimulateRoll(j, TypeShape.crossBar_2, false)));
+                        InfoRollShape[TypeShape.crossBar_2].Add(s1);
+
+
+                    }
+                    break;
+                case 2:
+
+                    for (int j = 0; j < 2; j++)
+                    {
+
+                        string s2 = CtrlGamePlay.Render(Shape.SplitMatrix(CtrlGamePlay.SimulateRoll(j, TypeShape.crossBar_3, false)));
+                        InfoRollShape[TypeShape.crossBar_3].Add(s2);
+
+
+                    }
+
+
+                    break;
+                case 3:
+
+                    for (int j = 0; j < 2; j++)
+                    {
+
+                        string s3 = CtrlGamePlay.Render(Shape.SplitMatrix(CtrlGamePlay.SimulateRoll(j, TypeShape.crossBar_4, false)));
+                        InfoRollShape[TypeShape.crossBar_4].Add(s3);
+
+
+                    }
+
+                    break;
+                case 4:
+                    for (int j = 0; j < 4; j++)
+                    {
+
+                        string s4 = CtrlGamePlay.Render(Shape.SplitMatrix(CtrlGamePlay.SimulateRoll(j, TypeShape.three_cube, false)));
+                        InfoRollShape[TypeShape.three_cube].Add(s4);
+
+
+                    }
+
+                    break;
+                case 5:
+                    for (int j = 0; j < 4; j++)
+                    {
+
+                        string s5 = CtrlGamePlay.Render(Shape.SplitMatrix(CtrlGamePlay.SimulateRoll(j, TypeShape.L3_0, false)));
+                        InfoRollShape[TypeShape.L3_0].Add(s5);
+
+
+                    }
+                    break;
+                case 6:
+                    for (int j = 0; j < 4; j++)
+                    {
+
+                        string s6 = CtrlGamePlay.Render(Shape.SplitMatrix(CtrlGamePlay.SimulateRoll(j, TypeShape.L3_90, false)));
+                        InfoRollShape[TypeShape.L3_90].Add(s6);
+
+
+                    }
+
+                    break;
+                case 7:
+                    for (int j = 0; j < 4; j++)
+                    {
+
+                        string s7 = CtrlGamePlay.Render(Shape.SplitMatrix(CtrlGamePlay.SimulateRoll(j, TypeShape.L4_90, false)));
+                        InfoRollShape[TypeShape.L4_90].Add(s7);
+
+
+                    }
+                    break;
+                case 8:
+                    for (int j = 0; j < 4; j++)
+                    {
+
+                        string s8 = CtrlGamePlay.Render(Shape.SplitMatrix(CtrlGamePlay.SimulateRoll(j, TypeShape.L_4_0, false)));
+                        InfoRollShape[TypeShape.L_4_0].Add(s8);
+
+
+                    }
+                    break;
+              
+            }
+        }
+       
+    }
+    public void View()
+    {
+        string s = "";
+        for(int i = 0; i < 4; i++)
+        {
+            s += "\n" + "" + InfoRollShape[TypeShape.three_cube][i];
+        }
+        Debug.Log(s);
+    }
+    public string GetSimulateRoll(TypeShape type, int roll)
+    {
+        return InfoRollShape[type][roll];
     }
 
 }

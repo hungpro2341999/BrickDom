@@ -607,8 +607,8 @@ public class Shape : PoolItem
    
     public void GenerateShape()
     {
-       Debug.Log("SHAPGENERATE : "+gameObject.name);
-        Debug.Log(Render(shape));
+    //   Debug.Log("SHAPGENERATE : "+gameObject.name);
+   //     Debug.Log(Render(shape));
       
         for (int y = 0; y < shape.GetLength(0); y++)
         {
@@ -1044,7 +1044,7 @@ public class Shape : PoolItem
         {
             if (roll == 0) 
             {
-                Debug.Log("21213231");
+            //    Debug.Log("21213231");
                 Cross_2_Vertical(Color);
             }
             else
@@ -1131,7 +1131,7 @@ public class Shape : PoolItem
     {
 
         Img_Cube_Cross_2_0.gameObject.SetActive(true);
-        Debug.Log("Anh i : "+i);
+//        Debug.Log("Anh i : "+i);
         Img_Cube_Cross_2_0.GetComponent<SpriteRenderer>().sprite  = CtrlData.Ins.DataGame.LoadShape("1x2")[i];
         SpriteUse = Img_Cube_Cross_2_0;
         nameSpriteUse = Img_Cube_Cross_2_0.name;
