@@ -21,7 +21,20 @@ public class HighScore : MonoBehaviour
     }
     private void GameOver()
     {
-        GameManager.Ins.OpenWindow(TypeWindow.OverGame);
+     
+        if (CtrlData.CountPlay % 2 == 0)
+        {
+            GameManager.Ins.OpenWindow(TypeWindow.Continue);
+        }
+        else
+        {
+            GameManager.Ins.OpenWindow(TypeWindow.OverGame);
+        }
+     
     }
-  
+    private void OnEnable()
+    {
+        AudioManganger.Ins.PlaySound("HighScore");
+    }
+
 }

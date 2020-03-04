@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-
+    
     public static GameManager Ins = null;
     public List<Windown> Windowns = new List<Windown>();
     public List<Screen1> Screens = new List<Screen1>();

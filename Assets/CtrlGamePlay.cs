@@ -236,7 +236,7 @@ private float timeSugg = 0;
         }
         DestroyAndSplitShape();
         TimeWait = 0.4f;
-
+      
 
         isClick_up = true;
 
@@ -406,6 +406,8 @@ private float timeSugg = 0;
         if (Input.GetKeyDown(KeyCode.Q))
         {
 
+            DestroyRow(rowDestroy);
+            DestroyAndSplitShape();
 
          
 
@@ -476,7 +478,7 @@ private float timeSugg = 0;
             DestroyAll();
             timeSugg = timeSuggest;
             RefershBoard();
-            int Direct = UpdatePoint(Input.mousePosition);
+           
             float dis = 0;
             // RefershBoard();
             if (ShapeClick != null)
@@ -499,9 +501,9 @@ private float timeSugg = 0;
             {
 
 
-                ShapeSelect.text = "NULL";
+              
             }
-            Select.text += "\n Direct :" + Direct;
+          
 
         }
 
@@ -564,22 +566,22 @@ private float timeSugg = 0;
             DestroyAll();
             if (IsListShapeMove())
             {
-                
+                AudioManganger.Ins.PlaySound("CompleteMove");
                 RefershBoard();
-              
-             
+
+
                 Debug.Log("Complete_Move");
-              
+
                 initPos = false;
 
                 if (HasScore())
                 {
                     if (HasEff())
                     {
-                        
-                        HasCubeEff =  CountEff();
-                        TimeWait = 0.6f;
-                        Invoke("DestroyAndSplitShape", 0.5f);
+                        AudioManganger.Ins.PlaySound("Electric");
+
+                        TimeWait = 0.9f;
+                        Invoke("DestroyAndSplitShape", 0.8f);
                         return;
                     }
                     else
@@ -591,24 +593,30 @@ private float timeSugg = 0;
 
 
                     }
-                   
+
                 }
                 else
                 {
-                    HasCubeEff = 0;
+
                     Round = 0;
-                   
+
                     isClick_up = false;
                     Combo = 0;
                 }
 
                 if (isGameOver())
                 {
-                     
+                    ResetStatus();
+                    CtrlData.CountGame++;
+                    CtrlData.CountPlay++;
                     GameManager.Ins.isGameOver = false;
-                    if (CtrlData.CountPlay % 2 != 0)
+                    if (CtrlData.CountGame % 3 == 0 || CtrlData.Score>150)
                     {
                         ManagerAds.Ins.ShowInterstitial();
+                    }
+                    if (CtrlData.CountPlay % 2 != 0)
+                    {
+                       
 
                         if (CtrlData.Ins.Set_High_Score(CtrlData.Score))
                         {
@@ -624,6 +632,7 @@ private float timeSugg = 0;
                     }
                     else
                     {
+                      
                         if (CtrlData.Ins.Set_High_Score(CtrlData.Score))
                         {
                            
@@ -631,11 +640,12 @@ private float timeSugg = 0;
                         }
                         else
                         {
+                           
                             SetUpDestroyAllCube();
                         }
                       
                     }
-                    CtrlData.CountPlay++;
+                  
                   
                 }
                 else
@@ -662,13 +672,44 @@ private float timeSugg = 0;
         
        
     }
+    public void ResetStatus()
+    {
+      
+            if (ShapeClone != null)
+            {
+                DestroyShapeClone();
+            }
+
+            isClick_down = false;
+
+            if (ShapeClick != null)
+            {
+                timeSugg = timeSuggest;
+                ShapeClick.isClick = false;
+                Vector3 PointSnap = ShapeClick.transform.position;
+                int offset = Mathf.RoundToInt((PointSnap.x - CtrlGamePlay.Ins.initPoint.x) / offsetX);
+
+                PointSnap.x = CtrlGamePlay.Ins.initPoint.x + offset * offsetX;
+
+                ShapeClick.transform.position = PointSnap;
+              
+               
+
+              
+                ShapeClick = null;
+
+
+
+            }
+        SimulateColumn.gameObject.SetActive(false);
+    }
+    
     public void DestroyAndSplitShape()
     {
         CheckDestroyRow();
         RefershBoard();
         SplitShape();
-       
-
+      
         TimeWait = WaitTime;
     }
 
@@ -721,23 +762,8 @@ private float timeSugg = 0;
     {
             
     }
-    public void ActiveRigidBoy(bool active)
-    {
-       
-        for(int i=0 ; i < List_Shape.Count; i++)
-        {
-           if(List_Shape[i].gameObject.layer == 8)
-            {
-            //    List_Shape[i].Body.isKinematic = !active;
-            }
-           
-        }
-    }
-
-    public void UnRigidBody()
-    {
-        ActiveRigidBoy(false);
-    }
+   
+   
     public bool IsListShapeMove()
     {
         for (int i = 0; i < List_Shape.Count; i++)
@@ -884,7 +910,7 @@ private float timeSugg = 0;
                 Debug.Log("DESTROY ROW :" + i);
                 DestroyRow(row[i]);
             }
-           
+            AudioManganger.Ins.PlaySound("Breaker");
 
         }
         else
@@ -902,7 +928,10 @@ private float timeSugg = 0;
                 Combo += row.Length;
                 if ( Combo > 1)
                 {
-                    
+                    int x = Mathf.Clamp(Combo, 1, 4);
+                    string audio = "Score_"+x.ToString();
+
+                    AudioManganger.Ins.PlaySound(audio);
 
                     CtrlData.Ins.VisibleCombo(Combo);
 
@@ -916,8 +945,8 @@ private float timeSugg = 0;
                 else
                 {
                     
-                    CtrlData.Ins.VisibleScore(14);
-                    CtrlData.Score += 14;
+                    CtrlData.Ins.VisibleScore(14+(HasCubeEff*7));
+                    CtrlData.Score += 14+(HasCubeEff*7);
                     CtrlData.Ins.SetScore();
                 }
               
@@ -1012,17 +1041,22 @@ private float timeSugg = 0;
 
     public void SpawnShape()
     {
+        HasCubeEff = 0;
+
         if (CtrlData.Score > (150 * (int)CtrlData.Level))
         {
             CtrlData.Level++;
         }
 
-        GenerateStartGame(Random.Range(2,3+Random.Range(0,CtrlData.Level)),false);
+        GenerateStartGame(Random.Range(2,3+Mathf.Clamp(Random.Range(0,CtrlData.Level),0,5)),false);
+      //  GenerateStartGame(2, false);
         RefershBoard();
     }
     public void SpawnStartGame()
     {
+        timeSuggest = 10;
         GenerateStartGame(Random.Range(2,4), true);
+        //GenerateStartGame(2, true);
         RefershBoard();
     }
 
@@ -2156,7 +2190,7 @@ private float timeSugg = 0;
 
     public void SimulateDown()
     {
-        SetUpAll();
+     
         SortShape();
         List<Shape> ListShapeMove = new List<Shape>();
         int[,] shape = CloneBoard(this.Board);
@@ -2192,11 +2226,12 @@ private float timeSugg = 0;
         for (int i = 0; i < List_Shape.Count; i++)
         {
           
-            StartCoroutine(MoveDownOneCube(List_Shape[i],ListMove[i]));
+           MoveDownOneCube(List_Shape[i],ListMove[i]);
         }
-            
 
-           
+        SetUpAll();
+
+
     }
     public List<int> GenerateList(int count)
     {
@@ -2237,7 +2272,10 @@ private float timeSugg = 0;
     }
     public bool HasMoveDown(int[,] Board, int space, List<Vector2> shape)
     {
-        StartMove(shape, Board);
+        if(!StartMove(shape, Board))
+        {
+            return false;
+        }
         for (int i = 0; i < shape.Count; i++)
         {
           
@@ -2345,13 +2383,19 @@ private float timeSugg = 0;
         }
         return ListShape;
     }
-    public void StartMove(List<Vector2> Shape,int[,] Board)
+    public bool StartMove(List<Vector2> Shape,int[,] Board)
     {
         for(int i = 0; i < Shape.Count; i++)
         {
+            
             Vector2 point = Shape[i];
-            Board[(int)point.y, (int)point.x] = 0;
+            if (!isInMatrixBoard((int)point.y,(int)point.x,Board))
+            {
+                return false;
+            }
+                Board[(int)point.y, (int)point.x] = 0;
         }
+        return true;
     }
     public void ResetMove(List<Vector2> Shape, int[,] Board)
     {
@@ -2379,50 +2423,64 @@ private float timeSugg = 0;
         }
 
     }
-    public IEnumerator MoveDownOneCube(Shape shape,int Space)
+    public void MoveDownOneCube(Shape shape, int Space)
     {
-       
-        float dis = 0;
-        float  space = offsetX/ SpeedMoveDown;
+
+        //float dis = 0;
+        //float space = offsetX / 3;
+
+        //float clampy = shape.transform.position.y - (Space * offsetX);
+        //if (Space != 0)
+        //{
+
+
+
+        //    while (shape.transform.position.y >= clampy + (offsetX * 0.1f))
+        //    {
+        //        Debug.Log("isMoving");
+        //        shape.isMovingDown = true;
+        //        Vector3 pos = shape.transform.position;
+
+        //        pos.y = Mathf.Lerp(pos.y, clampy, Time.deltaTime * SpeedMoveDown);
+
+        //        shape.transform.position = pos;
+
+
+
+        //        yield return new WaitForSeconds(0);
+        //    }
+
+        //    shape.isMovingDown = false;
+
+
+
+        //    int offset = Mathf.RoundToInt((initPoint.y - shape.transform.position.y) / offsetY);
+        //    shape.transform.position = new Vector2(shape.transform.position.x, initPoint.y - offset * offsetY);
+        //    shape.isMovingDown = false;
+        //    yield return new WaitForSeconds(0);
+
+
+        //}
         if (Space != 0)
         {
+            MovingDown(shape, shape.transform.position.y - (Space * offsetX));
+        } 
+          
+        else 
+        {
+            shape.isMovingDown = false;
 
-
-            if (Space != 1)
-            {
-                while (dis < offsetX * Space - space)
-                {
-                    shape.isMovingDown = true;
-                    Vector3 pos = shape.transform.position;
-                    pos.y -= space;
-                    dis += space;
-                    shape.transform.position = pos;
-                    yield return new WaitForSeconds(0);
-                }
-            
-                shape.isMovingDown = false;
-            }
-            else if (Space == 1)
-            {
-                while (dis < offsetX * Space)
-                {
-                    shape.isMovingDown = true;
-                    Vector3 pos = shape.transform.position;
-                    pos.y -= space;
-                    dis += space;
-                    shape.transform.position = pos;
-                    yield return new WaitForSeconds(0);
-                }
-              
-            }
         }
-        int offset = Mathf.RoundToInt((initPoint.y- shape.transform.position.y) / offsetY);
-        shape.transform.position = new Vector2(shape.transform.position.x, initPoint.y - offset * offsetY);
-        shape.isMovingDown = false;
-        yield return new WaitForSeconds(0);
-
+           
     }
+   
 
+    public void MovingDown(Shape shape, float ClampY)
+    {
+        shape.isMovingDown = true;
+        shape.ClampMoveDown = ClampY;
+        
+    }
 
 
     #endregion
@@ -2450,6 +2508,7 @@ private float timeSugg = 0;
 
                 if (Start)
                 {
+                    
                     bool spawn = false;
                     int count = 0;
                     while (count<index)
@@ -2458,10 +2517,11 @@ private float timeSugg = 0;
                 {
                     type = Shape.RandomShape();
                 }
-                type = Shape.RandomShape();
+                        type = Shape.RandomShape();
                         pos = CtrlGamePlay.Ins.RandomPosStart();
                         if (isSpawnCorrect_For_Start_Game(ref CloneBoard, type, pos, out shape, out roll))
                         {
+                                   
                             int color = CtrlData.RandomColor(type, roll);
                             InforShape infor = new InforShape(type, pos, shape, roll, color);
                       //          Debug.Log("Spawn SS : " + count);
@@ -2484,10 +2544,12 @@ private float timeSugg = 0;
         }
                 else
                 {
+                   int timeSpawn=0;
                      int count = 0;
                      int time = 0;
             while (count < index)
             {
+                timeSpawn++;
                 if (time % 7 == 0)
                 {
                     type = Shape.RandomShape();
@@ -2511,6 +2573,11 @@ private float timeSugg = 0;
                     //CloneBoard = CtrlGamePlay.CloneBoard(Board);
                     //isCorrect = false;
                 }
+                if (timeSpawn >= 200)
+                {
+                    break;
+                }
+                
             }
 
                 }
@@ -2542,6 +2609,14 @@ private float timeSugg = 0;
 
             a.GetComponent<Shape>().PushToBoard();
             a.GetComponent<Shape>().InitImageUse();
+            if (isActive)
+            {
+                a.GetComponent<Shape>().NormlizeColor();
+            }
+            else
+            {
+                a.GetComponent<Shape>().Fade();
+            }
 
             if(ListInfor[i].type == TypeShape.crossBar_1 || ListInfor[i].type == TypeShape.crossBar_2 || ListInfor[i].type == TypeShape.crossBar_3)
             {
@@ -2974,6 +3049,12 @@ private float timeSugg = 0;
             case TypeShape.T:
                 shape = CtrlData.T;
                 r = Random.Range(0, CtrlData.Roll_Cube_L);
+
+                // YOU NEVER SPAWn
+                if (r == 0)
+                {
+                    r = 1;
+                }
                 break;
 
         }
@@ -3126,6 +3207,7 @@ private float timeSugg = 0;
             {
                 List.Remove(RowIsCheck[z]);
             }
+            Row = SortRowShape(Row);
             ListRowShape.Add(Row);
 
         }
@@ -3143,6 +3225,43 @@ private float timeSugg = 0;
 
 
     }
+
+    public List<Shape> SortRowShape(List<Shape> shape)
+    {
+        List<Shape> SortList = new List<Shape>();
+        List<Shape> Sort_0 = new List<Shape>();
+        List<Shape> Sort_1 = new List<Shape>();
+      
+       
+        List<List<Vector2>> Shapes = PushListCubeInList(shape);
+        for(int i = 0; i < Shapes.Count; i++)
+        {
+            if (shape[i].shape.GetLength(0)!=1)
+            {
+                Sort_1.Add(shape[i]);
+            }
+            else
+            {
+                Sort_0.Add(shape[i]);
+            }
+
+        }
+
+        for(int i = 0; i < Sort_1.Count; i++)
+        {
+            SortList.Add(Sort_1[i]);
+        }
+        for (int i = 0; i < Sort_0.Count; i++)
+        {
+            SortList.Add(Sort_0[i]);
+        }
+        return SortList;
+
+    }
+
+    
+   
+
     
     public bool StartSuggestionsLeft(bool FindOut)
     {

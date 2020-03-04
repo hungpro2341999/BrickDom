@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-
-public class VisibleScore : MonoBehaviour
+public class UiSound : MonoBehaviour,IPointerDownHandler
 {
-    public Text Score;
+    public AudioSource Audio;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -18,10 +19,11 @@ public class VisibleScore : MonoBehaviour
     {
         
     }
-    private void OnEnable()
+
+    void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
     {
-        AudioManganger.Ins.PlaySound("GameOver");
-        Score.text = CtrlData.Score.ToString();
+        if(CtrlData.Ins.IsSound())
+       
+        Audio.Play();
     }
-    
 }

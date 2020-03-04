@@ -71,6 +71,7 @@ public class Shape : PoolItem
     public float ClampMoveMaxX = 0;
     public float ClampMoveMinY = 0;
     public bool isMovingDown = false;
+    public float ClampMoveDown = 0;
     private void Awake()
     {
        
@@ -182,6 +183,23 @@ public class Shape : PoolItem
         if (ListShape.Count <= 0)
         {
             DestroyAllCubeAndShape();
+        }
+        if (isMovingDown)
+        { 
+          
+            Vector3 pos = transform.position;
+
+            pos.y = Mathf.Lerp(pos.y, ClampMoveDown , Time.deltaTime * CtrlGamePlay.Ins.SpeedMoveDown);
+
+            transform.position = pos;
+            if(transform.position.y <= ClampMoveDown + (CtrlGamePlay.Ins.offsetX * 0.1f))
+            {
+                int offset = Mathf.RoundToInt((CtrlGamePlay.Ins.initPoint.y - transform.position.y) / CtrlGamePlay.Ins.offsetY);
+                transform.position = new Vector2(transform.position.x, CtrlGamePlay.Ins.initPoint.y - offset * CtrlGamePlay.Ins.offsetY);
+              
+
+                isMovingDown = false;
+            }
         }
 
 
@@ -686,6 +704,7 @@ public class Shape : PoolItem
             //type = (TypeShape)values.GetValue(UnityEngine.Random.Range(0, values.Length));
 
         }
+        
         return type;
     } 
   
@@ -1326,6 +1345,7 @@ public class Shape : PoolItem
     
     public override void OnSpawn()
     {
+        isMovingDown = false;
         for(int i = 0; i < List_Image.Count; i++)
         {
             List_Image[i].gameObject.GetComponent<TurnToGray>().Reset();

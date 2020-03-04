@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 using DG.Tweening;
 public class AnimSetting : MonoBehaviour
 {
+    public static AnimSetting Ins;
     public RectTransform Status1;
     public RectTransform Status2;
     public RectTransform Status3;
@@ -20,8 +21,19 @@ public class AnimSetting : MonoBehaviour
     //Sound
     public RectTransform OnSound;
     public RectTransform OffSoud;
-   // Start is called before the first frame update
-   void Start()
+    private void Awake()
+    {
+        if (Ins != null)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Ins = this;
+        }
+    }
+    // Start is called before the first frame update
+    void Start()
     {
 
        
@@ -62,7 +74,7 @@ public class AnimSetting : MonoBehaviour
         Status2.gameObject.SetActive(false);
         Status1.DOAnchorPos(new Vector2(-252f, 516f), 0.5f).OnComplete(()=>
         {
-            Status3.gameObject.SetActive(false);
+           
             Status2.DOScale(new Vector3(1.1f, 1.1f, 1.1f), 0.2f).OnComplete
             (
             () =>
@@ -79,7 +91,7 @@ public class AnimSetting : MonoBehaviour
     {
         Btn_Pause.gameObject.SetActive(false);
         Btn_Resume.gameObject.SetActive(true);
-        Status3.gameObject.SetActive(true);
+       
         Status1.DOAnchorPos(new Vector2(-277f, 516), 0.2f);
         Status2.DOScale(new Vector3(1.15f, 1.15f, 1f), 0.2f).OnComplete
 
@@ -100,7 +112,7 @@ public class AnimSetting : MonoBehaviour
     }
     public void ChanceSound()
     {
-        CtrlData.Ins.ChangeSound();
+      
 
         if (CtrlData.Ins.IsSound())
         {

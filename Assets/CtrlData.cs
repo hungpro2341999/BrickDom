@@ -9,7 +9,8 @@ public class CtrlData : MonoBehaviour
     #region
     public static int Level;
     public static int Score;
-    public static int CountPlay = 1;
+    public static int CountPlay = 0;
+    public static int CountGame = 0;
     public const string Key_HighScore = "Key_High_Score_Hight";
     public const string Key_Sound = "Key_Sound";
     public Transform UI;
@@ -179,6 +180,7 @@ public class CtrlData : MonoBehaviour
         CtrlData.Level = 0;
         CtrlData.Score = 0;
         TScore.text = "0";
+        CtrlData.CountPlay = 0;
     }
     
     public void InitKey()
@@ -188,12 +190,13 @@ public class CtrlData : MonoBehaviour
         Type_Ver_1.Add(TypeShape.crossBar_2);
         Type_Ver_2.Add(TypeShape.crossBar_3);
         Type_Ver_2.Add(TypeShape.three_cube);
-        Type_Ver_2.Add(TypeShape.T);
+     
        
         Type_Ver_2.Add(TypeShape.square);
         Type_Ver_3.Add(TypeShape.crossBar_4);
         Type_Ver_3.Add(TypeShape.L4_90);
         Type_Ver_3.Add(TypeShape.L_4_0);
+        Type_Ver_3.Add(TypeShape.T);
 
         //AllTypeShape.Add(TypeShape.crossBar_1);
         //AllTypeShape.Add(TypeShape.crossBar_2);

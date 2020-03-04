@@ -55,10 +55,15 @@ public class WindowContinue : Windown
 
     private void OnEnable()
     {
+        AudioManganger.Ins.PlaySound("Continue");
         AnimCountText.localScale = Vector2.one;
         Complete = false;
         count = 0;
 
+    }
+    private void OnDisable()
+    {
+        Count.sprite = CountText[0];
     }
     public void StartAnim()
     {
