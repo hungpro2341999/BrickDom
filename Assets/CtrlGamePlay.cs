@@ -105,7 +105,7 @@ private float timeSugg = 0;
     
     public int xx;
     public int yy;
-    public int rowDestroy;
+    public int[] rowDestroy;
     public int rotaion;
     public int farme = 1;
   
@@ -211,8 +211,8 @@ private float timeSugg = 0;
    
     public void Rest_Game()
     {
-        GameManager.Ins.isGameOver = true;
-        GameManager.Ins.isGamePause = true;
+        GameManager.Ins.isGameOver = false;
+        GameManager.Ins.isGamePause = false;
         Board = new int[Row, Column];
 
         DestroyAll_Ver_1();
@@ -242,7 +242,8 @@ private float timeSugg = 0;
 
 
 
-        GameManager.Ins.isGameOver = true;
+        GameManager.Ins.isGameOver = false;
+        GameManager.Ins.isGamePause = false;
         GameManager.Ins.OpenWindow(TypeWindow.GamePlay);
 
 
@@ -371,13 +372,15 @@ private float timeSugg = 0;
         Application.targetFrameRate = 60;
     }
 
+
+
     // Update is called once per frame
     void Update()
     {
-        if (!GameManager.Ins.isGameOver && !GameManager.Ins.isGamePause)
+        if (GameManager.Ins.isGameOver || GameManager.Ins.isGamePause)
             return;
-       
-      
+
+        Time.timeScale = 0.4f;
 
         if (TimeWait > 0)
         {
@@ -406,13 +409,17 @@ private float timeSugg = 0;
         if (Input.GetKeyDown(KeyCode.Q))
         {
 
-            DestroyRow(rowDestroy);
+            for(int i = 0; i < rowDestroy.Length; i++)
+            {
+                DestroyRow(rowDestroy[i]);
+            }
+          
             DestroyAndSplitShape();
 
          
 
         }
-           
+      
         if (ShapeClick != null)
         {
 
@@ -530,7 +537,8 @@ private float timeSugg = 0;
                     PointSnap.x = CtrlGamePlay.Ins.initPoint.x + offset * offsetX;
                //     Debug.Log(" Offset :" + offset +"  " + PointSnap.x);
                     ShapeClick.transform.position = PointSnap;
-                    RefershBoard();  
+                    RefershBoard();
+                    ShapeClick.ResetStatus();
                     if (offset != ShapeClick.PointInitCheck.y)
                     {
 
@@ -541,7 +549,7 @@ private float timeSugg = 0;
                     }
                     else
                     {
-                       
+                        isClick_down = false;
                         isClick_up = false;
                     }
                   
@@ -609,7 +617,7 @@ private float timeSugg = 0;
                     ResetStatus();
                     CtrlData.CountGame++;
                     CtrlData.CountPlay++;
-                    GameManager.Ins.isGameOver = false;
+                    GameManager.Ins.isGameOver = true;
                     if (CtrlData.CountGame % 3 == 0 || CtrlData.Score>150)
                     {
                         ManagerAds.Ins.ShowInterstitial();
@@ -692,7 +700,7 @@ private float timeSugg = 0;
                 PointSnap.x = CtrlGamePlay.Ins.initPoint.x + offset * offsetX;
 
                 ShapeClick.transform.position = PointSnap;
-              
+                ShapeClick.ResetStatus();
                
 
               
@@ -2190,7 +2198,7 @@ private float timeSugg = 0;
 
     public void SimulateDown()
     {
-     
+       
         SortShape();
         List<Shape> ListShapeMove = new List<Shape>();
         int[,] shape = CloneBoard(this.Board);
@@ -2461,16 +2469,12 @@ private float timeSugg = 0;
 
 
         //}
-        if (Space != 0)
-        {
+    
             MovingDown(shape, shape.transform.position.y - (Space * offsetX));
-        } 
+     
           
-        else 
-        {
-            shape.isMovingDown = false;
 
-        }
+        
            
     }
    
@@ -3226,6 +3230,7 @@ private float timeSugg = 0;
 
     }
 
+
     public List<Shape> SortRowShape(List<Shape> shape)
     {
         List<Shape> SortList = new List<Shape>();
@@ -3863,6 +3868,14 @@ private float timeSugg = 0;
     
 
 
+    public void PauseGame()
+    {
+        GameManager.Ins.isGamePause = true;
+    }
+    public void RemuseGame()
+    {
+        GameManager.Ins.isGamePause = false;
+    }
 
 
 

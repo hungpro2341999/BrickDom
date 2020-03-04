@@ -22,7 +22,7 @@ public class HighScore : MonoBehaviour
     private void GameOver()
     {
      
-        if (CtrlData.CountPlay % 2 == 0)
+        if (CtrlData.CountPlay % 2 != 0)
         {
             GameManager.Ins.OpenWindow(TypeWindow.Continue);
         }

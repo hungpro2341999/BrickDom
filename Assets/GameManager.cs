@@ -54,8 +54,8 @@ public class GameManager : MonoBehaviour
         {
             case TypeScreen.LoadingScreen:
 
-                isGameOver = false;
-                isGameOver = false;
+                isGameOver = true;
+                isGameOver = true;
                 break;
 
             case TypeScreen.PlayScreen:
@@ -89,8 +89,8 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
-        isGameOver = true;
-        isGameOver = true;
+        isGameOver = false;
+        isGameOver = false;
         OpenWindow(TypeWindow.GamePlay);
         CtrlGamePlay.Ins.Start_Game();
       

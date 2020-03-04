@@ -21,7 +21,7 @@ public class Shape : PoolItem
     public SpriteRenderer Img_Cube_Cross_3_Vertical;
     public SpriteRenderer Img_Cube_Cross_4_Horizontal;
     public SpriteRenderer Img_Cube_Cross_4_Vertical;
-   
+
     public SpriteRenderer ImgCube_quare;
     public SpriteRenderer ImgCube_L2_0;
     public SpriteRenderer ImgCube_L2_90;
@@ -58,7 +58,7 @@ public class Shape : PoolItem
     public bool isEff = false;
     public int CubeStart;
     public List<GameObject> Eff = new List<GameObject>();
-   
+
     #region Move
 
     public Vector3 posInit;
@@ -74,7 +74,7 @@ public class Shape : PoolItem
     public float ClampMoveDown = 0;
     private void Awake()
     {
-       
+
     }
     #endregion
     // Start is called before the first frame update
@@ -87,7 +87,7 @@ public class Shape : PoolItem
     {
 
         if (!List_Image.Contains(Img_Cube_Cross_1x1))
-        List_Image.Add(Img_Cube_Cross_1x1);
+            List_Image.Add(Img_Cube_Cross_1x1);
         if (!List_Image.Contains(Img_Cube_Cross_2_0))
             List_Image.Add(Img_Cube_Cross_2_0);
         if (!List_Image.Contains(Img_Cube_Cross_2_90))
@@ -126,8 +126,8 @@ public class Shape : PoolItem
             Init_List_Image();
         }
 
-     
-         
+
+
 
 
     }
@@ -137,30 +137,31 @@ public class Shape : PoolItem
         Img_Cube_1x1.gameObject.SetActive(false);
 
 
-       Img_Cube_Cross_1x1.gameObject.SetActive(false);
-       Img_Cube_Cross_2_0.gameObject.SetActive(false);
-      Img_Cube_Cross_2_90.gameObject.SetActive(false);
-       Img_Cube_Cross_3_Horizontal.gameObject.SetActive(false);
-       Img_Cube_Cross_3_Vertical.gameObject.SetActive(false);
-      Img_Cube_Cross_4_Horizontal.gameObject.SetActive(false);
-      Img_Cube_Cross_4_Vertical.gameObject.SetActive(false);
-       ImgCube_quare.gameObject.SetActive(false);
+        Img_Cube_Cross_1x1.gameObject.SetActive(false);
+        Img_Cube_Cross_2_0.gameObject.SetActive(false);
+        Img_Cube_Cross_2_90.gameObject.SetActive(false);
+        Img_Cube_Cross_3_Horizontal.gameObject.SetActive(false);
+        Img_Cube_Cross_3_Vertical.gameObject.SetActive(false);
+        Img_Cube_Cross_4_Horizontal.gameObject.SetActive(false);
+        Img_Cube_Cross_4_Vertical.gameObject.SetActive(false);
+        ImgCube_quare.gameObject.SetActive(false);
         ImgCube_L2_0.gameObject.SetActive(false);
-       ImgCube_L2_90.gameObject.SetActive(false);
-       ImgCube_L4_0.gameObject.SetActive(false);
+        ImgCube_L2_90.gameObject.SetActive(false);
+        ImgCube_L4_0.gameObject.SetActive(false);
         ImgCube_L4_90.gameObject.SetActive(false);
-       ImgCube_L3_0.gameObject.SetActive(false);
+        ImgCube_L3_0.gameObject.SetActive(false);
         ImgCube_L3_90.gameObject.SetActive(false);
         ImgCube_T0.gameObject.SetActive(false);
         ImgCube_T90.gameObject.SetActive(false);
     }
-    
+
 
     // Update is called once per frame
     void Update()
     {
-     
-        Point = CtrlGamePlay.PositonToPointMatrix(transform.position.x, transform.position.y);
+        if (GameManager.Ins.isGamePause || GameManager.Ins.isGameOver)
+            return;
+            Point = CtrlGamePlay.PositonToPointMatrix(transform.position.x, transform.position.y);
 
         PushToBoard();
 
@@ -704,7 +705,16 @@ public class Shape : PoolItem
             //type = (TypeShape)values.GetValue(UnityEngine.Random.Range(0, values.Length));
 
         }
-        
+        if (Random.Range(0, 2) != 0)
+        {
+            type = TypeShape.three_cube;
+        }
+        else
+        {
+
+            type = TypeShape.crossBar_2;
+        }
+    
         return type;
     } 
   
@@ -733,6 +743,10 @@ public class Shape : PoolItem
     {
         CtrlGamePlay.Ins.Cubes.Remove(game);
         ListShape.Remove(game);
+        if (ListShape.Count==0)
+        {
+            OnDespawn();
+        }
   
     }
     public bool Check_Destroy()
@@ -1345,6 +1359,8 @@ public class Shape : PoolItem
     
     public override void OnSpawn()
     {
+        m_isMove = false;
+        isClick = false;
         isMovingDown = false;
         for(int i = 0; i < List_Image.Count; i++)
         {
