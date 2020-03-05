@@ -438,12 +438,12 @@ private float timeSugg = 0;
 
 
 
-         List<int[,]> Shapess =   SplitShape(List_Shape[index],new int[12] ,new int[1] {1});
+         List<int[,]> Shapess =   SplitShape(List_Shape[index],new int[1] { 12} ,new int[3] {0,1,2});
          
          for(int i = 0; i < Shapess.Count; i++)
             {
                 Debug.Log(i+" \n "+ Render(Shapess[i]));
-                //SpawnShape(Shapess[i],Vector2.zero,1);
+             //   SpawnShape(Shapess[i],Vector2.zero,1);
             }
           
 
@@ -1606,42 +1606,81 @@ private float timeSugg = 0;
         }
     }
 
-    public List<int[,]> SplitShape(Shape shape, int[] colum,int[] row)
+    public List<int[,]> SplitShape(Shape shape, int[] row,int[] col)
     {
         
         List<GameObject> ListShape = shape.ListShape;
         int[,] type = shape.shape;
 
+        Debug.Log(row.ToString() + "  " + col.ToString());
 
-
-        List<List<int>> RowAndColumSplit = ConvertToSplitShape(shape, colum, row);
+        List<List<int>> RowAndColumSplit = ConvertToSplitShape(shape, row, col);
 
         Debug.Log(RenderList(RowAndColumSplit[0]));
         Debug.Log(RenderList(RowAndColumSplit[1]));
         int[] row1 = null;
         int[] col1 = null;
+        List<int> ListPointRow = new List<int>();
+        List<int> ListPointColumn = new List<int>();
+
+         ListPointRow.Add((int)shape.Point.x);
         if (RowAndColumSplit[0].Count != 0)
         {
             row1 = RowAndColumSplit[0].ToArray();
             Debug.Log(row1.Length);
-           
+            for(int i = 0; i < row1.Length; i++)
+            {
+                ListPointRow.Add(((int)shape.Point.x + row1[i]));
+
+            }
         }
+
+
+
+        ListPointColumn.Add((int)shape.Point.y);
         if (RowAndColumSplit[1].Count != 0)
         {
            
             col1 = RowAndColumSplit[1].ToArray();
-
+           
             Debug.Log(col1.Length);
+
+            for (int i = 0; i < col1.Length; i++)
+            {
+                //   ListPointRow.Add(((int)shape.Point.x + row1[i]));
+                ListPointColumn.Add((int)shape.Point.y - col1[i]);
+            }
+
         }
+        
+
+        List<Vector2> Grounp = GrounpPoint(ListPointRow, ListPointColumn);
+
+        for(int i = 0; i < Grounp.Count; i++)
+        {
+            Debug.Log("POINT "+i+":"+ Grounp[i].x + "  " + Grounp[i].y);
+        }
+
         List<int[,]> ListRowtMatrix = new List<int[,]>();
         List<int[,]> ListColumnMatrix = new List<int[,]>();
         List<int[,]> TotalMatrix = new List<int[,]>();
 
+        
+
         List<List<int[,]>> ListColumMatrix_1 = new List<List<int[,]>>();
-     
+        
         if (row1 != null)
         {
+            
+            
+
             ListRowtMatrix  =  SplitRowMatrix(type, row1);
+
+            for(int i = 0; i < row1.Length; i++)
+            {
+              
+            }
+
         }
 
         if (ListRowtMatrix.Count != 0 && col1!=null)
@@ -1668,24 +1707,28 @@ private float timeSugg = 0;
 
 
         }
-        else if(col1!=null && ListRowtMatrix.Count==0)
+        else if(col1!=null)
         {
             ListColumnMatrix = SplitColumnMatrix(type, col1);
             for(int i = 0; i < ListColumnMatrix.Count; i++)
             {
                 TotalMatrix.Add(ListColumnMatrix[i]);
             }
+            List<Vector2> Points = new List<Vector2>();
+
+          
+
 
 
         }
         else if(row1!=null)
         {
-
             for(int i = 0; i < ListRowtMatrix.Count; i++)
             {
                 TotalMatrix.Add(ListRowtMatrix[i]);
             }
         }
+
 
         return TotalMatrix;
 
@@ -1702,6 +1745,26 @@ private float timeSugg = 0;
 
 
     }
+    public List<Vector2> GrounpPoint(List<int> Row,List<int> Column)
+    {
+        List<Vector2> point = new List<Vector2>();
+        for(int i = 0; i < Row.Count; i++)
+        {
+            Vector2 p = Vector2.zero;
+            p.x = Row[i];
+            for(int j = 0; j < Column.Count; j++)
+            {
+                p.y = Column[j];
+                point.Add(p);
+            }
+
+        }
+        return point;
+
+
+    }
+
+
     //public List<int[,]> SplitMatrix(int[,] matrix, int[] row, int[] colum)
     //{
 
@@ -1830,7 +1893,7 @@ private float timeSugg = 0;
                 Column.Add(ListColumn[i]);
             }
         }
-        if (ListColumn.Count != 0)
+        if (Column.Count != 0)
         {
             ListMatrix.Add(ListColumToMatrix(Column));
 
@@ -1853,10 +1916,12 @@ private float timeSugg = 0;
         
          for(int i = 0; i < type.GetLength(0); i++)
         {
+            Debug.Log(i + "  " + (point.x + i));
             splitRow.Add((int)(point.x + i));  
         }
         for (int j = 0; j < type.GetLength(1); j++)
         {
+            Debug.Log(j + "  " + (point.y + j));
             splitColumn.Add((int)(point.y + j));
 
         }
@@ -1870,6 +1935,7 @@ private float timeSugg = 0;
             {
                 for (int j = 0; j < row.Length; j++)
                 {
+                    Debug.Log(splitRow[i] + "   " + row[j]);
                     if (splitRow[i] == row[j])
                     {
                         splitRow_Ver_2.Add(j);
@@ -1884,6 +1950,9 @@ private float timeSugg = 0;
             {
                 for (int j = 0; j < colum.Length; j++)
                 {
+
+
+                    Debug.Log(splitColumn[i] + "   " + colum[j]);
                     if (splitColumn[i] == colum[j])
                     {
                         splitColumn_ver_2.Add(j);
@@ -1891,12 +1960,12 @@ private float timeSugg = 0;
                 }
             }
         }
-       
 
-
-      
+        Debug.Log(splitRow_Ver_2.Count + "   " + splitColumn_ver_2.Count);
         rowAndColum.Add(splitRow_Ver_2);
         rowAndColum.Add(splitColumn_ver_2);
+       
+      
         return rowAndColum;
 
 
@@ -2343,6 +2412,7 @@ private float timeSugg = 0;
     }
     public static int[,] ListColumToMatrix(List<List<int>> list)
     {
+
         int row = list[0].Count;
 
         int[,] matrix = new int[row,list.Count];

@@ -714,7 +714,7 @@ public class Shape : PoolItem
 
         //    type = TypeShape.crossBar_2;
         //}
-        type = TypeShape.square;
+        type = TypeShape.L3_0;
         return type;
     } 
   
