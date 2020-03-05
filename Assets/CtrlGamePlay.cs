@@ -93,6 +93,7 @@ private float timeSugg = 0;
     #endregion
 
     // Simulate 
+    public int index=0;
     public Text Matrix;
     public Text Select;
     public Text ShapeSelect;
@@ -212,7 +213,7 @@ private float timeSugg = 0;
     public void Rest_Game()
     {
         GameManager.Ins.isGameOver = false;
-        GameManager.Ins.isGamePause = false;
+      
         Board = new int[Row, Column];
 
         DestroyAll_Ver_1();
@@ -224,28 +225,32 @@ private float timeSugg = 0;
     public void ReviceGame()
     {
 
-
-        int a = Random.Range(2, 5);
-        int start = Random.Range(6, 9);
-        for (int i = 0; i < a; i++)
+        ManagerAds.Ins.ShowRewardedVideo((done) =>
         {
+            int a = Random.Range(2, 5);
+            int start = Random.Range(6, 9);
+            for (int i = 0; i < a; i++)
+            {
 
-            DestroyRow(start);
+                DestroyRow(start);
 
-            start--;
-        }
-        DestroyAndSplitShape();
-        TimeWait = 0.4f;
-      
-
-        isClick_up = true;
+                start--;
+            }
+            DestroyAndSplitShape();
+            TimeWait = 0.6f;
 
 
+            isClick_up = true;
 
-        GameManager.Ins.isGameOver = false;
-        GameManager.Ins.isGamePause = false;
-        GameManager.Ins.OpenWindow(TypeWindow.GamePlay);
 
+
+            GameManager.Ins.isGameOver = false;
+
+            GameManager.Ins.OpenWindow(TypeWindow.GamePlay);
+
+
+        });
+       
 
 
 
@@ -380,7 +385,7 @@ private float timeSugg = 0;
         if (GameManager.Ins.isGameOver || GameManager.Ins.isGamePause)
             return;
 
-        Time.timeScale = 0.4f;
+      
 
         if (TimeWait > 0)
         {
@@ -388,22 +393,60 @@ private float timeSugg = 0;
             if (TimeWait <= 0)
             {
                 SimulateDown();
+                
             }
             return;
         }
+
+
     
         #region
       
         if (Input.GetKeyDown(KeyCode.A))
         {
-          
-            bool FindOut = false;
-            if (!StartSuggestionsLeft(FindOut))
+
+            //bool FindOut = false;
+            //if (!StartSuggestionsLeft(FindOut))
+            //{
+            //    SuggestRight(FindOut);
+            //}
+
+            //int[,] matrix = new int[1, 4] {
+            //    {1,1,1,1}
+             
+            //};
+            //int[] coll = new int[1] { 2 };
+
+            //List<int[,]> matrixx = SplitColumnMatrix(matrix, coll);
+
+            //for (int i = 0; i < matrixx.Count; i++)
+            //{
+            //    Debug.Log(i + "\n" + Render(matrixx[i]));
+            //}
+
+
+            ////////////////////////////////////////////////////////////
+
+            //List<List<int>> column = new List<List<int>>();
+            //List<int> col1 = new List<int> { 0, 0, 1 };
+            //List<int> col2 = new List<int> { 0, 0, 1 };
+            //List<int> col3 = new List<int> { 0, 0, 2 };
+            //column.Add(col1);
+            //column.Add(col2);
+            //column.Add(col3);
+            //Debug.Log(Render(ListColumToMatrix(column)));
+
+
+
+         List<int[,]> Shapess =   SplitShape(List_Shape[index],new int[12] ,new int[1] {1});
+         
+         for(int i = 0; i < Shapess.Count; i++)
             {
-                SuggestRight(FindOut);
+                Debug.Log(i+" \n "+ Render(Shapess[i]));
+                //SpawnShape(Shapess[i],Vector2.zero,1);
             }
-           
-        
+          
+
 
         }
         if (Input.GetKeyDown(KeyCode.Q))
@@ -494,6 +537,7 @@ private float timeSugg = 0;
 
 
 
+
                                    //Reset
                 ShapeClick.PushToBoard();
                 Event_Completed_Change();
@@ -538,7 +582,7 @@ private float timeSugg = 0;
                //     Debug.Log(" Offset :" + offset +"  " + PointSnap.x);
                     ShapeClick.transform.position = PointSnap;
                     RefershBoard();
-                    ShapeClick.ResetStatus();
+                   
                     if (offset != ShapeClick.PointInitCheck.y)
                     {
 
@@ -546,10 +590,10 @@ private float timeSugg = 0;
                         SimulateDown();
                         SetUpAll();
                         isClick_up = true;
+                        ShapeClick.ResetStatus();
                     }
                     else
                     {
-                        isClick_down = false;
                         isClick_up = false;
                     }
                   
@@ -803,12 +847,10 @@ private float timeSugg = 0;
         }
        // ReflectShape();
 
-
-
-
-
-
     }
+
+    
+
     public  List<Shape> GetListShapeSplit(List<Shape> Lshape)
     {
         List<Shape> split = new List<Shape>();
@@ -1562,10 +1604,309 @@ private float timeSugg = 0;
             }
 
         }
+    }
+
+    public List<int[,]> SplitShape(Shape shape, int[] colum,int[] row)
+    {
         
+        List<GameObject> ListShape = shape.ListShape;
+        int[,] type = shape.shape;
+
+
+
+        List<List<int>> RowAndColumSplit = ConvertToSplitShape(shape, colum, row);
+
+        Debug.Log(RenderList(RowAndColumSplit[0]));
+        Debug.Log(RenderList(RowAndColumSplit[1]));
+        int[] row1 = null;
+        int[] col1 = null;
+        if (RowAndColumSplit[0].Count != 0)
+        {
+            row1 = RowAndColumSplit[0].ToArray();
+            Debug.Log(row1.Length);
+           
+        }
+        if (RowAndColumSplit[1].Count != 0)
+        {
+           
+            col1 = RowAndColumSplit[1].ToArray();
+
+            Debug.Log(col1.Length);
+        }
+        List<int[,]> ListRowtMatrix = new List<int[,]>();
+        List<int[,]> ListColumnMatrix = new List<int[,]>();
+        List<int[,]> TotalMatrix = new List<int[,]>();
+
+        List<List<int[,]>> ListColumMatrix_1 = new List<List<int[,]>>();
+     
+        if (row1 != null)
+        {
+            ListRowtMatrix  =  SplitRowMatrix(type, row1);
+        }
+
+        if (ListRowtMatrix.Count != 0 && col1!=null)
+        {
+            for(int i = 0; i < ListRowtMatrix.Count;i++)
+            {
+                ListColumMatrix_1.Add(SplitColumnMatrix(ListRowtMatrix[i],col1));
+            }
+            if (ListColumMatrix_1.Count != 0)
+            {
+                for(int j = 0; j < ListColumMatrix_1.Count; j++)
+                {
+                    for(int k = 0; k < ListColumMatrix_1[j].Count; k++)
+                    {
+                        ListColumnMatrix.Add(ListColumMatrix_1[j][k]);
+                    }
+                }
+            }
+            for (int i = 0; i < ListColumnMatrix.Count; i++)
+            {
+                TotalMatrix.Add(ListColumnMatrix[i]);
+            }
+
+
+
+        }
+        else if(col1!=null && ListRowtMatrix.Count==0)
+        {
+            ListColumnMatrix = SplitColumnMatrix(type, col1);
+            for(int i = 0; i < ListColumnMatrix.Count; i++)
+            {
+                TotalMatrix.Add(ListColumnMatrix[i]);
+            }
+
+
+        }
+        else if(row1!=null)
+        {
+
+            for(int i = 0; i < ListRowtMatrix.Count; i++)
+            {
+                TotalMatrix.Add(ListRowtMatrix[i]);
+            }
+        }
+
+        return TotalMatrix;
+
+
+
+
+       
+      
+
      
 
+
+
+
+
     }
+    //public List<int[,]> SplitMatrix(int[,] matrix, int[] row, int[] colum)
+    //{
+
+
+
+    //}
+
+    public List<int[,]> SplitRowMatrix(int[,] matrixs, int[] row)
+    {
+        List<List<int>> ListRow = CutRow(matrixs);
+      
+        List<int[,]> ListMatrix = new List<int[,]>();
+
+        List<int> Flag = SetUpFlag(matrixs.GetLength(0), row);
+        Debug.Log(ListRow.Count + "  " + Flag.Count);
+
+
+        List<int[,]> matrix = new List<int[,]>();
+
+        List<List<int>> Row = new List<List<int>>(); 
+
+        for(int i = 0; i < Flag.Count; i++)
+        {
+            if (Flag[i] == -1)
+            {
+                           
+                 Row.Add(ListRow[i]);
+                 ListMatrix.Add(ListToMatrix(Row));
+                 Row = new List<List<int>>();
+            }
+            else
+            {
+                Row.Add(ListRow[i]);
+            }    
+        }
+        if (Row.Count != 0)
+        {
+           ListMatrix.Add(ListToMatrix(Row));
+           
+        }
+        return ListMatrix;
+      
+
+
+
+    }
+    public List<int> SetUpFlag(int Row,int[] row)
+    {
+        List<int> Flag = new List<int>();
+        for(int i=0;i<Row; i++)
+        {
+            bool a = false;
+
+           for(int j = 0; j < row.Length; j++)
+            {
+                if (i == row[j])
+                {
+                    Flag.Add(-1);
+                    a = true;
+                }
+            }
+           if(!a)
+            Flag.Add(1);
+        }
+        return Flag;
+    }
+   
+    public List<List<int>> CutRow(int[,] matrix)
+    {
+        List<List<int>> ListRow = new List<List<int>>();
+        for(int i = 0; i < matrix.GetLength(0); i++)
+        {
+            List<int> Row = new List<int>();
+            for (int j = 0; j < matrix.GetLength(1); j++)
+            {
+                Row.Add(matrix[i, j]);
+            }
+            ListRow.Add(Row);
+        }
+        return ListRow;
+       
+    }
+
+
+
+    public List<List<int>> CutColumn(int[,] matrix)
+    {
+        List<List<int>> ListColumn = new List<List<int>>();
+        for (int i = 0; i < matrix.GetLength(1); i++)
+        {
+            List<int> Column = new List<int>();
+            for (int j = 0; j < matrix.GetLength(0); j++)
+            {
+                Column.Add(matrix[j, i]);
+            }
+            ListColumn.Add(Column);
+        }
+        return ListColumn;
+
+    }
+    public List<int[,]> SplitColumnMatrix(int[,] matrixs, int[] column)
+    {
+        List<List<int>> ListColumn = CutColumn(matrixs);
+
+        List<int[,]> ListMatrix = new List<int[,]>();
+
+        List<int> Flag = SetUpFlag(matrixs.GetLength(1), column);
+        Debug.Log(RenderList(Flag));
+
+
+        List<int[,]> matrix = new List<int[,]>();
+
+        List<List<int>> Column = new List<List<int>>();
+
+        for (int i = 0; i < Flag.Count; i++)
+        {
+            if (Flag[i] == -1)
+            {
+
+                Column.Add(ListColumn[i]);
+                ListMatrix.Add(ListColumToMatrix(Column));
+                Column = new List<List<int>>();
+            }
+            else
+            {
+                Column.Add(ListColumn[i]);
+            }
+        }
+        if (ListColumn.Count != 0)
+        {
+            ListMatrix.Add(ListColumToMatrix(Column));
+
+        }
+        return ListMatrix;
+
+
+
+
+    }
+
+
+    public List<List<int>> ConvertToSplitShape(Shape shape,int[] row,int[] colum)
+    {
+        List<List<int>> rowAndColum = new List<List<int>>();
+        Vector2 point = shape.Point;
+        int[,] type = shape.shape;
+        List<int> splitColumn = new List<int>();
+        List<int> splitRow = new List<int>();
+        
+         for(int i = 0; i < type.GetLength(0); i++)
+        {
+            splitRow.Add((int)(point.x + i));  
+        }
+        for (int j = 0; j < type.GetLength(1); j++)
+        {
+            splitColumn.Add((int)(point.y + j));
+
+        }
+
+        List<int> splitColumn_ver_2 = new List<int>();
+        List<int> splitRow_Ver_2 = new List<int>();
+
+        if (row != null)
+        {
+            for (int i = 0; i < splitRow.Count; i++)
+            {
+                for (int j = 0; j < row.Length; j++)
+                {
+                    if (splitRow[i] == row[j])
+                    {
+                        splitRow_Ver_2.Add(j);
+                    }
+                }
+            }
+        }
+        
+        if (colum != null)
+        {
+            for (int i = 0; i < splitColumn.Count; i++)
+            {
+                for (int j = 0; j < colum.Length; j++)
+                {
+                    if (splitColumn[i] == colum[j])
+                    {
+                        splitColumn_ver_2.Add(j);
+                    }
+                }
+            }
+        }
+       
+
+
+      
+        rowAndColum.Add(splitRow_Ver_2);
+        rowAndColum.Add(splitColumn_ver_2);
+        return rowAndColum;
+
+
+    }
+
+
+
+
+
+
     public  List<List<int>> Split(List<int> GrounpRow)
     {
         List<List<int>> ListRow = new List<List<int>>();
@@ -1613,6 +1954,32 @@ private float timeSugg = 0;
             Debug.LogError("LIST MATRIX NULL");
         }
        
+        return matrix;
+    }
+    public int[,] ListColumnMatrix(List<List<int>> shape)
+    {
+        int[,] matrix = null;
+        if (shape.Count != 0)
+        {
+            matrix = new int[shape[0].Count, shape.Count];
+            int column = shape.Count;
+            for(int i = 0; i < shape.Count; i++)
+            {
+                for(int j = 0; j < shape[0].Count; j++)
+                {
+                    matrix[i, j] = shape[i][j];
+                }
+            }
+            
+
+
+
+        }
+        else
+        {
+            Debug.LogError("LIST MATRIX NULL");
+        }
+
         return matrix;
     }
 
@@ -2193,54 +2560,137 @@ private float timeSugg = 0;
     }
     public void MoveDown()
     {
-
+        
     }
 
     public void SimulateDown()
     {
-       
+        //  SimulateDown_Ver_2();
         SortShape();
         List<Shape> ListShapeMove = new List<Shape>();
         int[,] shape = CloneBoard(this.Board);
-       // Debug.Log("INIT  : " + Render(shape));
+        // Debug.Log("INIT  : " + Render(shape));
         List<List<Vector2>> Shapes = PushListCubeInList(List_Shape);
         List<int> ListMove = GenerateList(Shapes.Count);
-        while(isCheckDown(shape,1,Shapes))
-        for(int i = 0; i < Shapes.Count; i++)
-        {
-       //     Debug.Log(" : " + i + "  :" + Render(shape));
-            if (isMoveDown(shape, 1, Shapes[i]))
+        while (isCheckDown(shape, 1, Shapes))
+            for (int i = 0; i < Shapes.Count; i++)
             {
-                ListMove[i]++;
-                SimulateMoveDown(Shapes[i], 1, shape);
-              //  ListShapeMove.Add(List_Shape[i]);
-              //  Debug.Log(" : " + i + "  :" + Render(shape));
-            }
-            else
-            {
-                ResetMove(Shapes[i], shape);
-            }
-          
+                //     Debug.Log(" : " + i + "  :" + Render(shape));
+                if (isMoveDown(shape, 1, Shapes[i]))
+                {
+                    ListMove[i]++;
+                    SimulateMoveDown(Shapes[i], 1,ref shape);
+                    //  ListShapeMove.Add(List_Shape[i]);
+                    //  Debug.Log(" : " + i + "  :" + Render(shape));
+                }
+                else
+                {
+                    ResetMove(Shapes[i],ref shape);
+                }
 
-        }
+
+            }
 
         if (ListShapeMove.Count == 0)
         {
-         //   Debug.Log("Khong Co");
+            //   Debug.Log("Khong Co");
         }
         //  Debug.Log("CANVAS : " + Render(shape));
-    //    Debug.Log("Nornal : \n" + Render(Board));
-      //  Debug.Log("RESULT MOVE : \n" + Render(shape));
+        //    Debug.Log("Nornal : \n" + Render(Board));
+        //  Debug.Log("RESULT MOVE : \n" + Render(shape));
         for (int i = 0; i < List_Shape.Count; i++)
         {
-          
-           MoveDownOneCube(List_Shape[i],ListMove[i]);
+
+            MoveDownOneCube(List_Shape[i], ListMove[i]);
         }
 
         SetUpAll();
 
 
     }
+    public void SimulateDown_Ver_2()
+    {
+        SortShape();
+        List<Shape> ListShapeMove = new List<Shape>();
+        int[,] shape = CloneBoard(this.Board);
+        // Debug.Log("INIT  : " + Render(shape));
+        List<List<Vector2>> Shapes = PushListCubeInList(List_Shape);
+        List<int> ListMove = GenerateList(Shapes.Count);
+
+
+        for(int i = 0; i < Shapes.Count; i++)
+        {
+            ListMove[i] = isMoveDown_Ver_2(Shapes[i], ref shape);
+        }
+
+        for (int i = 0; i < List_Shape.Count; i++)
+        {
+
+            MoveDownOneCube(List_Shape[i], ListMove[i]);
+        }
+
+        SetUpAll();
+    }
+
+
+    public bool MoveDown(List<Vector2> shape, int[,] Board,int space)
+    {
+         for(int i = 0; i < shape.Count; i++)
+        {
+            if (isInMatrix((int)shape[i].y+space, (int)shape[i].x, Board))
+            {
+                Debug.Log(((int)shape[i].y + space) + "   " + shape[i].x);
+                if(Board[(int)shape[i].y +space, (int)shape[i].x] == 1)
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public int isMoveDown_Ver_2(List<Vector2> shape, ref int[,] Board)
+    {
+       
+
+        for(int i = 0; i < shape.Count; i++)
+        {
+            Board[(int)shape[i].y, (int)shape[i].x] = 0;
+            
+        }
+        int start = 0;
+        while(MoveDown(shape,Board,start))
+        {
+           
+            start++;
+        }
+        if(!MoveDown(shape, Board, start))
+        {
+            start--;
+        }
+        Debug.Log("Start : " + start);
+      
+        for (int i = 0; i < shape.Count; i++)
+        {
+
+            Debug.Log(((int)shape[i].y + start) + "  " + (int)shape[i].x);
+            Board[(int)shape[i].y+start, (int)shape[i].x] = 1;
+
+        }
+        return start;
+
+    }
+   
+
+
+
+
+
+
     public List<int> GenerateList(int count)
     {
         List<int> l = new List<int>();
@@ -2280,10 +2730,8 @@ private float timeSugg = 0;
     }
     public bool HasMoveDown(int[,] Board, int space, List<Vector2> shape)
     {
-        if(!StartMove(shape, Board))
-        {
-            return false;
-        }
+        StartMove(shape, Board);
+       
         for (int i = 0; i < shape.Count; i++)
         {
           
@@ -2291,18 +2739,18 @@ private float timeSugg = 0;
             {
                 if (Board[((int)shape[i].y + space), (int)shape[i].x] == 1)
                 {
-                    ResetMove(shape, Board);
+                    ResetMove(shape,ref Board);
                     return false;
                 }
 
             }
             else
             {
-                ResetMove(shape, Board);
+                ResetMove(shape,ref Board);
                 return false;
             }
         }
-        ResetMove(shape, Board);
+        ResetMove(shape,ref Board);
         return true;
     }
 
@@ -2405,7 +2853,7 @@ private float timeSugg = 0;
         }
         return true;
     }
-    public void ResetMove(List<Vector2> Shape, int[,] Board)
+    public void ResetMove(List<Vector2> Shape,ref int[,] Board)
     {
         for (int i = 0; i < Shape.Count; i++)
         {
@@ -2414,7 +2862,7 @@ private float timeSugg = 0;
         }
     }
 
-    public void SimulateMoveDown(List<Vector2> shape, int space, int[,] Board)
+    public void SimulateMoveDown(List<Vector2> shape, int space,ref int[,] Board)
     {
        
         for (int i = 0; i < shape.Count; i++)
@@ -3548,13 +3996,13 @@ private float timeSugg = 0;
                 if (isMoveDown(Board, 1, List_Shape[i]))
                 {
                   
-                    SimulateMoveDown(List_Shape[i], 1, Board);
+                    SimulateMoveDown(List_Shape[i], 1,ref Board);
                     //  ListShapeMove.Add(List_Shape[i]);
                     //  Debug.Log(" : " + i + "  :" + Render(shape));
                 }
                 else
                 {
-                    ResetMove(List_Shape[i], Board);
+                    ResetMove(List_Shape[i],ref Board);
                 }
 
 
@@ -3877,7 +4325,8 @@ private float timeSugg = 0;
         GameManager.Ins.isGamePause = false;
     }
 
-
+   
+    
 
 
     #endregion

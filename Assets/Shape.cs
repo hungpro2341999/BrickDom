@@ -197,7 +197,7 @@ public class Shape : PoolItem
             {
                 int offset = Mathf.RoundToInt((CtrlGamePlay.Ins.initPoint.y - transform.position.y) / CtrlGamePlay.Ins.offsetY);
                 transform.position = new Vector2(transform.position.x, CtrlGamePlay.Ins.initPoint.y - offset * CtrlGamePlay.Ins.offsetY);
-              
+                    
 
                 isMovingDown = false;
             }
@@ -705,16 +705,16 @@ public class Shape : PoolItem
             //type = (TypeShape)values.GetValue(UnityEngine.Random.Range(0, values.Length));
 
         }
-        if (Random.Range(0, 2) != 0)
-        {
-            type = TypeShape.three_cube;
-        }
-        else
-        {
+        //if (Random.Range(0, 2) != 0)
+        //{
+        //    type = TypeShape.three_cube;
+        //}
+        //else
+        //{
 
-            type = TypeShape.crossBar_2;
-        }
-    
+        //    type = TypeShape.crossBar_2;
+        //}
+        type = TypeShape.square;
         return type;
     } 
   

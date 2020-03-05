@@ -17,7 +17,12 @@ public class AudioManganger : MonoBehaviour
         {
             Ins = this;
         }
-        PlaySound("BG");
+        if (CtrlData.Ins.IsSound())
+        {
+            PlaySound("BG");
+        }
+       
+
     }
 
     // Update is called once per frame
@@ -52,8 +57,8 @@ public class AudioManganger : MonoBehaviour
                
                           
                         List_Audio[i].mute = false;
-                    
-                
+                        PlaySound("BG");
+
             }
         }
         else

@@ -209,7 +209,7 @@ public class CtrlData : MonoBehaviour
         //AllTypeShape.Add(TypeShape.L_4_0);
         //AllTypeShape.Add(TypeShape.L);
 
-        PlayerPrefs.DeleteKey(Key_HighScore);
+      //  PlayerPrefs.DeleteKey(Key_HighScore);
         if (!PlayerPrefs.HasKey(Key_HighScore))
         {
             PlayerPrefs.SetInt(Key_HighScore, 0);
