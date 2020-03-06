@@ -198,10 +198,10 @@ public class Shape : PoolItem
           
             Vector3 pos = transform.position;
 
-            pos.y = Mathf.Lerp(pos.y, ClampMoveDown , Time.deltaTime * CtrlGamePlay.Ins.SpeedMoveDown);
+            pos.y = Mathf.MoveTowards(pos.y, ClampMoveDown , Time.deltaTime * CtrlGamePlay.Ins.SpeedMoveDown +Time.deltaTime);
 
             transform.position = pos;
-            if(transform.position.y <= ClampMoveDown + (CtrlGamePlay.Ins.offsetX * 0.1f))
+            if(transform.position.y <= ClampMoveDown )
             {
                 int offset = Mathf.RoundToInt((CtrlGamePlay.Ins.initPoint.y - transform.position.y) / CtrlGamePlay.Ins.offsetY);
                 transform.position = new Vector2(transform.position.x, CtrlGamePlay.Ins.initPoint.y - offset * CtrlGamePlay.Ins.offsetY);

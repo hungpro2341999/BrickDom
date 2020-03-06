@@ -777,7 +777,8 @@ public class CtrlGamePlay : MonoBehaviour
     public void DestroyAndSplitShape()
     {
         CheckDestroyRow();
-        RefershBoard();
+        
+
         SplitShape();
 
         TimeWait = WaitTime;
@@ -788,41 +789,105 @@ public class CtrlGamePlay : MonoBehaviour
 
         List<Shape> shapeSplit = new List<Shape>();
         List<Shape> isCheck = new List<Shape>();
-        for(int i = 0; i < Cubes.Count; i++)
-        {
-           for(int j = 0; j < row.Length; j++)
-            {
-                if(row[j] == Cubes[i].GetComponent<DestroySelf>().Point.y)
-                {
-                    if (!shapeSplit.Contains(Cubes[i].GetComponent<DestroySelf>().shape) && (Cubes[i].GetComponent<DestroySelf>().shape.gameObject.layer!=0)
-                        && !Cubes[i].GetComponent<DestroySelf>().shape.isEff
 
-                        )
+        for(int i = 0; i < List_Shape.Count; i++)
+        {
+            bool find = false;
+            for(int j = 0; j < List_Shape[i].ListShape.Count; j++)
+            {
+                if (!find)
+                    break;
+
+                for (int k = 0; k < row.Length; k++)
+                {
+                    if (!find)
+                        break;
+
+                    DestroySelf Cubes = List_Shape[i].ListShape[j].GetComponent<DestroySelf>();
+                    if(Cubes.Point.y == row[k])
                     {
-                        shapeSplit.Add(Cubes[i].GetComponent<DestroySelf>().shape);
+                        if(!shapeSplit.Contains(Cubes.shape) && Cubes.shape.gameObject.layer!=0 && !Cubes.shape.isEff)
+                        {
+                            isCheck.Add(Cubes.shape);
+                            shapeSplit.Add(Cubes.shape);
+                            find = true;
+                            
+                        }
                     }
+
+                }
+             
+                
+
+            }
+        }
+
+        //for(int i = 0; i < Cubes.Count; i++)
+        //{
+        //   for(int j = 0; j < row.Length; j++)
+        //    {
+        //        if(row[j] == Cubes[i].GetComponent<DestroySelf>().Point.y)
+        //        {
+        //            if (!shapeSplit.Contains(Cubes[i].GetComponent<DestroySelf>().shape) && (Cubes[i].GetComponent<DestroySelf>().shape.gameObject.layer!=0)
+        //                && !Cubes[i].GetComponent<DestroySelf>().shape.isEff
+
+        //                )
+        //            {
+        //                shapeSplit.Add(Cubes[i].GetComponent<DestroySelf>().shape);
+        //            }
                     
-                }
-            }
-        }
+        //        }
+        //    }
+        //}
 
-        for (int i = 0; i < Cubes.Count; i++)
-        {
-            for (int j = 0; j < column.Length; j++)
-            {
-                if (column[j] == Cubes[i].GetComponent<DestroySelf>().Point.x)
-                {
-                    if (!shapeSplit.Contains(Cubes[i].GetComponent<DestroySelf>().shape) && (Cubes[i].GetComponent<DestroySelf>().shape.gameObject.layer != 0)
-                      && !Cubes[i].GetComponent<DestroySelf>().shape.isEff) 
+        //for (int i = 0; i < Cubes.Count; i++)
+        //{
+        //    for (int j = 0; j < column.Length; j++)
+        //    {
+        //        if (column[j] == Cubes[i].GetComponent<DestroySelf>().Point.x)
+        //        {
+        //            if (!shapeSplit.Contains(Cubes[i].GetComponent<DestroySelf>().shape) && (Cubes[i].GetComponent<DestroySelf>().shape.gameObject.layer != 0)
+        //              && !Cubes[i].GetComponent<DestroySelf>().shape.isEff) 
                        
-                    {
-                        shapeSplit.Add(Cubes[i].GetComponent<DestroySelf>().shape);
-                    }
+        //            {
+        //                shapeSplit.Add(Cubes[i].GetComponent<DestroySelf>().shape);
+        //            }
 
+        //        }
+        //    }
+        //}
+        
+        for(int i = 0; i < List_Shape.Count; i++)
+        {
+            if (!isCheck.Contains(List_Shape[i]))
+            {
+                bool isFind = false;
+
+                for(int j = 0; j < List_Shape[i].ListShape.Count; j++)
+                {
+                    if (isFind)
+                        break;
+                    DestroySelf Cubes = List_Shape[i].ListShape[j].GetComponent<DestroySelf>();
+
+                    for(int k = 0; k < column.Length; k++)
+                    {
+                        if (isFind)
+                            break;
+
+                        if (Cubes.Point.x == column[k])
+                        {
+                             if(!shapeSplit.Contains(Cubes.shape) && Cubes.shape.gameObject.layer!=0 && !Cubes.shape.isEff)
+                            {
+                                shapeSplit.Add(Cubes.shape);
+                                isFind = true;
+                            }    
+                        }
+                    }
                 }
+
             }
         }
-        
+
         for(int i = 0; i < shapeSplit.Count; i++)
         {
             if (shapeSplit[i].TypeShape != TypeShape.crossBar_1)
@@ -907,7 +972,7 @@ public class CtrlGamePlay : MonoBehaviour
     public void SplitShape()
     {
 
-        ReflectShape();
+        RefershBoard_Ver_2();
         Debug.Log("-----------SPLIT SHAPE----------");
 
         List<Shape> listSplit = GetListShapeSplit(List_Shape);
@@ -917,7 +982,7 @@ public class CtrlGamePlay : MonoBehaviour
             SplitShape(listSplit[i]);
 
         }
-        // ReflectShape();
+        
 
     }
 
@@ -1096,7 +1161,7 @@ public class CtrlGamePlay : MonoBehaviour
 
             }
         }
-
+        RefershBoard_Ver_2();
 
     }
 
@@ -1379,6 +1444,25 @@ public class CtrlGamePlay : MonoBehaviour
             }
         }
 
+    }
+      public void RefershBoard_Ver_2()
+    {
+
+
+        Board = new int[Row, Column];
+        List<Shape> ListShapeMove = new List<Shape>();
+      
+        // Debug.Log("INIT  : " + Render(shape));
+        List<List<Vector2>> Shapes = PushListCubeInList(List_Shape);
+        for (int i = 0; i < Shapes.Count; i++)
+        {
+            for (int j = 0; j < Shapes[i].Count; j++)
+            {
+                Vector2 point = Shapes[i][j];
+                Board[(int)point.y, (int)point.x] = 1;
+            }
+        }
+      
     }
 
     public void ReflectShape()
@@ -1839,7 +1923,7 @@ public class CtrlGamePlay : MonoBehaviour
             return;
         }
 
-        List<Vector2> List_Position =ConvertToPostionBoard(GrounpPoint(ListPointRow, ListPointColumn),shape.Point);
+        List<Vector2> List_Position = ConvertToPostionBoard(GrounpPoint(ListPointRow, ListPointColumn),shape.Point);
 
 
 
@@ -2871,32 +2955,51 @@ public class CtrlGamePlay : MonoBehaviour
 
     public void SimulateDown()
     {
+        SetUpAll();
         //  SimulateDown_Ver_2();
         SortShape();
         List<Shape> ListShapeMove = new List<Shape>();
-        int[,] shape = CloneBoard(this.Board);
+        int[,] shape = new int[Row, Column];
         // Debug.Log("INIT  : " + Render(shape));
         List<List<Vector2>> Shapes = PushListCubeInList(List_Shape);
-        List<int> ListMove = GenerateList(Shapes.Count);
-        while (isCheckDown(shape, 1, Shapes))
-            for (int i = 0; i < Shapes.Count; i++)
+        for(int i = 0; i < Shapes.Count; i++)
+        {
+            for(int j = 0; j < Shapes[i].Count; j++)
             {
-                //     Debug.Log(" : " + i + "  :" + Render(shape));
-                if (isMoveDown(shape, 1, Shapes[i]))
-                {
-                    ListMove[i]++;
-                    SimulateMoveDown(Shapes[i], 1,ref shape);
-                    //  ListShapeMove.Add(List_Shape[i]);
-                    //  Debug.Log(" : " + i + "  :" + Render(shape));
-                }
-                else
-                {
-                    ResetMove(Shapes[i],ref shape);
-                }
-
-
+                Vector2 point = Shapes[i][j];
+                Board[(int)point.y, (int)point.x] = 1;
             }
+        }
+        List<int> ListMove = GenerateList(Shapes.Count);
 
+       
+            while (isCheckDown(shape, 1, Shapes))
+                for (int i = 0; i < Shapes.Count; i++)
+                {
+                    //   Debug.Log(List_Shape[i].name " : " + i + "  :" + Render(shape));
+                    if (isMoveDown(shape, 1, Shapes[i]))
+                    {
+                        ListMove[i]++;
+                        SimulateMoveDown(Shapes[i], 1,shape);
+                        MoveDownOneCube(List_Shape[i], ListMove[i]);
+                        //  ListShapeMove.Add(List_Shape[i]);
+                        //  Debug.Log(" : " + i + "  :" + Render(shape));
+                    }
+                    else
+                    {
+                        ResetMove(Shapes[i],shape);
+                    }
+
+
+                }
+
+            Board = shape;
+
+        
+
+
+
+       
         if (ListShapeMove.Count == 0)
         {
             //   Debug.Log("Khong Co");
@@ -2907,10 +3010,10 @@ public class CtrlGamePlay : MonoBehaviour
         for (int i = 0; i < List_Shape.Count; i++)
         {
 
-            MoveDownOneCube(List_Shape[i], ListMove[i]);
+           
         }
 
-        SetUpAll();
+      
 
 
     }
@@ -3045,24 +3148,30 @@ public class CtrlGamePlay : MonoBehaviour
             {
                 if (Board[((int)shape[i].y + space), (int)shape[i].x] == 1)
                 {
-                    ResetMove(shape,ref Board);
+                    ResetMove(shape,Board);
                     return false;
                 }
 
             }
             else
             {
-                ResetMove(shape,ref Board);
+                ResetMove(shape,Board);
                 return false;
             }
         }
-        ResetMove(shape,ref Board);
+        ResetMove(shape,Board);
         return true;
     }
 
     public bool isMoveDown(int[,] Board,int space,List<Vector2> shape)
     {
-        StartMove(shape, Board);
+        
+        for(int i = 0; i < shape.Count; i++)
+        {
+            Vector2 point = shape[i];
+            Board[(int)shape[i].y, (int)shape[i].x] = 0;
+        }
+
         for (int i = 0; i < shape.Count; i++)
         {
          
@@ -3086,6 +3195,7 @@ public class CtrlGamePlay : MonoBehaviour
 
     public List<List<Vector2>> PushListCubeInList(List<Shape> list_shape)
     {
+        int[,] Clone = new int[Row, Column];
         List<List<Vector2>> ListShape = new List<List<Vector2>>();
 
         for(int i = 0; i < list_shape.Count; i++)
@@ -3093,10 +3203,14 @@ public class CtrlGamePlay : MonoBehaviour
             List<Vector2> shape = new List<Vector2>();
             for(int j = 0; j < list_shape[i].ListShape.Count; j++)
             {
-                shape.Add(list_shape[i].ListShape[j].GetComponent<DestroySelf>().Point);
+                Vector2 point = list_shape[i].ListShape[j].GetComponent<DestroySelf>().Point;
+                shape.Add(point);
+                Clone[(int)point.y, (int)point.x] = 1;
+               
             }
             ListShape.Add(shape);
         }
+      
         return ListShape;
     }
 
@@ -3159,7 +3273,7 @@ public class CtrlGamePlay : MonoBehaviour
         }
         return true;
     }
-    public void ResetMove(List<Vector2> Shape,ref int[,] Board)
+    public void ResetMove(List<Vector2> Shape,int[,] Board)
     {
         for (int i = 0; i < Shape.Count; i++)
         {
@@ -3168,7 +3282,7 @@ public class CtrlGamePlay : MonoBehaviour
         }
     }
 
-    public void SimulateMoveDown(List<Vector2> shape, int space,ref int[,] Board)
+    public void SimulateMoveDown(List<Vector2> shape, int space,int[,] Board)
     {
        
         for (int i = 0; i < shape.Count; i++)
@@ -3379,7 +3493,7 @@ public class CtrlGamePlay : MonoBehaviour
             if(ListInfor[i].type == TypeShape.crossBar_1 || ListInfor[i].type == TypeShape.crossBar_2 || ListInfor[i].type == TypeShape.crossBar_3)
             {
                 int x = Random.Range(0, 100);
-                if(x>=0 && x <= 20)
+                if(x>=0 && x <= 3)
                 {
                     if (ListInfor[i].roll == 0)
                     {
@@ -3815,6 +3929,10 @@ public class CtrlGamePlay : MonoBehaviour
                 {
                     r = 1;
                 }
+                if (r == 3)
+                {
+                    r = 2;
+                }
                 break;
 
         }
@@ -3967,7 +4085,8 @@ public class CtrlGamePlay : MonoBehaviour
             {
                 List.Remove(RowIsCheck[z]);
             }
-            Row = SortRowShape(Row);
+            //Row = SortRowShape(Row);
+            Row = SortListRown(Row);
             ListRowShape.Add(Row);
 
         }
@@ -3984,6 +4103,51 @@ public class CtrlGamePlay : MonoBehaviour
 
 
 
+    }
+    public List<Shape> SortListRown(List<Shape> shape)
+    {
+        int[,] Board_Clone = new int[Row, Column];
+        List<Shape> Sort = new List<Shape>();
+        List<Shape> Shape_0 = new List<Shape>();
+        List<Shape> Shape_1 = new List<Shape>();
+        List<List<Vector2>> ListShape = PushListCubeInList(shape);
+        for(int i = 0; i < ListShape.Count; i++)
+        {
+          for(int j = 0; j < ListShape[i].Count; j++)
+            {
+                 Vector2 point = ListShape[i][j];
+
+                Board_Clone[(int)point.y, (int)point.x] = 1;
+            }
+        }
+        for(int i = 0; i < ListShape.Count; i++)
+        {
+            if (isMoveDown(Board, 1, ListShape[i]))
+             {
+
+                Shape_1.Add(shape[i]);
+                //  ListShapeMove.Add(List_Shape[i]);
+                //  Debug.Log(" : " + i + "  :" + Render(shape));
+            }
+            else
+            {
+                Shape_0.Add(shape[i]);
+            }
+       
+             
+          
+        }
+
+     
+        for (int i = 0; i < Shape_1.Count; i++)
+        {
+            Sort.Add(Shape_1[i]);
+        }
+        for (int i = 0; i < Shape_0.Count; i++)
+        {
+            Sort.Add(Shape_0[i]);
+        }
+        return Sort;
     }
 
 
@@ -4304,13 +4468,13 @@ public class CtrlGamePlay : MonoBehaviour
                 if (isMoveDown(Board, 1, List_Shape[i]))
                 {
                   
-                    SimulateMoveDown(List_Shape[i], 1,ref Board);
+                    SimulateMoveDown(List_Shape[i], 1,Board);
                     //  ListShapeMove.Add(List_Shape[i]);
                     //  Debug.Log(" : " + i + "  :" + Render(shape));
                 }
                 else
                 {
-                    ResetMove(List_Shape[i],ref Board);
+                    ResetMove(List_Shape[i],Board);
                 }
 
 
