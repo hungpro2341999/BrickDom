@@ -675,6 +675,7 @@ MonoBehaviour:
   ClampMoveMaxX: 0
   ClampMoveMinY: 0
   isMovingDown: 0
+  ClampMoveDown: 0
 --- !u!210 &2993216344406228767
 SortingGroup:
   m_ObjectHideFlags: 0
@@ -736,7 +737,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

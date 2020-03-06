@@ -163,6 +163,14 @@ public class Shape : PoolItem
             return;
             Point = CtrlGamePlay.PositonToPointMatrix(transform.position.x, transform.position.y);
 
+        if (SpriteUse != null)
+        {
+            if (!SpriteUse.enabled)
+            {
+                SpriteUse.enabled = true;
+            }
+        }
+
         PushToBoard();
 
         if (Input.GetKeyDown(KeyCode.W))
@@ -301,24 +309,27 @@ public class Shape : PoolItem
         switch (i)
         {
             case 0:
-
+                ImgCube_L3_90.flipX = false;
                 ImgCube_L3_90.gameObject.SetActive(true);
                 ImgCube_L3_90.flipX = true;
                 ImgCube_L3_90.sprite = CtrlData.Ins.DataGame.LoadShape("L3_270")[color];
                 SpriteUse = ImgCube_L3_90;
                 break;
             case 1:
+                ImgCube_L3_0.flipX = false;
                 ImgCube_L3_0.gameObject.SetActive(true);
                 SpriteUse = ImgCube_L3_0;
                 ImgCube_L3_0.sprite = CtrlData.Ins.DataGame.LoadShape("L3_180")[color];
                 break;
             case 2:
+                ImgCube_L3_90.flipX = false;
                 ImgCube_L3_90.gameObject.SetActive(true);
                 SpriteUse = ImgCube_L3_90;
                 ImgCube_L3_90.flipX = true;
                 ImgCube_L3_90.sprite = CtrlData.Ins.DataGame.LoadShape("L3_90")[color];
                 break;
             case 3:
+                ImgCube_L3_0.flipX = false;
                 ImgCube_L3_0.gameObject.SetActive(true);
                
                 ImgCube_L3_0.flipX = true;
@@ -334,25 +345,28 @@ public class Shape : PoolItem
         switch (i)
         {
             case 0:
-
+                ImgCube_L3_90.flipX = false;
                 ImgCube_L3_90.gameObject.SetActive(true);
                 SpriteUse = ImgCube_L3_90;
                 ImgCube_L3_90.sprite = CtrlData.Ins.DataGame.LoadShape("L3_270")[color];
 
                 break;
             case 1:
+                ImgCube_L3_0.flipX = false;
                 ImgCube_L3_0.gameObject.SetActive(true);
                 SpriteUse = ImgCube_L3_0;
                 ImgCube_L3_0.sprite = CtrlData.Ins.DataGame.LoadShape("L3_0")[color];
 
                 break;
             case 2:
+                ImgCube_L3_90.flipX = false;
                 ImgCube_L3_90.gameObject.SetActive(true);
 
                 SpriteUse = ImgCube_L3_90;
                 ImgCube_L3_90.sprite = CtrlData.Ins.DataGame.LoadShape("L3_90")[color];
                 break;
             case 3:
+                ImgCube_L3_0.flipX = false;
                 ImgCube_L3_0.gameObject.SetActive(true);
                 SpriteUse = ImgCube_L3_0;
                 ImgCube_L3_0.flipX = true;
@@ -370,6 +384,7 @@ public class Shape : PoolItem
         {
             case 0:
 
+                ImgCube_L4_90.flipX = false;
                 ImgCube_L4_90.gameObject.SetActive(true);
               
                 ImgCube_L4_90.flipX = true;
@@ -377,16 +392,19 @@ public class Shape : PoolItem
                 SpriteUse = ImgCube_L4_90;
                 break;
             case 1:
+                ImgCube_L4_0.flipX = false;
                 ImgCube_L4_0.gameObject.SetActive(true);
                 ImgCube_L4_0.sprite = CtrlData.Ins.DataGame.LoadShape("L4_0")[color];
                 SpriteUse = ImgCube_L4_0;
                 break;
             case 2:
+                ImgCube_L4_90.flipX = false;
                 ImgCube_L4_90.gameObject.SetActive(true);
                 ImgCube_L4_90.sprite = CtrlData.Ins.DataGame.LoadShape("L4_90")[color];
                 SpriteUse = ImgCube_L4_90;
                 break;
             case 3:
+                ImgCube_L4_0.flipX = false;
                 ImgCube_L4_0.gameObject.SetActive(true);
                 ImgCube_L4_0.sprite = CtrlData.Ins.DataGame.LoadShape("L4_180")[color];
                 SpriteUse = ImgCube_L4_0;
@@ -400,26 +418,29 @@ public class Shape : PoolItem
         switch (i)
         {
             case 0:
+
                 ImgCube_L4_90.gameObject.SetActive(true);
 
-               
+                ImgCube_L4_90.flipX = false;
 
                 ImgCube_L4_90.sprite = CtrlData.Ins.DataGame.LoadShape("L4_270")[color];
                 SpriteUse = ImgCube_L4_90;
                 break;
             case 1:
                 ImgCube_L4_0.gameObject.SetActive(true);
-               
+                ImgCube_L4_0.flipX = false;
                 ImgCube_L4_0.sprite = CtrlData.Ins.DataGame.LoadShape("L4_180")[color];
                 SpriteUse = ImgCube_L4_0;
                 break;
             case 2:
+                ImgCube_L4_0.flipX = false;
                 ImgCube_L4_90.gameObject.SetActive(true);
                 ImgCube_L4_90.flipX = true;
                 ImgCube_L4_90.sprite = CtrlData.Ins.DataGame.LoadShape("L4_90")[color];
                 SpriteUse = ImgCube_L4_90;
                 break;
             case 3:
+                ImgCube_L4_90.flipX = false;
                 ImgCube_L4_0.gameObject.SetActive(true);
                 ImgCube_L4_0.flipX = true;
                 ImgCube_L4_0.sprite = CtrlData.Ins.DataGame.LoadShape("L4_0")[color];
@@ -714,7 +735,7 @@ public class Shape : PoolItem
 
         //    type = TypeShape.crossBar_2;
         //}
-        type = TypeShape.L3_0;
+       
         return type;
     } 
   

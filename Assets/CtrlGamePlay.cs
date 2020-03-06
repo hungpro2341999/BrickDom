@@ -8,7 +8,7 @@ public class CtrlGamePlay : MonoBehaviour
 {
 
     //Score:
-    
+
     public int Round = 0;
     public int Combo = 0;
     public int HasCubeEff = 0;
@@ -37,7 +37,7 @@ public class CtrlGamePlay : MonoBehaviour
     public Vector2 Destroy;
     public LayerMask LayerShape;
     public Shape ShapeClick = null;
- 
+
     public float ClampY;
     public bool IsRandom = false;
     public List<Shape> ShapeClone = new List<Shape>();
@@ -63,9 +63,9 @@ public class CtrlGamePlay : MonoBehaviour
     bool initPos = false;
     public Vector2 PosInit;
     public Vector2 PosCurr;
-private float timeSugg = 0;
+    private float timeSugg = 0;
     #endregion
-   
+
     #region Mouse
     public Vector2 PosMouseInit;
     public Vector2 PosMouseCurr;
@@ -93,7 +93,7 @@ private float timeSugg = 0;
     #endregion
 
     // Simulate 
-    public int index=0;
+    public int index = 0;
     public Text Matrix;
     public Text Select;
     public Text ShapeSelect;
@@ -103,24 +103,26 @@ private float timeSugg = 0;
 
 
     //Test
-    
+
     public int xx;
     public int yy;
     public int[] rowDestroy;
     public int rotaion;
     public int farme = 1;
-  
+
+    public List<int> ColumnSplit = new List<int>();
+    public List<int> RowSplit = new List<int>();
     public void SpawnInit()
     {
-        for(int i = 0; i < 10; i++)
+        for (int i = 0; i < 10; i++)
         {
-          var a =   Poolers.Ins.GetObject(PrebShape,Vector2.zero,Quaternion.identity);
+            var a = Poolers.Ins.GetObject(PrebShape, Vector2.zero, Quaternion.identity);
             a.gameObject.SetActive(true);
-         
+
             Debug.Log("" + i);
-          
+
         }
-        for (int i = 0; i < Row*Column; i++)
+        for (int i = 0; i < Row * Column; i++)
         {
             var a = Poolers.Ins.GetObject(PrebCube, Vector2.zero, Quaternion.identity);
             a.gameObject.SetActive(true);
@@ -131,14 +133,14 @@ private float timeSugg = 0;
         Poolers.Ins.ClearAll();
     }
     // Start is called before the first frame update
-     public void DestroyAll()
+    public void DestroyAll()
     {
-     
+
         for (int i = 0; i < Suggest.Count; i++)
         {
-            
+
             Suggest[i].GetComponent<DestroySelf1>().DestroyObj();
-            
+
         }
         Suggest = new List<GameObject>();
     }
@@ -147,7 +149,7 @@ private float timeSugg = 0;
         for (int i = 0; i < ShapeClone.Count; i++)
         {
 
-          ShapeClone[i].GetComponent<DestroySelf1>().DestroyObj();
+            ShapeClone[i].GetComponent<DestroySelf1>().DestroyObj();
 
         }
         ShapeClone = new List<Shape>();
@@ -171,17 +173,17 @@ private float timeSugg = 0;
         Vector3 pos = transform.position;
         ClampY = PosInit.y - Row * offsetY;
         TimeWait = 0;
-       
-       
+
+
     }
     public void Init_Event()
     {
         Event_Click_Down += Init_Mouse_Down;
         Event_Click_Up += SetUpMoveDown;
         Event_Completed_Move_Down += SpawnShape;
-        Event_Start_Game +=SpawnStartGame;
+        Event_Start_Game += SpawnStartGame;
         Event_Start_Game += RefershBoard;
-       
+
         Event_Start_Game += SpawnShape;
         Event_Completed_Change += SetUpMoveDown;
         Event_Game_Over += Reset_Game;
@@ -190,9 +192,9 @@ private float timeSugg = 0;
 
 
     }
-    
 
-    
+
+
 
     #region StatusGame
 
@@ -200,28 +202,28 @@ private float timeSugg = 0;
 
     public void Start_Game()
     {
-        
+
         Event_Start_Game();
     }
     public void Over_Game()
     {
-       
+
         //Event_Game_Over();
         GameManager.Ins.OpenWindow(TypeWindow.OverGame);
     }
-   
+
     public void Rest_Game()
     {
         GameManager.Ins.isGameOver = false;
-      
+
         Board = new int[Row, Column];
 
         DestroyAll_Ver_1();
         GameManager.Ins.OpenWindow(TypeWindow.GamePlay);
-      
-        
+
+
     }
-    
+
     public void ReviceGame()
     {
 
@@ -250,44 +252,44 @@ private float timeSugg = 0;
 
 
         });
-       
+
 
 
 
     }
-   
-    
+
+
     public void SetUpDestroyAllCube()
     {
         GameManager.Ins.CloseWindow(TypeWindow.Continue);
         List<List<Shape>> ShapeRow = SortListByRow(List_Shape);
         float totalTime = List_Shape.Count * TimeTurnToGray;
-        for(int i = 0; i < ShapeRow.Count; i++)
+        for (int i = 0; i < ShapeRow.Count; i++)
         {
-            float timedelay = i* TimeTurnToGray;
+            float timedelay = i * TimeTurnToGray;
             for (int j = 0; j < ShapeRow[i].Count; j++)
             {
                 ShapeRow[i][j].GrayShape(timedelay);
             }
-          
+
         }
         Invoke("StartDestroyAllCube", totalTime);
 
     }
 
-    
+
 
     public void StartDestroyAllCube()
     {
-      
+
         List<List<Shape>> ShapeRow = SortListByRow(List_Shape);
         float totalTime = List_Shape.Count * TimeTurnToGray;
         for (int i = 0; i < ShapeRow.Count; i++)
         {
             float timedelay = i * TimeTurnToGray;
-            for (int j = 0; j < ShapeRow[i].Count ; j++)
+            for (int j = 0; j < ShapeRow[i].Count; j++)
             {
-                for(int z = 0; z < ShapeRow[i][j].ListShape.Count; z++)
+                for (int z = 0; z < ShapeRow[i][j].ListShape.Count; z++)
                 {
                     ShapeRow[i][j].ListShape[z].GetComponent<DestroySelf>().StartDestroy(timedelay);
                 }
@@ -296,7 +298,7 @@ private float timeSugg = 0;
         }
 
         Invoke("Over_Game", totalTime);
-      
+
     }
     public void StartDestroyAllCube_Ver1()
     {
@@ -350,11 +352,11 @@ private float timeSugg = 0;
 
     public List<List<DestroySelf>> SortCube()
     {
-        List<List<DestroySelf>> SortShape = new List<List<DestroySelf>>(); 
+        List<List<DestroySelf>> SortShape = new List<List<DestroySelf>>();
         for (int i = 0; i < Board.GetLength(0); i++)
         {
-            List<DestroySelf> RowCube = new List<DestroySelf>(); 
-            for (int j = 0; j < Cubes.Count; j++) 
+            List<DestroySelf> RowCube = new List<DestroySelf>();
+            for (int j = 0; j < Cubes.Count; j++)
             {
                 if (i == Cubes[j].GetComponent<DestroySelf>().Point.y)
                 {
@@ -367,9 +369,9 @@ private float timeSugg = 0;
             }
         }
         return SortShape;
-       
+
     }
-    
+
 
     #endregion
     void Start()
@@ -385,23 +387,23 @@ private float timeSugg = 0;
         if (GameManager.Ins.isGameOver || GameManager.Ins.isGamePause)
             return;
 
-      
+
 
         if (TimeWait > 0)
         {
-            TimeWait-=Time.deltaTime;
+            TimeWait -= Time.deltaTime;
             if (TimeWait <= 0)
             {
                 SimulateDown();
-                
+
             }
             return;
         }
 
 
-    
+
         #region
-      
+
         if (Input.GetKeyDown(KeyCode.A))
         {
 
@@ -411,10 +413,11 @@ private float timeSugg = 0;
             //    SuggestRight(FindOut);
             //}
 
-            //int[,] matrix = new int[1, 4] {
-            //    {1,1,1,1}
-             
-            //};
+            int[,] matrix = new int[2, 4] {
+                 {0,0,0,1},
+                {1,1,1,1}
+
+            };
             //int[] coll = new int[1] { 2 };
 
             //List<int[,]> matrixx = SplitColumnMatrix(matrix, coll);
@@ -438,31 +441,38 @@ private float timeSugg = 0;
 
 
 
-         List<int[,]> Shapess =   SplitShape(List_Shape[index],new int[1] { 12} ,new int[3] {0,1,2});
-         
-         for(int i = 0; i < Shapess.Count; i++)
-            {
-                Debug.Log(i+" \n "+ Render(Shapess[i]));
-             //   SpawnShape(Shapess[i],Vector2.zero,1);
-            }
-          
+
+
+            //for (int i = 0; i < Shapess.Count; i++)
+            //{
+            //    Debug.Log(i + " \n " + Render(Shapess[i]));
+            //    //   SpawnShape(Shapess[i],Vector2.zero,1);
+            //}
+
+
+            //List<List<int>> List = CutRow(matrix);
+            //for (int i = 0; i < List.Count; i++)
+            //{
+            //    Debug.Log(RenderList(List[i]));
+            //}
+            StartSplitShape();
 
 
         }
         if (Input.GetKeyDown(KeyCode.Q))
         {
 
-            for(int i = 0; i < rowDestroy.Length; i++)
+            for (int i = 0; i < rowDestroy.Length; i++)
             {
                 DestroyRow(rowDestroy[i]);
             }
-          
+
             DestroyAndSplitShape();
 
-         
+
 
         }
-      
+
         if (ShapeClick != null)
         {
 
@@ -474,12 +484,12 @@ private float timeSugg = 0;
 
 
 
-          Test();
-           
+            Test();
+
         }
         if (Input.GetKeyDown(KeyCode.D))
         {
-            
+
         }
 
 
@@ -487,14 +497,14 @@ private float timeSugg = 0;
         if (Input.GetMouseButtonDown(0))
         {
 
-            if(!isClick_up)
+            if (!isClick_up)
             {
                 Event_Click_Down();
                 isClick_down = true;
             }
-              
-          
-          
+
+
+
 
 
 
@@ -502,9 +512,9 @@ private float timeSugg = 0;
 
         if (timeSugg >= 0)
         {
-            
+
             isFinding = false;
-           
+
             timeSugg -= Time.deltaTime;
 
         }
@@ -517,18 +527,18 @@ private float timeSugg = 0;
                 if (!StartSuggestionsLeft(FindOut))
                 {
                     SuggestRight(FindOut);
-                    
+
                 }
                 isFinding = true;
             }
-          
+
         }
         if (isClick_down)
         {
             DestroyAll();
             timeSugg = timeSuggest;
             RefershBoard();
-           
+
             float dis = 0;
             // RefershBoard();
             if (ShapeClick != null)
@@ -538,7 +548,8 @@ private float timeSugg = 0;
 
 
 
-                                   //Reset
+
+                //Reset
                 ShapeClick.PushToBoard();
                 Event_Completed_Change();
                 SimulateColumn.gameObject.SetActive(true);
@@ -546,43 +557,43 @@ private float timeSugg = 0;
                 SimulateColumn.GetComponent<MoveFollowCube>().ScaleX(ScaleShape(ShapeClick));
                 dis = PosMouseInit.x - Camera.main.ScreenToWorldPoint(Input.mousePosition).x;
                 ShapeClick.MoveTo(dis);
-             
+
             }
             else
             {
 
 
-              
+
             }
-          
+
 
         }
 
         if (Input.GetMouseButtonUp(0))
         {
-            
+
             if (!isClick_up)
             {
                 if (ShapeClone != null)
                 {
                     DestroyShapeClone();
                 }
-              
+
                 Event_Click_Up();
                 isClick_down = false;
-              
+
                 if (ShapeClick != null)
                 {
                     timeSugg = timeSuggest;
                     ShapeClick.isClick = false;
                     Vector3 PointSnap = ShapeClick.transform.position;
                     int offset = Mathf.RoundToInt((PointSnap.x - CtrlGamePlay.Ins.initPoint.x) / offsetX);
-                  
+
                     PointSnap.x = CtrlGamePlay.Ins.initPoint.x + offset * offsetX;
-               //     Debug.Log(" Offset :" + offset +"  " + PointSnap.x);
+                    //     Debug.Log(" Offset :" + offset +"  " + PointSnap.x);
                     ShapeClick.transform.position = PointSnap;
                     RefershBoard();
-                   
+
                     if (offset != ShapeClick.PointInitCheck.y)
                     {
 
@@ -596,7 +607,7 @@ private float timeSugg = 0;
                     {
                         isClick_up = false;
                     }
-                  
+
                     SimulateColumn.gameObject.SetActive(false);
                     ShapeClick = null;
                     //  Event_Completed_Change();
@@ -605,10 +616,10 @@ private float timeSugg = 0;
 
                 }
             }
-          
-          
-           
-          
+
+
+
+
 
         }
         // Button_Up_And_Complete_Move_Down
@@ -631,9 +642,10 @@ private float timeSugg = 0;
                     if (HasEff())
                     {
                         AudioManganger.Ins.PlaySound("Electric");
-
-                        TimeWait = 0.9f;
-                        Invoke("DestroyAndSplitShape", 0.8f);
+                      
+                        TimeWait = 1.5f;
+                        
+                        Invoke("StartSplitShape", 0.7f);
                         return;
                     }
                     else
@@ -662,43 +674,43 @@ private float timeSugg = 0;
                     CtrlData.CountGame++;
                     CtrlData.CountPlay++;
                     GameManager.Ins.isGameOver = true;
-                    if (CtrlData.CountGame % 3 == 0 || CtrlData.Score>150)
+                    if (CtrlData.CountGame % 3 == 0 || CtrlData.Score > 150)
                     {
                         ManagerAds.Ins.ShowInterstitial();
                     }
                     if (CtrlData.CountPlay % 2 != 0)
                     {
-                       
+
 
                         if (CtrlData.Ins.Set_High_Score(CtrlData.Score))
                         {
-                            
+
                             GameManager.Ins.OpenWindow(TypeWindow.HighScore);
                         }
                         else
                         {
-                           
+
                             GameManager.Ins.OpenWindow(TypeWindow.Continue);
                         }
-                      
+
                     }
                     else
                     {
-                      
+
                         if (CtrlData.Ins.Set_High_Score(CtrlData.Score))
                         {
-                           
+
                             GameManager.Ins.OpenWindow(TypeWindow.HighScore);
                         }
                         else
                         {
-                           
+
                             SetUpDestroyAllCube();
                         }
-                      
+
                     }
-                  
-                  
+
+
                 }
                 else
                 {
@@ -717,70 +729,130 @@ private float timeSugg = 0;
         //////////////                MOVE DOWN  ///////////////////////
         ///
 
-     
 
 
 
-        
+
+
+
+    }
+    public void StartSplitShape()
+    {
+        EffSplitShape(RowSplit.ToArray(), ColumnSplit.ToArray());
        
+        
     }
     public void ResetStatus()
     {
-      
-            if (ShapeClone != null)
-            {
-                DestroyShapeClone();
-            }
 
-            isClick_down = false;
+        if (ShapeClone != null)
+        {
+            DestroyShapeClone();
+        }
 
-            if (ShapeClick != null)
-            {
-                timeSugg = timeSuggest;
-                ShapeClick.isClick = false;
-                Vector3 PointSnap = ShapeClick.transform.position;
-                int offset = Mathf.RoundToInt((PointSnap.x - CtrlGamePlay.Ins.initPoint.x) / offsetX);
+        isClick_down = false;
 
-                PointSnap.x = CtrlGamePlay.Ins.initPoint.x + offset * offsetX;
+        if (ShapeClick != null)
+        {
+            timeSugg = timeSuggest;
+            ShapeClick.isClick = false;
+            Vector3 PointSnap = ShapeClick.transform.position;
+            int offset = Mathf.RoundToInt((PointSnap.x - CtrlGamePlay.Ins.initPoint.x) / offsetX);
 
-                ShapeClick.transform.position = PointSnap;
-                ShapeClick.ResetStatus();
-               
+            PointSnap.x = CtrlGamePlay.Ins.initPoint.x + offset * offsetX;
 
-              
-                ShapeClick = null;
+            ShapeClick.transform.position = PointSnap;
+            ShapeClick.ResetStatus();
 
 
 
-            }
+            ShapeClick = null;
+
+
+
+        }
         SimulateColumn.gameObject.SetActive(false);
     }
-    
+
     public void DestroyAndSplitShape()
     {
         CheckDestroyRow();
         RefershBoard();
         SplitShape();
-      
+
         TimeWait = WaitTime;
+    }
+
+    public void EffSplitShape(int[] row,int[] column)
+    {
+
+        List<Shape> shapeSplit = new List<Shape>();
+        List<Shape> isCheck = new List<Shape>();
+        for(int i = 0; i < Cubes.Count; i++)
+        {
+           for(int j = 0; j < row.Length; j++)
+            {
+                if(row[j] == Cubes[i].GetComponent<DestroySelf>().Point.y)
+                {
+                    if (!shapeSplit.Contains(Cubes[i].GetComponent<DestroySelf>().shape) && (Cubes[i].GetComponent<DestroySelf>().shape.gameObject.layer!=0)
+                        && !Cubes[i].GetComponent<DestroySelf>().shape.isEff
+
+                        )
+                    {
+                        shapeSplit.Add(Cubes[i].GetComponent<DestroySelf>().shape);
+                    }
+                    
+                }
+            }
+        }
+
+        for (int i = 0; i < Cubes.Count; i++)
+        {
+            for (int j = 0; j < column.Length; j++)
+            {
+                if (column[j] == Cubes[i].GetComponent<DestroySelf>().Point.x)
+                {
+                    if (!shapeSplit.Contains(Cubes[i].GetComponent<DestroySelf>().shape) && (Cubes[i].GetComponent<DestroySelf>().shape.gameObject.layer != 0)
+                      && !Cubes[i].GetComponent<DestroySelf>().shape.isEff) 
+                       
+                    {
+                        shapeSplit.Add(Cubes[i].GetComponent<DestroySelf>().shape);
+                    }
+
+                }
+            }
+        }
+        
+        for(int i = 0; i < shapeSplit.Count; i++)
+        {
+            if (shapeSplit[i].TypeShape != TypeShape.crossBar_1)
+            {
+                SplitShape(shapeSplit[i], row, column);
+            }
+           
+        }
+
+       
+        Invoke("DestroyAndSplitShape", 0.7f);
+
     }
 
     public bool HasScore()
     {
         Round++;
-        
+
         int has = 0;
-        for(int i = 0; i < Board.GetLength(0); i++)
+        for (int i = 0; i < Board.GetLength(0); i++)
         {
             int count = 0;
-            for(int j = 0; j < Board.GetLength(1); j++)
+            for (int j = 0; j < Board.GetLength(1); j++)
             {
                 if (Board[i, j] == 1)
                 {
                     count++;
                 }
             }
-            if(count == Board.GetLength(1))
+            if (count == Board.GetLength(1))
             {
                 has++;
             }
@@ -793,8 +865,8 @@ private float timeSugg = 0;
     }
     public int ScaleShape(Shape shape)
     {
-           if(shape!=null)
-        return shape.shape.GetLength(1);
+        if (shape != null)
+            return shape.shape.GetLength(1);
         return 0;
     }
     public void SetUpAll()
@@ -807,15 +879,15 @@ private float timeSugg = 0;
             {
                 List_Shape[i].ListShape[j].gameObject.layer = 8;
             }
-          
+
         }
     }
     public void SetUpMoveDown()
     {
-            
+
     }
-   
-   
+
+
     public bool IsListShapeMove()
     {
         for (int i = 0; i < List_Shape.Count; i++)
@@ -837,24 +909,24 @@ private float timeSugg = 0;
 
         ReflectShape();
         Debug.Log("-----------SPLIT SHAPE----------");
-       
+
         List<Shape> listSplit = GetListShapeSplit(List_Shape);
         for (int i = 0; i < listSplit.Count; i++)
         {
             listSplit[i].ReflectShape();
             SplitShape(listSplit[i]);
-          
+
         }
-       // ReflectShape();
+        // ReflectShape();
 
     }
 
-    
 
-    public  List<Shape> GetListShapeSplit(List<Shape> Lshape)
+
+    public List<Shape> GetListShapeSplit(List<Shape> Lshape)
     {
         List<Shape> split = new List<Shape>();
-        for(int i = 0; i < Lshape.Count; i++)
+        for (int i = 0; i < Lshape.Count; i++)
         {
             if (!Lshape[i].HasCut())
             {
@@ -876,11 +948,11 @@ private float timeSugg = 0;
         ShapeClick = isShapeClick();
         if (ShapeClick != null)
         {
-             ClampShape(ShapeClick);
-
-             ShapeClick.InitPoint();
-             CloneShape(ShapeClick);
-             DestroyAll();
+            ClampShape(ShapeClick);
+            Debug.Log(Render(ShapeClick.shape));
+            ShapeClick.InitPoint();
+            CloneShape(ShapeClick);
+            DestroyAll();
 
         }
     }
@@ -889,18 +961,20 @@ private float timeSugg = 0;
         bool eff = false;
         int[] row;
         DestroyAtRow(out row);
-        
 
-        
-        for(int i = 0; i < row.Length; i++)
+
+
+        for (int i = 0; i < row.Length; i++)
         {
             if (RowHasEff(row[i]))
             {
                 eff = true;
             }
         }
+        
+
         return eff;
-     
+
     }
     public int CountEff()
     {
@@ -923,21 +997,39 @@ private float timeSugg = 0;
 
     public bool RowHasEff(int row)
     {
+        
         bool eff = false;
         Shape shape;
+        List<int> column = new List<int>();
+     
         for (int i = 0; i < Column; i++)
         {
+            
             for (int x = 0; x < Cubes.Count; x++)
             {
 
                 if (Cubes[x].GetComponent<DestroySelf>().Point == new Vector2((float)i, row))
                 {
+
+                  
                     shape = Cubes[x].GetComponent<DestroySelf>().shape;
 
                     if (shape.isEff)
                     {
+                        if (!RowSplit.Contains(row))
+                        {
+                            RowSplit.Add(row);
+                        }
+
+
                         Cubes[x].GetComponent<DestroySelf>().StartSuperEff();
+                        column.Add((int)Cubes[x].GetComponent<DestroySelf>().Point.x);
                         HasCubeEff++;
+                        if (!ColumnSplit.Contains((int)Cubes[x].GetComponent<DestroySelf>().Point.x))
+                        {
+                            ColumnSplit.Add((int)Cubes[x].GetComponent<DestroySelf>().Point.x);
+                        }
+                      
                         eff = true;
                     }
 
@@ -945,6 +1037,8 @@ private float timeSugg = 0;
                 }
             }
         }
+        
+
         return eff;
     }
 
@@ -967,43 +1061,43 @@ private float timeSugg = 0;
         {
             Debug.Log(" NOTTHING ");
         }
-    
-        if(row !=null)
+
+        if (row != null)
         {
 
-          
 
-            if (row.Length>0)
+
+            if (row.Length > 0)
             {
                 Combo += row.Length;
-                if ( Combo > 1)
+                if (Combo > 1)
                 {
                     int x = Mathf.Clamp(Combo, 1, 4);
-                    string audio = "Score_"+x.ToString();
+                    string audio = "Score_" + x.ToString();
 
                     AudioManganger.Ins.PlaySound(audio);
 
                     CtrlData.Ins.VisibleCombo(Combo);
 
-                    CtrlData.Ins.VisibleScore(14*(Combo+HasCubeEff));
+                    CtrlData.Ins.VisibleScore(14 * (Combo + HasCubeEff));
 
-                    CtrlData.Score += 14 * (Combo+HasCubeEff);
+                    CtrlData.Score += 14 * (Combo + HasCubeEff);
 
                     CtrlData.Ins.SetScore();
 
                 }
                 else
                 {
-                    
-                    CtrlData.Ins.VisibleScore(14+(HasCubeEff*7));
-                    CtrlData.Score += 14+(HasCubeEff*7);
+
+                    CtrlData.Ins.VisibleScore(14 + (HasCubeEff * 7));
+                    CtrlData.Score += 14 + (HasCubeEff * 7);
                     CtrlData.Ins.SetScore();
                 }
-              
+
             }
         }
-     
-      
+
+
     }
 
     public static Vector3 ScreenToWord(Vector2 posScreen)
@@ -1069,7 +1163,7 @@ private float timeSugg = 0;
             {
 
                 Shape shape = rayHit.collider.gameObject.GetComponent<DestroySelf>().shape;
-              //  ShapeSelect.text = shape.gameObject.name;
+                //  ShapeSelect.text = shape.gameObject.name;
                 return shape;
 
             }
@@ -1098,14 +1192,14 @@ private float timeSugg = 0;
             CtrlData.Level++;
         }
 
-        GenerateStartGame(Random.Range(2,3+Mathf.Clamp(Random.Range(0,CtrlData.Level),0,5)),false);
-      //  GenerateStartGame(2, false);
+        GenerateStartGame(Random.Range(2, 3 + Mathf.Clamp(Random.Range(0, CtrlData.Level), 0, 5)), false);
+        //  GenerateStartGame(2, false);
         RefershBoard();
     }
     public void SpawnStartGame()
     {
         timeSuggest = 10;
-        GenerateStartGame(Random.Range(2,4), true);
+        GenerateStartGame(Random.Range(2, 4), true);
         //GenerateStartGame(2, true);
         RefershBoard();
     }
@@ -1230,27 +1324,27 @@ private float timeSugg = 0;
     {
 
         Shape shape;
-        for (int i = 0; i < Column ; i++)
+        for (int i = 0; i < Column; i++)
         {
             for (int x = 0; x < Cubes.Count; x++)
             {
 
-                if (Cubes[x].GetComponent<DestroySelf>().Point == new Vector2((float)i,row))
+                if (Cubes[x].GetComponent<DestroySelf>().Point == new Vector2((float)i, row))
                 {
-                  
 
-                 
+
+
                     Cubes[x].GetComponent<DestroySelf>().Destroy();
-                  
-                      
+
+
 
 
                 }
             }
         }
-       
 
-      
+
+
 
 
     }
@@ -1274,8 +1368,8 @@ private float timeSugg = 0;
 
     public void RefershBoard()
     {
-     
-        Board = new int[Row,Column];
+
+        Board = new int[Row, Column];
         for (int j = 0; j < List_Shape.Count; j++)
         {
 
@@ -1353,19 +1447,19 @@ private float timeSugg = 0;
         return pos;
     }
 
-    public  Vector2 RandomPosStart()
+    public Vector2 RandomPosStart()
     {
-      
-      
-       
-        int y = Random.Range(Row-Random.Range(0,4), Row);
+
+
+
+        int y = Random.Range(Row - Random.Range(0, 4), Row);
         int x = Random.Range(0, CtrlGamePlay.Ins.Column);
-    
-     
-        return new Vector3(CtrlGamePlay.Ins.initPoint.x + x * CtrlGamePlay.Ins.offsetX, CtrlGamePlay.Ins.initPoint.y-y* CtrlGamePlay.Ins.offsetX);
+
+
+        return new Vector3(CtrlGamePlay.Ins.initPoint.x + x * CtrlGamePlay.Ins.offsetX, CtrlGamePlay.Ins.initPoint.y - y * CtrlGamePlay.Ins.offsetX);
 
     }
-   
+
     public bool DestroyAtRow(out int[] row)
     {
         List<int> Row = new List<int>();
@@ -1390,7 +1484,7 @@ private float timeSugg = 0;
         row = Row.ToArray();
         return isDestroy;
     }
-    
+
 
     public void ClampShape(Shape shape)
     {
@@ -1459,19 +1553,19 @@ private float timeSugg = 0;
 
         }
 
-      //  MoveSelect.text = "LEFT : " + minX + "RIGHT :  " + maxX + "\n";
+        //  MoveSelect.text = "LEFT : " + minX + "RIGHT :  " + maxX + "\n";
         float ClampMinX = minX * offsetX;
         float ClampMaxX = maxX * offsetY;
 
-     //   MoveSelect.text += ClampMinX + " :: " + ClampMaxX;
+        //   MoveSelect.text += ClampMinX + " :: " + ClampMaxX;
         shape.SetUpClamp(ClampMinX, ClampMaxX);
 
-      //  MoveSelect.text = s;
-       // Debug.Log(s);
+        //  MoveSelect.text = s;
+        // Debug.Log(s);
 
 
     }
-    
+
     public bool IsCanMove(DestroySelf Cube, int x, int y)
     {
         if (!isInMatrix(x, y))
@@ -1487,13 +1581,13 @@ private float timeSugg = 0;
             for (int i = 0; i < Column; i++)
             {
 
-                
+
                 s += Board[j, i] + "  ";
 
                 if (i == x && j == y && Board[j, i] == 1 && !isCubeInShape(Cube, new Vector2(i, j)))
                 {
-                 //   Debug.Log(i + " " + j);
-                        
+                    //   Debug.Log(i + " " + j);
+
                     return false;
                 }
 
@@ -1525,20 +1619,20 @@ private float timeSugg = 0;
         int Color = shape.IDColor;
 
 
-     
-    //    Debug.Log("INIT_1 : " +shape.name+ "\n" + Render(shape.shape));
-      
-     
+
+        //    Debug.Log("INIT_1 : " +shape.name+ "\n" + Render(shape.shape));
+
+
         int colum = shape.shape.GetLength(1);
         List<Shape> splitShape = new List<Shape>();
         List<int> LenghtRow = new List<int>();
-        
+
         List<List<int>> ShapeSplit = new List<List<int>>();
         bool next = false;
         List<int>[] Split_Row = Cut_Shape(shape);
         for (int j = 0; j < Split_Row.Length; j++)
         {
-          //     Debug.Log( RenderList(Split_Row[j]));
+            //     Debug.Log( RenderList(Split_Row[j]));
         }
         bool hasCut = false;
         if (Split_Row.GetLength(0) > 0)
@@ -1546,14 +1640,14 @@ private float timeSugg = 0;
             next = true;
             List<int> GrounpRow = new List<int>();
 
-                int count = 1;
-          
-            for(int i = 0; i < Split_Row.Length; i++)
+            int count = 1;
+
+            for (int i = 0; i < Split_Row.Length; i++)
             {
                 if (!IsRowZero(Split_Row[i].ToArray()))
                 {
                     GrounpRow.Add(i);
-                    
+
                 }
                 else
                 {
@@ -1561,41 +1655,41 @@ private float timeSugg = 0;
                     GrounpRow.Add(-1);
                 }
             }
-       
+
             if (hasCut)
             {
                 Debug.Log("CUT : " + shape.name);
 
                 ShapeSplit.Add(GrounpRow);
-      //          Debug.Log(RenderList(GrounpRow));
+                //          Debug.Log(RenderList(GrounpRow));
                 List<int> SplitRow = new List<int>();
                 int indexSplit = 0;
                 List<List<int>> shapeSplit = Split(GrounpRow);
-                for(int i = 0; i < shapeSplit.Count; i++)
+                for (int i = 0; i < shapeSplit.Count; i++)
                 {
-                   //   Debug.Log("LIST : " + i);
-                   // Debug.Log(RenderList(shapeSplit[i]));
+                    //   Debug.Log("LIST : " + i);
+                    // Debug.Log(RenderList(shapeSplit[i]));
                 }
 
                 for (int i = 0; i < shapeSplit.Count; i++)
                 {
                     List<List<int>> shape_Split = new List<List<int>>();
                     Vector3 pos = shape.transform.position;
-                    pos -= new Vector3(0, shapeSplit[i][0]* CtrlGamePlay.Ins.offsetX);
+                    pos -= new Vector3(0, shapeSplit[i][0] * CtrlGamePlay.Ins.offsetX);
                     for (int j = 0; j < shapeSplit[i].Count; j++)
                     {
                         shape_Split.Add(Split_Row[shapeSplit[i][j]]);
                     }
                     string s = "Shape Split : ";
 
-               //     s +="\n" +  Render(ListToMatrix(shape_Split)) ;
-               //     Debug.Log(s);
-                    SpawnShape(ListToMatrix(shape_Split), pos,Color);
-                 
-                      
+                    //     s +="\n" +  Render(ListToMatrix(shape_Split)) ;
+                    //     Debug.Log(s);
+                    SpawnShape(ListToMatrix(shape_Split), pos, Color);
+
+
                 }
-                  shape.DestroyAllCubeAndShape();
-               
+                shape.DestroyAllCubeAndShape();
+
 
             }
             else
@@ -1606,13 +1700,13 @@ private float timeSugg = 0;
         }
     }
 
-    public List<int[,]> SplitShape(Shape shape, int[] row,int[] col)
+    public void SplitShape(Shape shape, int[] row, int[] col)
     {
-        
+
         List<GameObject> ListShape = shape.ListShape;
         int[,] type = shape.shape;
 
-        Debug.Log(row.ToString() + "  " + col.ToString());
+        Debug.Log(Render(shape.shape));
 
         List<List<int>> RowAndColumSplit = ConvertToSplitShape(shape, row, col);
 
@@ -1623,77 +1717,79 @@ private float timeSugg = 0;
         List<int> ListPointRow = new List<int>();
         List<int> ListPointColumn = new List<int>();
 
-         ListPointRow.Add((int)shape.Point.x);
         if (RowAndColumSplit[0].Count != 0)
         {
             row1 = RowAndColumSplit[0].ToArray();
             Debug.Log(row1.Length);
-            for(int i = 0; i < row1.Length; i++)
-            {
-                ListPointRow.Add(((int)shape.Point.x + row1[i]));
 
-            }
+            
         }
 
+     
 
-
-        ListPointColumn.Add((int)shape.Point.y);
+       
         if (RowAndColumSplit[1].Count != 0)
         {
-           
+
             col1 = RowAndColumSplit[1].ToArray();
-           
+
             Debug.Log(col1.Length);
+          
 
-            for (int i = 0; i < col1.Length; i++)
-            {
-                //   ListPointRow.Add(((int)shape.Point.x + row1[i]));
-                ListPointColumn.Add((int)shape.Point.y - col1[i]);
-            }
+
 
         }
-        
 
-        List<Vector2> Grounp = GrounpPoint(ListPointRow, ListPointColumn);
-
-        for(int i = 0; i < Grounp.Count; i++)
-        {
-            Debug.Log("POINT "+i+":"+ Grounp[i].x + "  " + Grounp[i].y);
-        }
+        ListPointRow.Add(0);
+        ListPointColumn.Add(0);
+    //    List<Vector2> Grounp = GrounpPoint(ListPointRow, ListPointColumn);
+      
 
         List<int[,]> ListRowtMatrix = new List<int[,]>();
         List<int[,]> ListColumnMatrix = new List<int[,]>();
         List<int[,]> TotalMatrix = new List<int[,]>();
 
-        
+
 
         List<List<int[,]>> ListColumMatrix_1 = new List<List<int[,]>>();
-        
+
         if (row1 != null)
         {
-            
-            
 
-            ListRowtMatrix  =  SplitRowMatrix(type, row1);
+            Debug.Log("Split Row");
 
-            for(int i = 0; i < row1.Length; i++)
+            ListRowtMatrix = SplitRowMatrix(type, row1,ref ListPointRow);
+
+            for (int i = 0; i < ListRowtMatrix.Count; i++)
             {
-              
+                Debug.Log(Render(ListRowtMatrix[i]));
             }
 
         }
 
-        if (ListRowtMatrix.Count != 0 && col1!=null)
+        if (ListRowtMatrix.Count != 0 && col1 != null)
         {
-            for(int i = 0; i < ListRowtMatrix.Count;i++)
+            Debug.Log("Split Col");
+            for (int i = 0; i < ListRowtMatrix.Count; i++)
             {
-                ListColumMatrix_1.Add(SplitColumnMatrix(ListRowtMatrix[i],col1));
+                ListColumMatrix_1.Add(SplitColumnMatrix(ListRowtMatrix[i], col1,ref ListPointColumn));
+
+
             }
+            for (int j = 0; j < ListColumMatrix_1.Count; j++)
+            {
+                for (int k = 0; k < ListColumMatrix_1[j].Count; k++)
+                {
+                    Debug.Log(Render(ListColumMatrix_1[j][k]));
+                }
+            }
+
+
             if (ListColumMatrix_1.Count != 0)
             {
-                for(int j = 0; j < ListColumMatrix_1.Count; j++)
+                for (int j = 0; j < ListColumMatrix_1.Count; j++)
                 {
-                    for(int k = 0; k < ListColumMatrix_1[j].Count; k++)
+                    for (int k = 0; k < ListColumMatrix_1[j].Count; k++)
                     {
                         ListColumnMatrix.Add(ListColumMatrix_1[j][k]);
                     }
@@ -1707,56 +1803,88 @@ private float timeSugg = 0;
 
 
         }
-        else if(col1!=null)
+        else if (col1 != null)
         {
-            ListColumnMatrix = SplitColumnMatrix(type, col1);
-            for(int i = 0; i < ListColumnMatrix.Count; i++)
+            ListColumnMatrix = SplitColumnMatrix(type, col1,ref ListPointColumn);
+            for (int i = 0; i < ListColumnMatrix.Count; i++)
             {
                 TotalMatrix.Add(ListColumnMatrix[i]);
             }
             List<Vector2> Points = new List<Vector2>();
 
-          
+
 
 
 
         }
-        else if(row1!=null)
+        else if (row1 != null)
         {
-            for(int i = 0; i < ListRowtMatrix.Count; i++)
+            for (int i = 0; i < ListRowtMatrix.Count; i++)
             {
                 TotalMatrix.Add(ListRowtMatrix[i]);
             }
         }
+        else
+        {
+
+            TotalMatrix.Add(shape.shape);
+        }
+
+        if (TotalMatrix.Count > 1)
+        {
+            shape.DestroyAllCubeAndShape();
+        }
+        else
+        {
+            return;
+        }
+
+        List<Vector2> List_Position =ConvertToPostionBoard(GrounpPoint(ListPointRow, ListPointColumn),shape.Point);
 
 
-        return TotalMatrix;
+
+        for (int i = 0; i < TotalMatrix.Count; i++)
+        {
+
+            Debug.Log("SHAPE : " + Render(TotalMatrix[i]));
+            if (CountInCube(TotalMatrix[i]) == 0)
+                continue;
+            Debug.Log("SPAWN");
+            SpawnShape(TotalMatrix[i], List_Position[i], shape.IDColor);
 
 
 
+        }
+        RowSplit = new List<int>();
+        ColumnSplit = new List<int>();
+       
+       
+       
+
+        Debug.Log("P_ROW : " + RenderList(ListPointRow));
+        Debug.Log("P_COL : " + RenderList(ListPointColumn));
 
        
-      
-
-     
-
-
-
-
-
     }
-    public List<Vector2> GrounpPoint(List<int> Row,List<int> Column)
+    
+    public List<Vector2> GrounpPoint(List<int> Row, List<int> Column)
     {
         List<Vector2> point = new List<Vector2>();
-        for(int i = 0; i < Row.Count; i++)
+        for (int i = 0; i < Row.Count; i++)
         {
             Vector2 p = Vector2.zero;
             p.x = Row[i];
-            for(int j = 0; j < Column.Count; j++)
+            for (int j = 0; j < Column.Count; j++)
             {
                 p.y = Column[j];
                 point.Add(p);
             }
+
+        }
+
+        for (int i = 0; i < point.Count; i++)
+        {
+            Debug.Log(point[i].x + " :::: " + point[i].y);
 
         }
         return point;
@@ -1764,6 +1892,29 @@ private float timeSugg = 0;
 
     }
 
+    public List<Vector2> ConvertToPostionBoard(List<Vector2> point,Vector2 PosInit)
+    {
+        Debug.Log("POINT INIT : " + PosInit.x + "  " + PosInit.y);
+        List<Vector2> L_Vector = new List<Vector2>();
+        for(int i = 0; i < point.Count; i++)
+        {
+            Debug.Log("PosShape : " + point[i].x + "  " + point[i].y);
+         int x =    (int)PosInit.x + (int)point[i].x;
+         int y = (int)PosInit.y + (int)point[i].y;
+            Debug.Log(x + ": " + y);
+            float posX = CtrlGamePlay.Ins.initPoint.x + y * offsetY;
+            float posY = CtrlGamePlay.Ins.initPoint.y - x * offsetX;
+
+            Vector2 pos = new Vector2(posX, posY);
+            L_Vector.Add(pos);
+            Debug.Log("PosConvert : " + pos.x+"   "+pos.y);
+        }
+        return L_Vector; 
+       
+    }
+
+  
+   
 
     //public List<int[,]> SplitMatrix(int[,] matrix, int[] row, int[] colum)
     //{
@@ -1772,28 +1923,66 @@ private float timeSugg = 0;
 
     //}
 
-    public List<int[,]> SplitRowMatrix(int[,] matrixs, int[] row)
+
+    public List<int[,]> SplitRowMatrix(int[,] matrixs, int[] row,ref List<int> listpoint)
     {
+        List<int> point = new List<int>();
         List<List<int>> ListRow = CutRow(matrixs);
-      
+        Debug.Log("CUT ROW");
+        for(int i = 0; i < ListRow.Count; i++)
+        {
+            Debug.Log(RenderList(ListRow[i]));
+        }
         List<int[,]> ListMatrix = new List<int[,]>();
 
         List<int> Flag = SetUpFlag(matrixs.GetLength(0), row);
         Debug.Log(ListRow.Count + "  " + Flag.Count);
-
+        Debug.Log(RenderList(Flag));
 
         List<int[,]> matrix = new List<int[,]>();
 
-        List<List<int>> Row = new List<List<int>>(); 
-
+        List<List<int>> Row = new List<List<int>>();
+        point.Add(0);
         for(int i = 0; i < Flag.Count; i++)
         {
             if (Flag[i] == -1)
             {
-                           
-                 Row.Add(ListRow[i]);
-                 ListMatrix.Add(ListToMatrix(Row));
-                 Row = new List<List<int>>();
+                if (Row.Count != 0)
+                {
+                    ListMatrix.Add(ListToMatrix(Row));
+                    Row = new List<List<int>>();
+                }
+
+                Row.Add(ListRow[i]);
+                ListMatrix.Add(ListToMatrix(Row));
+                Row = new List<List<int>>();
+
+
+                if (!point.Contains(i))
+                {
+                    point.Add(i);
+                    if (i + 1 < Flag.Count)
+                    {
+                        if (!point.Contains(i + 1))
+                        {
+                            point.Add(i + 1);
+                        }
+                    }
+
+                }
+                else
+                {
+                    if (i + 1 < Flag.Count)
+                    {
+                        if (!point.Contains(i + 1))
+                        {
+                            point.Add(i + 1);
+                        }
+                    }
+                }
+              
+
+
             }
             else
             {
@@ -1805,6 +1994,8 @@ private float timeSugg = 0;
            ListMatrix.Add(ListToMatrix(Row));
            
         }
+        Debug.Log("RENDER SPLIT POINT ROW : " + RenderList(point));
+        listpoint = point;
         return ListMatrix;
       
 
@@ -1817,21 +2008,27 @@ private float timeSugg = 0;
         for(int i=0;i<Row; i++)
         {
             bool a = false;
-
-           for(int j = 0; j < row.Length; j++)
+            string s = "";
+            for (int j = 0; j < row.Length; j++)
             {
+               
+                s += i + "  " + row[j];
                 if (i == row[j])
                 {
+                    s += "Find";
                     Flag.Add(-1);
                     a = true;
+                    break;
                 }
             }
+        //    Debug.Log(s);
            if(!a)
             Flag.Add(1);
         }
         return Flag;
     }
-   
+  
+
     public List<List<int>> CutRow(int[,] matrix)
     {
         List<List<int>> ListRow = new List<List<int>>();
@@ -1865,8 +2062,9 @@ private float timeSugg = 0;
         return ListColumn;
 
     }
-    public List<int[,]> SplitColumnMatrix(int[,] matrixs, int[] column)
+    public List<int[,]> SplitColumnMatrix(int[,] matrixs, int[] column,ref List<int> point)
     {
+        List<int> ListPoint = new List<int>();
         List<List<int>> ListColumn = CutColumn(matrixs);
 
         List<int[,]> ListMatrix = new List<int[,]>();
@@ -1879,14 +2077,49 @@ private float timeSugg = 0;
 
         List<List<int>> Column = new List<List<int>>();
 
+        ListPoint.Add(0);
         for (int i = 0; i < Flag.Count; i++)
         {
             if (Flag[i] == -1)
             {
+                if (!ListPoint.Contains(i))
+                {
+                    ListPoint.Add(i);
+                    if (i + 1 < Flag.Count)
+                    {
+                        if (!ListPoint.Contains(i + 1))
+                        {
+                            ListPoint.Add(i + 1);
+                        }
+                       
+                    }
+                }
+                else
+                {
+                    if (!ListPoint.Contains(i + 1))
+                    {
+                        if (i + 1 < Flag.Count)
+                            ListPoint.Add(i + 1);
+                    }
+                      
+                }
 
+                if (Column.Count != 0)
+                {
+                     
+                    ListMatrix.Add(ListColumToMatrix(Column));
+                    Column = new List<List<int>>();
+
+                }
+                 
+               
+                
                 Column.Add(ListColumn[i]);
+
                 ListMatrix.Add(ListColumToMatrix(Column));
+
                 Column = new List<List<int>>();
+
             }
             else
             {
@@ -1898,6 +2131,9 @@ private float timeSugg = 0;
             ListMatrix.Add(ListColumToMatrix(Column));
 
         }
+
+        Debug.Log("RENDER SPLIT POINT : " + RenderList(ListPoint));
+        point = ListPoint;
         return ListMatrix;
 
 
@@ -1938,7 +2174,7 @@ private float timeSugg = 0;
                     Debug.Log(splitRow[i] + "   " + row[j]);
                     if (splitRow[i] == row[j])
                     {
-                        splitRow_Ver_2.Add(j);
+                        splitRow_Ver_2.Add(i);
                     }
                 }
             }
@@ -1952,10 +2188,10 @@ private float timeSugg = 0;
                 {
 
 
-                    Debug.Log(splitColumn[i] + "   " + colum[j]);
+                //    Debug.Log(splitColumn[i] + "   " + colum[j]);
                     if (splitColumn[i] == colum[j])
                     {
-                        splitColumn_ver_2.Add(j);
+                        splitColumn_ver_2.Add(i);
                     }
                 }
             }
@@ -3143,7 +3379,7 @@ private float timeSugg = 0;
             if(ListInfor[i].type == TypeShape.crossBar_1 || ListInfor[i].type == TypeShape.crossBar_2 || ListInfor[i].type == TypeShape.crossBar_3)
             {
                 int x = Random.Range(0, 100);
-                if(x>=0 && x <= 3)
+                if(x>=0 && x <= 20)
                 {
                     if (ListInfor[i].roll == 0)
                     {
@@ -3195,6 +3431,8 @@ private float timeSugg = 0;
     public void SpawnShape(InforShape ListInfor)
     {
         //  var a = Instantiate(PrebShape, ListInfor.pos, Quaternion.identity, null);
+
+        Debug.Log("INSTANCE ");
         var a = Poolers.Ins.GetObject(PrebShape, ListInfor.pos, Quaternion.identity);
         a.OnSpawn();
         a.GetComponent<Shape>().SetTypeShape(ListInfor.type, ListInfor.shape);
@@ -3711,7 +3949,7 @@ private float timeSugg = 0;
         List<Shape> NewList = new List<Shape>();
         List<Shape> List = List_Shape;
         List<List<Shape>> ListRowShape = new List<List<Shape>>();
-        for(int i = Row-1; i >= 0; i--)
+        for(int i = Row; i >= 0; i--)
         {
             List<Shape> Row = new List<Shape>();
             List<Shape> RowIsCheck = new List<Shape>();
