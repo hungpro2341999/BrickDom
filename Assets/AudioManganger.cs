@@ -44,7 +44,21 @@ public class AudioManganger : MonoBehaviour
         }
         return null;
     }
-    
+  
+         public AudioSource OffSound(string name)
+    {
+        for (int i = 0; i < List_Audio.Count; i++)
+        {
+            if (CtrlData.Ins.IsSound())
+            {
+                if (List_Audio[i].name == name)
+                {
+                    List_Audio[i].Stop();
+                }
+            }
+        }
+        return null;
+    }
     public void MuteAll()
     {
         CtrlData.Ins.ChangeSound();

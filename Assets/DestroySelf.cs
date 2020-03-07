@@ -7,6 +7,7 @@ public class DestroySelf : PoolItem
    public Vector2 Point;
    public Shape shape;
     public bool isDestroy = false;
+    public AudioSource Audio_Destroy;
     private void Start()
     {
       
@@ -59,6 +60,8 @@ public class DestroySelf : PoolItem
 
     public IEnumerator DestroyCube(float time)
     {
+      
+
         yield return new WaitForSeconds(time);
 
         //  Instantiate(CtrlData.Ins.GetEffect(5), transform.position, Quaternion.identity, null);

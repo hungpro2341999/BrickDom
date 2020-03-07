@@ -787,7 +787,7 @@ public class Shape : PoolItem
         {
             CtrlGamePlay.Ins.List_Shape.Remove(this);
 
-            OnDespawn();
+            DestroyAllCubeAndShape();
         }
       
        
