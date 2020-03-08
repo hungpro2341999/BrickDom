@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using System.IO;
 
 public class CtrlData : MonoBehaviour
 {
@@ -131,7 +131,7 @@ public class CtrlData : MonoBehaviour
     public static int[] T_0 = new int[1] { 2 };
     public static int[] T_90 = new int[1] { 3 };
     public static int[] T_180 = new int[1] { 4 };
-
+    public static List<TypeShape> AllShape = new List<TypeShape>();
 
     #endregion
     public static CtrlData Ins;
@@ -151,18 +151,34 @@ public class CtrlData : MonoBehaviour
     public Text THighScore;
 
     public Dictionary<TypeShape, List<string>> InfoRollShape;
+
+    public void GenerateShape()
+    {
+        AllShape.Add(TypeShape.crossBar_1);
+        AllShape.Add(TypeShape.crossBar_2);
+        AllShape.Add(TypeShape.crossBar_3);
+        AllShape.Add(TypeShape.crossBar_4);
+        AllShape.Add(TypeShape.three_cube);
+        AllShape.Add(TypeShape.L3_0);
+        AllShape.Add(TypeShape.L3_90);
+        AllShape.Add(TypeShape.L_4_0);
+        AllShape.Add(TypeShape.L4_90);
+        AllShape.Add(TypeShape.square);
+        AllShape.Add(TypeShape.T);
+       
+    }
     public void SpawnInit()
     {
-        for(int i = 0; i < EffectGame.Count; i++)
+        for (int i = 0; i < EffectGame.Count; i++)
         {
-            for(int j = 0; j < 8; j++)
+            for (int j = 0; j < 8; j++)
             {
                 var a = Poolers.Ins.GetObject(EffectGame[0]);
                 if (a.GetComponent<DestroyParice>() != null)
                 {
                     a.GetComponent<DestroyParice>().AddEff();
                 }
-                
+
             }
         }
         Poolers.Ins.ClearAll();
@@ -174,6 +190,10 @@ public class CtrlData : MonoBehaviour
         {
             View();
         }
+        if (Input.GetKeyDown(KeyCode.N))
+        {
+            Test_1();
+        }
     }
     public void ResetScore()
     {
@@ -182,16 +202,17 @@ public class CtrlData : MonoBehaviour
         TScore.text = "0";
         CtrlData.CountPlay = 0;
     }
-    
+
     public void InitKey()
     {
         InitMatrixRoll();
+
         Type_Ver_1.Add(TypeShape.crossBar_1);
         Type_Ver_1.Add(TypeShape.crossBar_2);
         Type_Ver_2.Add(TypeShape.crossBar_3);
         Type_Ver_2.Add(TypeShape.three_cube);
-     
-       
+
+
         Type_Ver_2.Add(TypeShape.square);
         Type_Ver_3.Add(TypeShape.crossBar_4);
         Type_Ver_3.Add(TypeShape.L4_90);
@@ -209,7 +230,7 @@ public class CtrlData : MonoBehaviour
         //AllTypeShape.Add(TypeShape.L_4_0);
         //AllTypeShape.Add(TypeShape.L);
 
-      //  PlayerPrefs.DeleteKey(Key_HighScore);
+        //  PlayerPrefs.DeleteKey(Key_HighScore);
         if (!PlayerPrefs.HasKey(Key_HighScore))
         {
             PlayerPrefs.SetInt(Key_HighScore, 0);
@@ -221,7 +242,7 @@ public class CtrlData : MonoBehaviour
         {
             int Score = GetHighScore();
 
-           THighScore.text = Score.ToString();
+            THighScore.text = Score.ToString();
 
         }
         if (!PlayerPrefs.HasKey(Key_Sound))
@@ -263,7 +284,7 @@ public class CtrlData : MonoBehaviour
     public int GetHighScore()
     {
         return PlayerPrefs.GetInt(Key_HighScore);
-      
+
     }
 
 
@@ -306,12 +327,12 @@ public class CtrlData : MonoBehaviour
         a.transform.Find("Text").GetComponent<Text>().text = "c" + i;
 
     }
-    
+
 
     public static TypeShape GetShapeType(int i)
     {
-       
-       TypeShape type = TypeShape.None;
+
+        TypeShape type = TypeShape.None;
         switch (i)
         {
             case 0:
@@ -336,8 +357,8 @@ public class CtrlData : MonoBehaviour
             case 6:
                 type = TypeShape.square;
                 break;
-           
-              
+
+
             case 7:
                 type = TypeShape.three_cube;
                 break;
@@ -347,11 +368,111 @@ public class CtrlData : MonoBehaviour
             case 9:
                 type = TypeShape.L3_90;
                 break;
+            case 10:
+                type = TypeShape.T;
+                break;
             default:
                 Debug.Log("Khong Co Type nhu the");
                 break;
         }
         return type;
+    }
+    public static int[,] GetMatrixShapeType(TypeShape type)
+    {
+        int[,] matrix = null;
+
+        switch (type)
+        {
+            case TypeShape.crossBar_1:
+                matrix = CtrlData.Cube_Cross_1;
+                break;
+            case TypeShape.crossBar_2:
+                matrix = CtrlData.Cube_Cross_2;
+                break;
+            case TypeShape.crossBar_3:
+                matrix = CtrlData.Cube_Cross_3;
+                break;
+            case TypeShape.crossBar_4:
+                matrix = CtrlData.Cube_Cross_4;
+                break;
+            case TypeShape.L_4_0:
+                matrix = CtrlData.Cube_L4_0;
+                break;
+            case TypeShape.L4_90:
+                matrix = CtrlData.Cube_L4_90;
+
+                break;
+            case TypeShape.square:
+                matrix = CtrlData.Cube_Quare;
+                break;
+
+
+            case TypeShape.three_cube:
+                matrix = CtrlData.Cube_3;
+                break;
+            case TypeShape.L3_0:
+                matrix = CtrlData.Cube_L3_0;
+                break;
+            case TypeShape.L3_90:
+                matrix = CtrlData.Cube_L3_90;
+                break;
+            case TypeShape.T:
+                matrix = CtrlData.T;
+                break;
+            default:
+                Debug.Log("Khong Co Type nhu the");
+                break;
+        }
+        return matrix;
+    }
+
+    public static int CountRoll(TypeShape type)
+    {
+        int roll = 0;
+
+        switch (type)
+        {
+            case TypeShape.crossBar_1:
+                roll = 0;
+                break;
+            case TypeShape.crossBar_2:
+                roll = 2;
+                break;
+            case TypeShape.crossBar_3:
+                roll = 2;
+                break;
+            case TypeShape.crossBar_4:
+                roll = 2;
+                break;
+            case TypeShape.L_4_0:
+                roll = 4;
+                break;
+            case TypeShape.L4_90:
+                roll = 4;
+
+                break;
+            case TypeShape.square:
+                roll = 4;
+                break;
+
+
+            case TypeShape.three_cube:
+                roll = 4;
+                break;
+            case TypeShape.L3_0:
+                roll = 4;
+                break;
+            case TypeShape.L3_90:
+                roll = 4;
+                break;
+            case TypeShape.T:
+                roll = 4;
+                break;
+            default:
+                Debug.Log("Khong Co Type nhu the");
+                break;
+        }
+        return roll;
     }
 
 
@@ -375,8 +496,9 @@ public class CtrlData : MonoBehaviour
         ShapeType.Add(Cube_3);//7
         ShapeType.Add(Cube_L3_0);//8
         ShapeType.Add(Cube_L3_90);//9
+        GenerateShape();
         InitKey();
-        
+
     }
     private void Start()
     {
@@ -384,7 +506,7 @@ public class CtrlData : MonoBehaviour
         CtrlGamePlay.Ins.Event_Start_Game += ResetScore;
     }
     // Start is called before the first frame update
-    public static int RandomColor(TypeShape type,int roll)
+    public static int RandomColor(TypeShape type, int roll)
     {
         int Color = 0;
         switch (type)
@@ -402,8 +524,8 @@ public class CtrlData : MonoBehaviour
                         Color = RollCorss_2x1[Random.Range(0, RollCorss_2x1.Length)];
                         break;
                 }
-            
-                Color =   Random.Range(0, 5);
+
+                Color = Random.Range(0, 5);
                 break;
             case TypeShape.crossBar_3:
                 switch (roll)
@@ -416,7 +538,7 @@ public class CtrlData : MonoBehaviour
                         break;
                 }
 
-               
+
                 break;
             case TypeShape.crossBar_4:
                 switch (roll)
@@ -466,7 +588,7 @@ public class CtrlData : MonoBehaviour
                         break;
 
                 }
-              
+
                 break;
             case TypeShape.L3_90:
                 switch (roll)
@@ -523,9 +645,9 @@ public class CtrlData : MonoBehaviour
                 }
                 break;
 
-        
+
             case TypeShape.square:
-             
+
                 Color = Square[Random.Range(0, Square.Length)];
                 break;
             case TypeShape.T:
@@ -547,7 +669,7 @@ public class CtrlData : MonoBehaviour
                 }
 
                 break;
-              
+
 
         }
         return Color;
@@ -555,25 +677,25 @@ public class CtrlData : MonoBehaviour
     }
     public GameObject GetEffect(int id)
     {
-        for(int i = 0; i < EffectGame.Count; i++)
+        for (int i = 0; i < EffectGame.Count; i++)
         {
-            if(i==id)
+            if (i == id)
             {
                 return EffectGame[i];
             }
         }
         return null;
     }
-    
+
 
     public void InitMatrixRoll()
     {
         InfoRollShape = new Dictionary<TypeShape, List<string>>();
-        for(int i = 0; i < 10; i++)
+        for (int i = 0; i < 11; i++)
         {
             InfoRollShape.Add(GetShapeType(i), new List<string>());
         }
-        for(int i = 0; i < InfoRollShape.Count; i++)
+        for (int i = 0; i < InfoRollShape.Count; i++)
         {
             switch (i)
             {
@@ -669,17 +791,28 @@ public class CtrlData : MonoBehaviour
 
                     }
                     break;
-              
+                case 9:
+                    for (int j = 0; j < 4; j++)
+                    {
+
+                        string s9 = CtrlGamePlay.Render(Shape.SplitMatrix(CtrlGamePlay.SimulateRoll(j, TypeShape.T, false)));
+                        InfoRollShape[TypeShape.T].Add(s9);
+
+
+                    }
+                    break;
+
             }
         }
-       
+
     }
     public void View()
     {
         string s = "";
-        for(int i = 0; i < 4; i++)
+        Debug.Log("ROLLLING : : ");
+        for (int i = 0; i < 4; i++)
         {
-            s += "\n" + "" + InfoRollShape[TypeShape.three_cube][i];
+            s += "\n" + "" + InfoRollShape[TypeShape.T][i];
         }
         Debug.Log(s);
     }
@@ -687,5 +820,71 @@ public class CtrlData : MonoBehaviour
     {
         return InfoRollShape[type][roll];
     }
+    public static int[,] ConverStringToMatrix(string s)
+    {
+        Debug.Log("Matrix : " + s);
 
+        StringReader strReader = new StringReader(s);
+        
+        int[,] matrix = null;
+        List<List<int>> ListRow = new List<List<int>>();
+        while (true)
+        {
+            string line = strReader.ReadLine();
+            Debug.Log(line);
+            if (line == "")
+            {
+                continue;
+            }
+            if (line != null)
+            {
+                List<int> Row = new List<int>();
+                line.TrimEnd();
+                line.TrimStart();
+               
+                Debug.Log("ROW ::: " + line);
+                
+                char[] space = {' '};
+                
+                string[] row = line.Split(space);
+
+              
+
+
+                for (int i = 0; i < row.Length; i++)
+                {
+                    if (row[i] == "")
+                        continue;
+                    Debug.Log("Index :" + row[i]);
+                    Row.Add(int.Parse(row[i]));
+                }
+                ListRow.Add(Row);
+
+
+
+
+            }
+            else
+            {
+
+                break;
+            }
+        }
+
+        return matrix = CtrlGamePlay.Ins.ListToMatrix(ListRow);
+
+    }
+    public void Test_1()
+    {
+           Debug.Log(CtrlGamePlay.Render(ConverStringToMatrix(GetSimulateRoll(TypeShape.three_cube, 0))));  
+        string phrase = "1 123 231 321 31 123 123 123 12";
+        //string[] words = phrase.Split(' ');
+
+        //foreach (var word in words)
+        //{
+        //    Debug.Log(word);
+        //}
+    }
 }
+
+
