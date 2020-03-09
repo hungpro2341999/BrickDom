@@ -12,15 +12,10 @@ public class InforShapeSplit : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        ReadFile.ResetFile();
 
-        for(int i = 0; i < CtrlData.AllShape.Count; i++)
-        {
-            ProcessAllType(CtrlData.AllShape[i]);
-        }
-        
 
-      
+
+
         //Process(new int[4, 2]
         //{
         //    {1,0 },
@@ -29,6 +24,9 @@ public class InforShapeSplit : MonoBehaviour
         //        {1,1 }
 
         //});
+
+        //
+       
     }
 
     // Update is called once per frame
@@ -36,31 +34,29 @@ public class InforShapeSplit : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.B))
         {
-            int[] row = new int[1] { 0 };
-            int[] col = new int[1] { 0 };
-           
-           
-            string key_row = "[";
-            for (int i = 0; i < row.Length; i++)
+            //ToHop tohop = new ToHop();
+            //List<List<int>> th = tohop.Start_Find(2, 1);
+            //for (int i = 0; i < th.Count; i++)
+            //{
+            //    Debug.Log(CtrlGamePlay.RenderList(th[i]));
+            //}
+            //Debug.Log("ss");
+
+
+            ReadFile.ResetFile();
+
+
+            for (int i = 0; i < CtrlData.AllShape.Count; i++)
             {
-                key_row += row[i];
+                Debug.Log("ss");
+                ProcessAllType(CtrlData.AllShape[i]);
             }
-            key_row += "]";
-
-            string key_col = "[";
-            for (int i = 0; i < col.Length; i++)
-            {
-                key_col += col[i];
-            }
-            key_col += "]";
-
-         
-
-            string key = "ROLL : " + 0 + " " +TypeShape.L3_0.ToString()+ " - " + key_row + key_col;
-
-            Debug.Log(key);
-
-            List<int[,]> matrix = InforShapeSplit.InforShape[key];
+            //int[,] Matrix = new int[1,2]
+            //{
+            //    {1,1}
+               
+            //};
+            //Process_1(Matrix, "KEY");
         }
         
     }
@@ -92,9 +88,10 @@ public class InforShapeSplit : MonoBehaviour
             ReadFile.WriteString(Roll);
 
             string key = "ROLL : " + i + " " + type.ToString();
+            Debug.Log(key);
             if (TypeShape.square != type)
             {
-                Process(CtrlData.ConverStringToMatrix(CtrlData.Ins.GetSimulateRoll(type, i)), key);
+                Process_1(CtrlData.ConverStringToMatrix(CtrlData.Ins.GetSimulateRoll(type, i)), key);
             }
             else
             {
@@ -103,7 +100,7 @@ public class InforShapeSplit : MonoBehaviour
                     {1,1 },
                     {1,1 }
                 };
-                Process(square, key);
+                Process_1(square, key);
             }
             
 
@@ -112,6 +109,216 @@ public class InforShapeSplit : MonoBehaviour
        
 
     }
+   
+    public void Process_1(int[,] matrix, string keyRoll)
+    {
+
+        
+
+
+
+
+        for (int i = 0; i < matrix.GetLength(0); i++)
+        {
+            //1 ///
+            List<List<int>> ListTopHopRow = new List<List<int>>();
+              ToHop toHopRow = new ToHop();
+           
+                Debug.Log("TH ROW: " + i + "  " + (matrix.GetLength(0) - 1));
+                ListTopHopRow = toHopRow.Start_Find(matrix.GetLength(0),i+1);
+           
+            //////////////////////////
+
+
+            for (int j = 0; j < matrix.GetLength(1); j++)
+            {
+
+                //2 ///
+
+
+
+
+                ToHop toHopColumn = new ToHop();
+                List<List<int>> ListTopHopColumn = new List<List<int>>();
+
+                    Debug.Log("TH COLUMN: "+j+"  "+ (matrix.GetLength(1) - 1));
+                    ListTopHopColumn = toHopColumn.Start_Find(matrix.GetLength(1),j+1);
+
+                    for(int t = 0; t < ListTopHopColumn.Count; t++)
+                    {
+                        Debug.Log("COLUMN : " + CtrlGamePlay.RenderList(ListTopHopColumn[t]));
+                    }
+                
+               
+                for(int r = 0; r < ListTopHopRow.Count; r++)
+                {
+                    int[] row = ListTopHopRow[r].ToArray();
+                    for (int c = 0; c < ListTopHopColumn.Count; c++)
+                    {
+                        string TypeShape = "CUT" + " - ";
+                        string key = keyRoll + " - " + "[";
+
+                      
+                        int[] column = ListTopHopColumn[c].ToArray();
+
+                        for (int r1 = 0; r1 < row.Length; r1++)
+                        {
+                            key += row[r1];
+                        }
+                        key += "]";
+                        key += "[";
+                        for (int c1 = 0; c1 < column.Length; c1++)
+                        {
+                            key += column[c1];
+                        }
+                        key += "]";
+                        TypeShape += key + " - ";
+
+                        if (List_Point.ContainsKey(key))
+                        {
+                            continue;
+                        }
+                        List<Vector2> ListPoint = new List<Vector2>();
+                        List<int[,]> TotalMatrixSplit = SplitMatrix(matrix, row, column, out ListPoint);
+                        Debug.Log("RENDER111 : " + TotalMatrixSplit.Count);
+                        for (int z = 0; z < TotalMatrixSplit.Count; z++)
+                        {
+                            string ss = InforShapeSplit.MatrixToString(TotalMatrixSplit[z]) + "||";
+                            TypeShape += ss;
+                            Debug.Log(ss);
+                        }
+
+                        Debug.Log(key);
+                        InforShape.Add(key, TotalMatrixSplit);
+                        List_Point.Add(key, ListPoint);
+                        ReadFile.WriteString(TypeShape);
+
+                    }
+
+
+                }
+
+
+
+
+              
+            }
+        }
+
+
+        for (int i = 0; i < matrix.GetLength(0); i++)
+        {
+            string col = "[]";
+            ToHop ToHopRow_1 = new ToHop();
+          
+           
+            List<List<int>> ListToHoprow = ToHopRow_1.Start_Find(matrix.GetLength(0), i + 1);
+
+
+            for (int r = 0; r < ListToHoprow.Count; r++)
+            {
+                string TypeShape = "CUT" + " - ";
+                string key = keyRoll + " - " + "[";
+                int[] Row = ListToHoprow[r].ToArray();
+
+                for(int r1 = 0; r1 < Row.Length; r1++)
+                {
+                    key += Row[r1];
+                }
+                key += "]";
+
+               
+
+              
+                key += col;
+                TypeShape += key + " - ";
+                if (List_Point.ContainsKey(key))
+                {
+                    continue;
+                }
+                List<Vector2> ListPoint = new List<Vector2>();
+                List<int[,]> TotalMatrixSplit = SplitMatrix(matrix,Row, null, out ListPoint);
+                Debug.Log("RENDER111 : " + TotalMatrixSplit.Count);
+                for (int z = 0; z < TotalMatrixSplit.Count; z++)
+                {
+                    string ss = InforShapeSplit.MatrixToString(TotalMatrixSplit[z]) + "||";
+                    TypeShape += ss;
+                    Debug.Log(ss);
+                }
+
+                Debug.Log(key);
+                InforShape.Add(key, TotalMatrixSplit);
+                List_Point.Add(key, ListPoint);
+                ReadFile.WriteString(TypeShape);
+            }
+           
+
+
+          
+
+        }
+        ////////////
+        for (int j = 0; j < matrix.GetLength(1); j++)
+        {
+           
+            ToHop ToHopColumn = new ToHop();
+            List<List<int>> Column = ToHopColumn.Start_Find(matrix.GetLength(1), j + 1);
+
+            for(int c = 0; c < Column.Count; c++)
+            {
+                string TypeShape = "CUT" + " - ";
+                string key = keyRoll + " - ";
+                string Row = "[]";
+                key += Row;
+                key += "[";
+
+                int[] column = Column[c].ToArray();
+
+                for(int c1 = 0; c1 < column.Length; c1++)
+                {
+                    key += column[c1];
+                }
+                key += "]";
+                TypeShape += key + " - ";
+                if (List_Point.ContainsKey(key))
+                {
+                    continue;
+                }
+                List<Vector2> ListPoint = new List<Vector2>();
+                List<int[,]> TotalMatrixSplit = SplitMatrix(matrix,null,column, out ListPoint);
+                Debug.Log("RENDER111 : " + TotalMatrixSplit.Count);
+                for (int z = 0; z < TotalMatrixSplit.Count; z++)
+                {
+                    string ss = InforShapeSplit.MatrixToString(TotalMatrixSplit[z]) + "||";
+                    TypeShape += ss;
+                    Debug.Log(ss);
+                }
+
+                Debug.Log(key);
+                InforShape.Add(key, TotalMatrixSplit);
+                List_Point.Add(key, ListPoint);
+                ReadFile.WriteString(TypeShape);
+            }
+           
+
+           
+           
+        }
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
 
     public void Process(int[,] matrix,string keyRoll)
     {
