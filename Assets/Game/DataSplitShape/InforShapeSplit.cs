@@ -331,7 +331,49 @@ public class InforShapeSplit : MonoBehaviour
                 ReadFile.WriteString(TypeShape);
             }
         }
-        for(int i = 0; i < matrix.GetLength(0); i++)
+        for (int i = 0; i < matrix.GetLength(0); i++)
+        {
+            for (int j = 0; j < matrix.GetLength(1); j++)
+            {
+                string TypeShape = "CUT" + " - ";
+                string key = keyRoll + " - " + "[";
+                int[] row = getListIntForward(i, matrix.GetLength(0));
+                int[] column = getListIntForward(j, matrix.GetLength(1));
+
+                for (int r = 0; r < row.Length; r++)
+                {
+                    key += r.ToString();
+                }
+                key += "]";
+                key += "[";
+                for (int c = 0; c < column.Length; c++)
+                {
+                    key += c.ToString();
+                }
+                key += "]";
+                TypeShape += key + " - ";
+                if (List_Point.ContainsKey(key))
+                {
+                    continue;
+                }
+                List<Vector2> ListPoint = new List<Vector2>();
+                List<int[,]> TotalMatrixSplit = SplitMatrix(matrix, row, column, out ListPoint);
+                Debug.Log("RENDER111 : " + TotalMatrixSplit.Count);
+                for (int z = 0; z < TotalMatrixSplit.Count; z++)
+                {
+                    string ss = InforShapeSplit.MatrixToString(TotalMatrixSplit[z]) + "||";
+                    TypeShape += ss;
+                    Debug.Log(ss);
+                }
+
+                Debug.Log(key);
+                InforShape.Add(key, TotalMatrixSplit);
+                List_Point.Add(key, ListPoint);
+                ReadFile.WriteString(TypeShape);
+            }
+        }
+
+        for (int i = 0; i < matrix.GetLength(0); i++)
         {
             string col = "[]";
             string TypeShape = "CUT"+" - ";
@@ -368,9 +410,90 @@ public class InforShapeSplit : MonoBehaviour
                 ReadFile.WriteString(TypeShape);
 
         }
+        for (int i = 0; i < matrix.GetLength(0); i++)
+        {
+            string col = "[]";
+            string TypeShape = "CUT" + " - ";
+            string key = keyRoll + " - " + "[";
+            int[] row = getListIntForward(i, matrix.GetLength(0));
 
-        
+
+            for (int r = 0; r < row.Length; r++)
+            {
+                key += row[r];
+            }
+            key += "]";
+            key += col;
+
+
+            TypeShape += key + " - ";
+            if (List_Point.ContainsKey(key))
+            {
+                continue;
+            }
+            List<Vector2> ListPoint = new List<Vector2>();
+            List<int[,]> TotalMatrixSplit = SplitMatrix(matrix, row, null, out ListPoint);
+            Debug.Log("RENDER111 : " + TotalMatrixSplit.Count);
+            for (int z = 0; z < TotalMatrixSplit.Count; z++)
+            {
+                string ss = InforShapeSplit.MatrixToString(TotalMatrixSplit[z]) + "||";
+                TypeShape += ss;
+                Debug.Log(ss);
+            }
+
+            Debug.Log(key);
+            InforShape.Add(key, TotalMatrixSplit);
+            List_Point.Add(key, ListPoint);
+            ReadFile.WriteString(TypeShape);
+
+        }
+        for (int i = 0; i < matrix.GetLength(0); i++)
+        {
             for (int j = 0; j < matrix.GetLength(1); j++)
+            {
+                string TypeShape = "CUT" + " - ";
+                string key = keyRoll + " - " + "[";
+                int[] row = getListIntForward(i, matrix.GetLength(0));
+
+
+                for (int r = 0; r < row.Length; r++)
+                {
+                    key += row[r];
+                }
+                key += "]";
+                key += "[";
+                int[] Column = new int[1] { j };
+                for(int c = 0; c < Column.Length; c++)
+                {
+                    key += Column[c];
+                }
+                key += "]";
+
+                TypeShape += key + " - ";
+                if (List_Point.ContainsKey(key))
+                {
+                    continue;
+                }
+                List<Vector2> ListPoint = new List<Vector2>();
+                List<int[,]> TotalMatrixSplit = SplitMatrix(matrix, row, Column, out ListPoint);
+                Debug.Log("RENDER111 : " + TotalMatrixSplit.Count);
+                for (int z = 0; z < TotalMatrixSplit.Count; z++)
+                {
+                    string ss = InforShapeSplit.MatrixToString(TotalMatrixSplit[z]) + "||";
+                    TypeShape += ss;
+                    Debug.Log(ss);
+                }
+
+                Debug.Log(key);
+                InforShape.Add(key, TotalMatrixSplit);
+                List_Point.Add(key, ListPoint);
+                ReadFile.WriteString(TypeShape);
+
+            }
+        }
+
+
+        for (int j = 0; j < matrix.GetLength(1); j++)
             {
                 string TypeShape = "CUT" + " - ";
                 string key = keyRoll + " - ";
@@ -405,6 +528,88 @@ public class InforShapeSplit : MonoBehaviour
                 ReadFile.WriteString(TypeShape);
             }
 
+       
+
+        for (int j = 0; j < matrix.GetLength(1); j++)
+        {
+            string TypeShape = "CUT" + " - ";
+            string key = keyRoll + " - ";
+            string Row = "[]";
+            key += Row;
+            int[] Column = getListIntForward(j, matrix.GetLength(1));
+            key += "[";
+            for (int c = 0; c < Column.Length; c++)
+            {
+                key += Column[c];
+            }
+            key += "]";
+
+            TypeShape += key + " - ";
+            if (List_Point.ContainsKey(key))
+            {
+                continue;
+            }
+            List<Vector2> ListPoint = new List<Vector2>();
+            List<int[,]> TotalMatrixSplit = SplitMatrix(matrix, null, Column, out ListPoint);
+            Debug.Log("RENDER111 : " + TotalMatrixSplit.Count);
+            for (int z = 0; z < TotalMatrixSplit.Count; z++)
+            {
+                string ss = InforShapeSplit.MatrixToString(TotalMatrixSplit[z]) + "||";
+                TypeShape += ss;
+                Debug.Log(ss);
+            }
+
+            Debug.Log(key);
+            InforShape.Add(key, TotalMatrixSplit);
+            List_Point.Add(key, ListPoint);
+            ReadFile.WriteString(TypeShape);
+        }
+        for (int i = 0; i < matrix.GetLength(0); i++)
+        {
+            for (int j = 0; j < matrix.GetLength(1); j++)
+            {
+                string TypeShape = "CUT" + " - ";
+                string key = keyRoll + " - "+"[";
+
+
+                int[] Row = new int[1] { i };
+
+                for(int r = 0; r < Row.Length; r++)
+                {
+                    key += Row[r];
+                }
+
+                key += "]";
+               
+                int[] Column = getListIntForward(j, matrix.GetLength(1));
+                key += "[";
+                for (int c = 0; c < Column.Length; c++)
+                {
+                    key += Column[c];
+                }
+                key += "]";
+
+                TypeShape += key + " - ";
+                if (List_Point.ContainsKey(key))
+                {
+                    continue;
+                }
+                List<Vector2> ListPoint = new List<Vector2>();
+                List<int[,]> TotalMatrixSplit = SplitMatrix(matrix,Row, Column, out ListPoint);
+                Debug.Log("RENDER111 : " + TotalMatrixSplit.Count);
+                for (int z = 0; z < TotalMatrixSplit.Count; z++)
+                {
+                    string ss = InforShapeSplit.MatrixToString(TotalMatrixSplit[z]) + "||";
+                    TypeShape += ss;
+                    Debug.Log(ss);
+                }
+
+                Debug.Log(key);
+                InforShape.Add(key, TotalMatrixSplit);
+                List_Point.Add(key, ListPoint);
+                ReadFile.WriteString(TypeShape);
+            }
+        }
         //Final 
 
         for (int i = -1; i < matrix.GetLength(0); i++)
@@ -529,6 +734,15 @@ public class InforShapeSplit : MonoBehaviour
             IndexBefor.Add(i);
         }
         return IndexBefor.ToArray();    
+    }
+    public int[] getListIntForward(int index,int max)
+    {
+        List<int> IndexBefor = new List<int>();
+        for (int i = index; i <max; i++)
+        {
+            IndexBefor.Add(i);
+        }
+        return IndexBefor.ToArray();
     }
 
     public static int[,] StringToMatrix(string s)
