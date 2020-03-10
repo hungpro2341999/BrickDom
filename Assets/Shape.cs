@@ -1209,20 +1209,12 @@ public class Shape : PoolItem
 
     public void Cross_4_Horizontal(int i)
     {
-        if (i != 4)
-        {
+       
             Img_Cube_Cross_4_Horizontal.gameObject.SetActive(true);
             Img_Cube_Cross_4_Horizontal.sprite = CtrlData.Ins.DataGame.LoadShape("1x4")[i];
             SpriteUse = Img_Cube_Cross_4_Horizontal;
             nameSpriteUse = Img_Cube_Cross_4_Horizontal.name;
-        }
-        else
-        {
-            Img_Cube_Cross_4_Horizontal.gameObject.SetActive(true);
-            Img_Cube_Cross_4_Horizontal.sprite = CtrlData.Ins.DataGame.LoadShape("1x4")[4];
-            SpriteUse = Img_Cube_Cross_4_Horizontal;
-            nameSpriteUse = Img_Cube_Cross_4_Horizontal.name;
-        }
+       
       
     }
 

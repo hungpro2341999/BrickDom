@@ -842,7 +842,7 @@ public class CtrlData : MonoBehaviour
                 line.TrimEnd();
                 line.TrimStart();
                
-                Debug.Log("ROW ::: " + line);
+             //   Debug.Log("ROW ::: " + line);
                 
                 char[] space = {' '};
                 
@@ -855,7 +855,7 @@ public class CtrlData : MonoBehaviour
                 {
                     if (row[i] == "")
                         continue;
-                    Debug.Log("Index :" + row[i]);
+               //     Debug.Log("Index :" + row[i]);
                     Row.Add(int.Parse(row[i]));
                 }
                 ListRow.Add(Row);

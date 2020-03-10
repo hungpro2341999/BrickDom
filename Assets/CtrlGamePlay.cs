@@ -746,8 +746,30 @@ public class CtrlGamePlay : MonoBehaviour
     }
     public void StartSplitShape()
     {
+        GFG gg = new GFG();
+        RowSplit.Sort(gg);
+        ColumnSplit.Sort(gg);
         EffSplitShape(RowSplit.ToArray(), ColumnSplit.ToArray());
        
+        
+    }
+    class GFG : IComparer<int>
+    {
+        public int Compare(int x, int y)
+        {
+            //if (x == 0 || y == 0)
+            //{
+            //    return 0;
+            //}
+
+            // CompareTo() method 
+            return x.CompareTo(y);
+
+        }
+    }
+
+    public void Sort(List<int> list)
+    {
         
     }
     public void ResetStatus()
@@ -3532,25 +3554,28 @@ public class CtrlGamePlay : MonoBehaviour
 
             if(ListInfor[i].type == TypeShape.crossBar_1 || ListInfor[i].type == TypeShape.crossBar_2 || ListInfor[i].type == TypeShape.crossBar_3)
             {
-                int x = Random.Range(0, 100);
-                if(x>=0 && x <= 5)
+                if (ReadFile.CompleteCode)
                 {
-                    if (ListInfor[i].roll == 0)
+                    int x = Random.Range(0, 100);
+                    if (x >= 0 && x <= 5)
                     {
-                        
-                        a.GetComponent<Shape>().isEff = true;
-                        var aa = a.GetComponent<Shape>().SpriteUse.gameObject.GetComponent<_2dxFX_GoldFX>();
-                        if (aa != null)
+                        if (ListInfor[i].roll == 0)
                         {
-                            aa.enabled = true;
+
+                            a.GetComponent<Shape>().isEff = true;
+                            var aa = a.GetComponent<Shape>().SpriteUse.gameObject.GetComponent<_2dxFX_GoldFX>();
+                            if (aa != null)
+                            {
+                                aa.enabled = true;
+                            }
+                            else
+                            {
+                                a.GetComponent<Shape>().SpriteUse.gameObject.AddComponent<_2dxFX_GoldFX>();
+                            }
+
                         }
-                        else
-                        {
-                            a.GetComponent<Shape>().SpriteUse.gameObject.AddComponent<_2dxFX_GoldFX>();
-                        }
-                           
+
                     }
-                   
                 }
                
 

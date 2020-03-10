@@ -9,7 +9,7 @@ public class ReadFile : MonoBehaviour
     static readonly string rootFolder = @"Assets/Game/DataSplitShape/SplitShape.txt";
     static readonly string rootFolderPositon = @"Assets/Game/DataSplitShape/PositonShape.txt";
     public TextAsset textAssetData;
-    
+    public static bool CompleteCode = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -28,44 +28,84 @@ public class ReadFile : MonoBehaviour
         //     }
         // }
         // Debug.Log(ss);
-        PlayerPrefs.DeleteKey(InforShapeSplit.key_Data);
-        if (PlayerPrefs.HasKey(InforShapeSplit.key_Data))
+        //PlayerPrefs.DeleteKey(InforShapeSplit.key_Data);
+        try
         {
-            Debug.Log("Get Data");
-          
-            Debug.Log("Get Data"+ InforShapeSplit.List_Point.Count);
-            Debug.Log("Get Data"+InforShapeSplit.InforShape.Count);
-         
+            SavaDataGame a = SavingDataWithJson.LoadData<SavaDataGame>("Dataa.fun");
+            a = SavingDataWithJson.LoadData<SavaDataGame>("Dataa.fun");
+
+            InforShapeSplit.InforShape = ListToDirectoryShape(a.shape);
+            InforShapeSplit.List_Point = ListToDataGamePositon(a.Postion);
+            Debug.Log("FILE : " + InforShapeSplit.InforShape.Count);
+            Debug.Log("FILE : " + InforShapeSplit.List_Point.Count);
+            CompleteCode = true;
+            Debug.Log("Loading");
+
+
+        }
+        catch(Exception e)
+        {
+            Debug.Log("Generate");
+            StartCoroutine(LoadFile());
+
+        }
+        
+
+        //if (a!=null)
+        //{
+        //  a = SavingDataWithJson.LoadData<SavaDataGame>("Dataa.fun");
+
+        //InforShapeSplit.InforShape = ListToDirectoryShape(a.shape);
+        //InforShapeSplit.List_Point = ListToDataGamePositon(a.Postion);
+        //Debug.Log("FILE : " + InforShapeSplit.InforShape.Count);
+        //Debug.Log("FILE : " + InforShapeSplit.List_Point.Count);
+        //    CompleteCode = true;
+        //    Debug.Log("Generate");
+        //}
+        //else
+        //{
+        //    Debug.Log("LoadingData");
+        //    StartCoroutine(LoadFile());
+        //}
+
+
+        //        int[,] matrix = new int[4, 2]
+
+        //        {
+        //           {0,1 },
+        //           {0,1 },
+        //           {1,1 },
+        //           {1,1 }
+
+        //        };
+
+        //        List<int[,]> TotalMatrix = SplitMatrix(matrix, new int[2] { 0, 2 }, new int[2] { 0,1});
+
+        ////        Debug.Log("RENDER :" + TotalMatrix.Count);
+
+        //        for (int i = 0; i < TotalMatrix.Count; i++)
+        //        {
+        //          //  Debug.Log("RENDER : " + i + "  " + Shape.Render(TotalMatrix[i]));
+
+        //        }
+
+
+    }
+
+
+    public void LoadCountryCodes()
+        {
+            TextAsset codesJson = Resources.Load<TextAsset>("Dataa.fun");
+        if (codesJson != null)
+        {
+            Debug.Log("CO Data");
         }
         else
         {
-            Debug.Log("LoadingData");
-            LoadFile();
+            Debug.Log(" KO CO Data");
         }
-       
-
-//        int[,] matrix = new int[4, 2]
-
-//        {
-//           {0,1 },
-//           {0,1 },
-//           {1,1 },
-//           {1,1 }
-
-//        };
-
-//        List<int[,]> TotalMatrix = SplitMatrix(matrix, new int[2] { 0, 2 }, new int[2] { 0,1});
-
-////        Debug.Log("RENDER :" + TotalMatrix.Count);
-
-//        for (int i = 0; i < TotalMatrix.Count; i++)
-//        {
-//          //  Debug.Log("RENDER : " + i + "  " + Shape.Render(TotalMatrix[i]));
-
-//        }
-
-       
-    }
+        }
+    
 
     // Update is called once per frame
     void Update()
@@ -76,14 +116,13 @@ public class ReadFile : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.S))
         {
-            //FormatMatrix(" 1,1,1||1 1,1 1||1,1,1||1 1 1,1 1 1");
-            FormatPosition("0 0||0 1||");
+            LoadCountryCodes();
         }
     }
 
 
    
-    public void LoadFile()
+    public IEnumerator LoadFile()
     {
         string s = textAssetData.text;
         StringReader strReader = new StringReader(s);
@@ -95,10 +134,12 @@ public class ReadFile : MonoBehaviour
                 if (!line.StartsWith("TypeShape") && line != "")
                 {
                     Format(line);
-                    
+                   
 
                 }
-              
+
+                yield return new WaitForSeconds(0);
+
 
             }
             else
@@ -115,36 +156,48 @@ public class ReadFile : MonoBehaviour
 
         }
        
+       
         Dictionary<string, List<int[,]>> SInforShape =   InforShapeSplit.InforShape;
         Dictionary<string, List<Vector2>> SListShape = InforShapeSplit.List_Point;
 
-        List<DataGame> DataShape = DirctortToList(SInforShape, InforShapeSplit.ListKey);
-        List<DataGamePositon> DataShapePositon = DirctortToListPositopn(SListShape, InforShapeSplit.ListKey);
+        List<DataGameShape> DataShape = DirctortToList(SInforShape,InforShapeSplit.ListKey);
+        List<DataGamePositon> DataShapePositon = DirctortToListPositopn(SListShape,InforShapeSplit.ListKey);
 
         SavaDataGame save = new SavaDataGame(DataShape,DataShapePositon);
 
 
 
-        string ss =  JsonUtility.ToJson(save);
+        //string ss = JsonUtility.ToJson(save);
 
-        PlayerPrefs.SetString(InforShapeSplit.key_Data, ss);
+        //PlayerPrefs.SetString(InforShapeSplit.key_Data, ss);
 
-        PlayerPrefs.Save();
-          SavingDataWithJson.SaveData(save,"Dataa.fun");
-
+        //SavaDataGame a = JsonUtility.FromJson<SavaDataGame>(PlayerPrefs.GetString(InforShapeSplit.key_Data));
 
 
-        SavaDataGame a = SavingDataWithJson.LoadData<SavaDataGame>("Dataa.fun");
+        //SavingDataWithJson.SaveData<SavaDataGame>(save,"Dataa.fun");
+        
+
+
+        SavingDataWithJson.SaveData(save,"Dataa.fun");
 
 
 
         Debug.Log("Get Data");
 
-      
+        CompleteCode = true;
 
-       
-        Debug.Log("Get Data" + a.Postion.Count);
-        Debug.Log("Get Data" + a.shape.Count);
+
+        //Debug.Log("Get Data" + a.shape.Count);
+
+        //for(int i = 0; i < a.shape.Count; i++)
+        //{
+
+        //        Debug.Log((a.shape[i].key)+"  "+ a.shape[i].GetListMatrix().Count);
+
+
+
+        //}
+        //Debug.Log("Get Data" + a.shape.Count);
 
 
 
@@ -832,13 +885,13 @@ public class ReadFile : MonoBehaviour
         return ListRow;
 
     }
-    public List<DataGame> DirctortToList(Dictionary<string, List<int[,]>> Directory,List<string> key)
+    public List<DataGameShape> DirctortToList(Dictionary<string, List<int[,]>> Directory,List<string> key)
     {
 
-        List<DataGame> data = new List<DataGame>();
+        List<DataGameShape> data = new List<DataGameShape>();
         for (int i = 0; i < key.Count; i++)
         {
-            DataGame game = new DataGame(key[i], Directory[key[i]]);
+            DataGameShape game = new DataGameShape(key[i], Directory[key[i]]);
             data.Add(game);
         }
         return data;
@@ -857,14 +910,14 @@ public class ReadFile : MonoBehaviour
 
     }
 
-    public Dictionary<string, List<int[,]>> ListToDataGameShape(List<DataGame> Data)
+    public Dictionary<string, List<int[,]>> ListToDataGameShape(List<DataGameShape> Data)
     {
         Dictionary<string, List<int[,]>> List = new Dictionary<string, List<int[,]>>();
 
         for(int i = 0; i < Data.Count; i++)
         {
             string key = Data[i].key;
-            List<int[,]> Matrix = Data[i].Matrix;
+            List<int[,]> Matrix = Data[i].GetListMatrix();
             List.Add(key, Matrix);
         }
 
@@ -886,45 +939,29 @@ public class ReadFile : MonoBehaviour
         return List;
 
     }
-
-
-    [System.Serializable]
-    public class SavaDataGame
+    public Dictionary<string,List<int[,]>> ListToDirectoryShape(List<DataGameShape> DataShape)
     {
-        public List<DataGame> shape = new List<DataGame>();
-        public List<DataGamePositon> Postion = new List<DataGamePositon>();
-       public SavaDataGame(List<DataGame> shape, List<DataGamePositon> Postion)
+        Dictionary<string, List<int[,]>> DirectoryGame = new Dictionary<string, List<int[,]>>();
+        for (int i = 0; i < DataShape.Count; i++)
         {
-            this.shape = shape;
-            this.Postion = Postion;
+         //   Debug.Log(DataShape[i].key);
+           
+                Debug.Log("DATA : "+DataShape[i].StringMatrix.Count);
+            
+            DirectoryGame.Add(DataShape[i].key, DataShape[i].GetListMatrix());
         }
-
+        return DirectoryGame;
     }
-    [System.Serializable]
-    public class DataGame
+    public Dictionary<string, List<Vector2>> List(List<DataGamePositon> DataShape)
     {
-        public string key = "";
-        public List<int[,]> Matrix = new List<int[,]>();
-        public DataGame(string key, List<int[,]> Matrix)
+        Dictionary<string, List<Vector2>> DirectoryGame = new Dictionary<string, List<Vector2>>();
+        for (int i = 0; i < DataShape.Count; i++)
         {
-
-            this.key = key;
-            this.Matrix = Matrix;
+            DirectoryGame.Add(DataShape[i].key, DataShape[i].Matrix);
         }
-
+        return DirectoryGame;
     }
-    [System.Serializable]
-    public class DataGamePositon
-    {
-        public string key = "";
-        public List<Vector2> Matrix = new List<Vector2>();
-        public DataGamePositon(string key, List<Vector2> Pos)
-        {
 
-            this.key = key;
-            this.Matrix = Pos;
-        }
-
-    }
+    
 
 }
