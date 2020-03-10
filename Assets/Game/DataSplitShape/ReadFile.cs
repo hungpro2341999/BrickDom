@@ -7,7 +7,9 @@ using System;
 public class ReadFile : MonoBehaviour
 {
     static readonly string rootFolder = @"Assets/Game/DataSplitShape/SplitShape.txt";
-
+    static readonly string rootFolderPositon = @"Assets/Game/DataSplitShape/PositonShape.txt";
+    public TextAsset textAssetData;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -26,27 +28,41 @@ public class ReadFile : MonoBehaviour
         //     }
         // }
         // Debug.Log(ss);
-
-
-        int[,] matrix = new int[4, 2]
-
+        PlayerPrefs.DeleteKey(InforShapeSplit.key_Data);
+        if (PlayerPrefs.HasKey(InforShapeSplit.key_Data))
         {
-           {0,1 },
-           {0,1 },
-           {1,1 },
-           {1,1 }
-
-        };
-
-        List<int[,]> TotalMatrix = SplitMatrix(matrix, new int[2] { 0, 2 }, new int[2] { 0,1});
-
-//        Debug.Log("RENDER :" + TotalMatrix.Count);
-
-        for (int i = 0; i < TotalMatrix.Count; i++)
-        {
-          //  Debug.Log("RENDER : " + i + "  " + Shape.Render(TotalMatrix[i]));
-
+            Debug.Log("Get Data");
+          
+            Debug.Log("Get Data"+ InforShapeSplit.List_Point.Count);
+            Debug.Log("Get Data"+InforShapeSplit.InforShape.Count);
+         
         }
+        else
+        {
+            Debug.Log("LoadingData");
+            LoadFile();
+        }
+       
+
+//        int[,] matrix = new int[4, 2]
+
+//        {
+//           {0,1 },
+//           {0,1 },
+//           {1,1 },
+//           {1,1 }
+
+//        };
+
+//        List<int[,]> TotalMatrix = SplitMatrix(matrix, new int[2] { 0, 2 }, new int[2] { 0,1});
+
+////        Debug.Log("RENDER :" + TotalMatrix.Count);
+
+//        for (int i = 0; i < TotalMatrix.Count; i++)
+//        {
+//          //  Debug.Log("RENDER : " + i + "  " + Shape.Render(TotalMatrix[i]));
+
+//        }
 
        
     }
@@ -54,22 +70,229 @@ public class ReadFile : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            Format("CUT - ROLL : 0 crossBar_2 : [0][0] - 1||1|| - 0 0||0 1||");
+        }
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            //FormatMatrix(" 1,1,1||1 1,1 1||1,1,1||1 1 1,1 1 1");
+            FormatPosition("0 0||0 1||");
+        }
     }
 
 
-
-    public void WriteFile()
+   
+    public void LoadFile()
     {
+        string s = textAssetData.text;
+        StringReader strReader = new StringReader(s);
+        while (true)
+        {
+            string line = strReader.ReadLine();
+            if (line != null)
+            {
+                if (!line.StartsWith("TypeShape") && line != "")
+                {
+                    Format(line);
+                    
+
+                }
+              
+
+            }
+            else
+            {
+
+                break;
+            }
+
+           
+
+            
+
+           
+
+        }
+       
+        Dictionary<string, List<int[,]>> SInforShape =   InforShapeSplit.InforShape;
+        Dictionary<string, List<Vector2>> SListShape = InforShapeSplit.List_Point;
+
+        List<DataGame> DataShape = DirctortToList(SInforShape, InforShapeSplit.ListKey);
+        List<DataGamePositon> DataShapePositon = DirctortToListPositopn(SListShape, InforShapeSplit.ListKey);
+
+        SavaDataGame save = new SavaDataGame(DataShape,DataShapePositon);
+
+
+
+        string ss =  JsonUtility.ToJson(save);
+
+        PlayerPrefs.SetString(InforShapeSplit.key_Data, ss);
+
+        PlayerPrefs.Save();
+          SavingDataWithJson.SaveData(save,"Dataa.fun");
+
+
+
+        SavaDataGame a = SavingDataWithJson.LoadData<SavaDataGame>("Dataa.fun");
+
+
+
+        Debug.Log("Get Data");
+
+      
+
+       
+        Debug.Log("Get Data" + a.Postion.Count);
+        Debug.Log("Get Data" + a.shape.Count);
+
+
+
+    }
+    public void Format(string line)
+    {
+        string[] w = new string[1] {" - "};
+        string[] word = line.Split(w,StringSplitOptions.None);
+
+        string key = "";
+        List<int[,]> ListMatrix = new List<int[,]>();
+        List<Vector2> ListPoint = new List<Vector2>();
+
+        for (int i = 0; i < word.Length; i++)
+        {
+            switch (i)
+            {
+                case 0:
+                    break;
+                case 1:
+
+                    key = word[i];
+
+                 
+                    break;
+                case 2:
+                  
+                    
+                    ListMatrix = FormatMatrix(word[i]);
+                  
+                    break;
+                case 3:
+
+                    ListPoint = FormatPosition(word[i]);
+                   
+                    
+                    break;
+            }
+          
+        }
+        InforShapeSplit.ListKey.Add(key);
+        InforShapeSplit.InforShape.Add(key, ListMatrix);
+        InforShapeSplit.List_Point.Add(key, ListPoint);
+    }
+
+    public List<int[,]> FormatMatrix(string matrix)
+    {
+        matrix.Trim();
+
+        List<List<int>> Matrix = new List<List<int>>();
+        List<int[,]> ListMatrix = new List<int[,]>();
+
+
+        string[] w = new string[1] { "||" };
+        string[] w1 = new string[1] { "," };
+        string[] w2 = new string[1] { " " };
+
+        string[] ArrayMatrix =   matrix.Split(w, StringSplitOptions.None);
+
+        for(int i = 0; i < ArrayMatrix.Length; i++)
+        {
+            List<List<int>> Format = new List<List<int>>();
+            string[] SingleMatrix = ArrayMatrix[i].Split(w1, StringSplitOptions.None);
+            for(int r = 0; r < SingleMatrix.Length; r++)
+            {
+               
+                string[] Element = SingleMatrix[r].Split(w2, StringSplitOptions.None);
+
+               
+                for (int e = 0; e < Element.Length; e++)
+                {
+                    Debug.Log(SingleMatrix[r] + "  " + Element[e]);
+                }
+
+                List<int> Row = new List<int>();
+                for(int c = 0; c < Element.Length; c++)
+                {
+                    if (Element[c] == "")
+                        continue;
+                    Debug.Log("ELEMENT : "+Element[c]);
+                    string c1 = Element[c].Trim();
+                   
+                    Row.Add(int.Parse(c1));
+                }
+                if (Row.Count != 0)
+                {
+                    Format.Add(Row);
+                }
+
+
+            }
+            if (Format.Count != 0)
+            {
+                ListMatrix.Add(CtrlGamePlay.Ins.ListToMatrix(Format));
+            }
+            
+
+        }
+        for (int i = 0; i < ListMatrix.Count; i++)
+        {
+            Debug.Log("Matrix :" + Shape.Render(ListMatrix[i]));
+        }
+        return ListMatrix;
+
+      
 
     }
 
+    public List<Vector2> FormatPosition(string s)
+    {
+        string ll = "0 0||0 1||";
+        List<Vector2> ListPoint = new List<Vector2>();
+        string[] w = new string[1] { "||" };
+        string[] w1 = new string[1] { " " };
 
+        string[] stringListPositon = s.Split(w, StringSplitOptions.None);
+        for(int i = 0; i < stringListPositon.Length; i++)
+        {
+            if (stringListPositon[i] != "")
+            {
+                Vector2 Point = new Vector2();
+                string[] Element = stringListPositon[i].Split(w1, StringSplitOptions.None);
+
+                Debug.Log(stringListPositon[i]);
+
+                Point.x = float.Parse(Element[0]);
+                Point.y = float.Parse(Element[1]);
+                ListPoint.Add(Point);
+            }
+
+
+        }
+        for (int i = 0; i < ListPoint.Count; i++)
+        {
+            Debug.Log(ListPoint[i].x + "  " + ListPoint[i].y);
+        }
+            return ListPoint;
+       
+
+    }
+   
 
 
 
     public static string  Read_File()
     {
+     
+
         string text = "";
         if (File.Exists(rootFolder))
         {
@@ -85,6 +308,9 @@ public class ReadFile : MonoBehaviour
         return text;
 
     }
+
+
+
     public static void ResetFile()
     {
 
@@ -96,16 +322,41 @@ public class ReadFile : MonoBehaviour
 
     }
 
-    public static void WriteString(string s)
+    public static void WriteString_Positon(string s)
     {
-     
-        StreamWriter writer = new StreamWriter(rootFolder, true);
+   
+       
+        StreamWriter writer = new StreamWriter(rootFolderPositon, true);
         writer.WriteLine(s);
         writer.Close();
 
 
      
     }
+
+    public static void ResetFile_Positon()
+    {
+
+        StreamWriter writer = new StreamWriter(rootFolderPositon, false);
+        writer.WriteLine("");
+        writer.Close();
+
+
+
+    }
+
+    public static void WriteString(string s)
+    {
+
+
+        StreamWriter writer = new StreamWriter(rootFolder, true);
+        writer.WriteLine(s);
+        writer.Close();
+
+
+
+    }
+
     public static int[,] StringToMatrix(string s)
     {
         int[,] matrix = null;
@@ -579,6 +830,100 @@ public class ReadFile : MonoBehaviour
             ListRow.Add(Row);
         }
         return ListRow;
+
+    }
+    public List<DataGame> DirctortToList(Dictionary<string, List<int[,]>> Directory,List<string> key)
+    {
+
+        List<DataGame> data = new List<DataGame>();
+        for (int i = 0; i < key.Count; i++)
+        {
+            DataGame game = new DataGame(key[i], Directory[key[i]]);
+            data.Add(game);
+        }
+        return data;
+
+    }
+    public List<DataGamePositon> DirctortToListPositopn(Dictionary<string,List<Vector2>> Directory, List<string> key)
+    {
+
+        List<DataGamePositon> data = new List<DataGamePositon>();
+        for (int i = 0; i < key.Count; i++)
+        {
+            DataGamePositon game = new DataGamePositon(key[i], Directory[key[i]]);
+            data.Add(game);
+        }
+        return data;
+
+    }
+
+    public Dictionary<string, List<int[,]>> ListToDataGameShape(List<DataGame> Data)
+    {
+        Dictionary<string, List<int[,]>> List = new Dictionary<string, List<int[,]>>();
+
+        for(int i = 0; i < Data.Count; i++)
+        {
+            string key = Data[i].key;
+            List<int[,]> Matrix = Data[i].Matrix;
+            List.Add(key, Matrix);
+        }
+
+        return List;
+
+    }
+
+    public Dictionary<string, List<Vector2>> ListToDataGamePositon(List<DataGamePositon> Data)
+    {
+        Dictionary<string, List<Vector2>> List = new Dictionary<string, List<Vector2>>();
+
+        for (int i = 0; i < Data.Count; i++)
+        {
+            string key = Data[i].key;
+            List<Vector2> Matrix = Data[i].Matrix;
+            List.Add(key, Matrix);
+        }
+
+        return List;
+
+    }
+
+
+    [System.Serializable]
+    public class SavaDataGame
+    {
+        public List<DataGame> shape = new List<DataGame>();
+        public List<DataGamePositon> Postion = new List<DataGamePositon>();
+       public SavaDataGame(List<DataGame> shape, List<DataGamePositon> Postion)
+        {
+            this.shape = shape;
+            this.Postion = Postion;
+        }
+
+    }
+    [System.Serializable]
+    public class DataGame
+    {
+        public string key = "";
+        public List<int[,]> Matrix = new List<int[,]>();
+        public DataGame(string key, List<int[,]> Matrix)
+        {
+
+            this.key = key;
+            this.Matrix = Matrix;
+        }
+
+    }
+    [System.Serializable]
+    public class DataGamePositon
+    {
+        public string key = "";
+        public List<Vector2> Matrix = new List<Vector2>();
+        public DataGamePositon(string key, List<Vector2> Pos)
+        {
+
+            this.key = key;
+            this.Matrix = Pos;
+        }
 
     }
 

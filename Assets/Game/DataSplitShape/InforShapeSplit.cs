@@ -1,12 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class InforShapeSplit : MonoBehaviour
 {
-    
+    public static List<string> ListKey = new List<string>();
     public static Dictionary<string,List<int[,]>> InforShape = new Dictionary<string, List<int[,]>>();
     public static Dictionary<string, List<Vector2>> List_Point = new Dictionary<string, List<Vector2>>();
+    public const string key_Data = "Key_Data_game_1";
+    
+
     public List<Dictionary<string, List<int[,]>>> Type = new List<Dictionary<string, List<int[,]>>>();
     public string key = "ROLL : 3 T - [012][01]";
     // Start is called before the first frame update
@@ -14,7 +18,17 @@ public class InforShapeSplit : MonoBehaviour
     {
 
 
+       
 
+
+        //ReadFile.ResetFile();
+
+
+        //for (int i = 0; i < CtrlData.AllShape.Count; i++)
+        //{
+        //    Debug.Log("ss");
+        //    ProcessAllType(CtrlData.AllShape[i]);
+        //}
 
         //Process(new int[4, 2]
         //{
@@ -26,14 +40,17 @@ public class InforShapeSplit : MonoBehaviour
         //});
 
         //
-       
+
     }
+
+   
 
     // Update is called once per frame
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.B))
         {
+           
             //ToHop tohop = new ToHop();
             //List<List<int>> th = tohop.Start_Find(2, 1);
             //for (int i = 0; i < th.Count; i++)
@@ -43,23 +60,17 @@ public class InforShapeSplit : MonoBehaviour
             //Debug.Log("ss");
 
 
-            ReadFile.ResetFile();
 
-
-            for (int i = 0; i < CtrlData.AllShape.Count; i++)
-            {
-                Debug.Log("ss");
-                ProcessAllType(CtrlData.AllShape[i]);
-            }
             //int[,] Matrix = new int[1,2]
             //{
             //    {1,1}
-               
+
             //};
             //Process_1(Matrix, "KEY");
         }
         
     }
+
    
 
     public List<int[,]> GetInforShape(string rowcolum)
@@ -76,6 +87,7 @@ public class InforShapeSplit : MonoBehaviour
         string Type_Shape = "TypeShape : " + type.ToString();
         
         ReadFile.WriteString(Type_Shape);
+        ReadFile.WriteString_Positon(Type_Shape);
         Type_Shape += space;
         if(TypeShape.square == type)
         {
@@ -156,9 +168,9 @@ public class InforShapeSplit : MonoBehaviour
                     for (int c = 0; c < ListTopHopColumn.Count; c++)
                     {
                         string TypeShape = "CUT" + " - ";
-                        string key = keyRoll + " - " + "[";
-
+                        string key = keyRoll + " : " + "[";
                       
+                     
                         int[] column = ListTopHopColumn[c].ToArray();
 
                         for (int r1 = 0; r1 < row.Length; r1++)
@@ -178,6 +190,7 @@ public class InforShapeSplit : MonoBehaviour
                         {
                             continue;
                         }
+                        string TypeShapePoint = TypeShape;
                         List<Vector2> ListPoint = new List<Vector2>();
                         List<int[,]> TotalMatrixSplit = SplitMatrix(matrix, row, column, out ListPoint);
                         Debug.Log("RENDER111 : " + TotalMatrixSplit.Count);
@@ -188,11 +201,17 @@ public class InforShapeSplit : MonoBehaviour
                             Debug.Log(ss);
                         }
 
+                        string sss = ListToString(ListPoint);
+                        TypeShape += " - ";
+                        TypeShape += sss;
+
+
+
                         Debug.Log(key);
                         InforShape.Add(key, TotalMatrixSplit);
                         List_Point.Add(key, ListPoint);
                         ReadFile.WriteString(TypeShape);
-
+                      
                     }
 
 
@@ -218,10 +237,12 @@ public class InforShapeSplit : MonoBehaviour
             for (int r = 0; r < ListToHoprow.Count; r++)
             {
                 string TypeShape = "CUT" + " - ";
-                string key = keyRoll + " - " + "[";
+                string key = keyRoll + " : " + "[";
                 int[] Row = ListToHoprow[r].ToArray();
+                string TypeShapePoint = "";
 
-                for(int r1 = 0; r1 < Row.Length; r1++)
+
+                for (int r1 = 0; r1 < Row.Length; r1++)
                 {
                     key += Row[r1];
                 }
@@ -239,17 +260,27 @@ public class InforShapeSplit : MonoBehaviour
                 List<Vector2> ListPoint = new List<Vector2>();
                 List<int[,]> TotalMatrixSplit = SplitMatrix(matrix,Row, null, out ListPoint);
                 Debug.Log("RENDER111 : " + TotalMatrixSplit.Count);
+
+             
                 for (int z = 0; z < TotalMatrixSplit.Count; z++)
                 {
                     string ss = InforShapeSplit.MatrixToString(TotalMatrixSplit[z]) + "||";
                     TypeShape += ss;
                     Debug.Log(ss);
                 }
-
+                string sss = ListToString(ListPoint);
+                TypeShape += " - ";
+                TypeShape += sss;
+                  
+                   
+                
+              
+              
                 Debug.Log(key);
                 InforShape.Add(key, TotalMatrixSplit);
                 List_Point.Add(key, ListPoint);
                 ReadFile.WriteString(TypeShape);
+               
             }
            
 
@@ -266,8 +297,9 @@ public class InforShapeSplit : MonoBehaviour
 
             for(int c = 0; c < Column.Count; c++)
             {
+              
                 string TypeShape = "CUT" + " - ";
-                string key = keyRoll + " - ";
+                string key = keyRoll + " : ";
                 string Row = "[]";
                 key += Row;
                 key += "[";
@@ -287,6 +319,7 @@ public class InforShapeSplit : MonoBehaviour
                 List<Vector2> ListPoint = new List<Vector2>();
                 List<int[,]> TotalMatrixSplit = SplitMatrix(matrix,null,column, out ListPoint);
                 Debug.Log("RENDER111 : " + TotalMatrixSplit.Count);
+               
                 for (int z = 0; z < TotalMatrixSplit.Count; z++)
                 {
                     string ss = InforShapeSplit.MatrixToString(TotalMatrixSplit[z]) + "||";
@@ -294,10 +327,15 @@ public class InforShapeSplit : MonoBehaviour
                     Debug.Log(ss);
                 }
 
+                string sss = ListToString(ListPoint);
+                TypeShape += " - ";
+                TypeShape += sss;
+
                 Debug.Log(key);
                 InforShape.Add(key, TotalMatrixSplit);
                 List_Point.Add(key, ListPoint);
                 ReadFile.WriteString(TypeShape);
+               
             }
            
 
@@ -317,7 +355,15 @@ public class InforShapeSplit : MonoBehaviour
 
 
 
-
+    public string ListToString(List<Vector2> list)
+    {
+        string s = "";
+        for(int i = 0; i < list.Count; i++)
+        {
+            s += list[i].x +" "+list[i].y+"||";
+        }
+        return s;
+    }
 
 
     public void Process(int[,] matrix,string keyRoll)
@@ -1428,4 +1474,17 @@ public class InforShapeSplit : MonoBehaviour
         return ListRow;
 
     }
+
+   
+
 }
+[System.Serializable]
+public class SaveFileGame
+{
+    public string s;
+    public Dictionary<string, List<int[,]>> InforShape = new Dictionary<string, List<int[,]>>();
+    public Dictionary<string, List<Vector2>> List_Point = new Dictionary<string, List<Vector2>>();
+
+
+}
+

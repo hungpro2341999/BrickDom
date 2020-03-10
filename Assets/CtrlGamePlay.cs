@@ -49,13 +49,7 @@ public class CtrlGamePlay : MonoBehaviour
     private float TimeWait;
     public float time;
     public bool Moving = false;
-    public Vector2[] Direct = new Vector2[4]
-    {
-        new Vector2(0,1),
-         new Vector2(1,0),
-          new Vector2(0,-1),
-           new Vector2(-1,0),
-    };
+    
     public bool isFinding = false;
     public List<GameObject> Suggest = new List<GameObject>();
     public List<Shape> CloneListDestroy = new List<Shape>();
@@ -1797,7 +1791,7 @@ public class CtrlGamePlay : MonoBehaviour
 
         int roll = CtrlGamePlay.RollShape(shape.TypeShape, shape.shape);
 
-        string key = "ROLL : " +roll+ " " +shape.TypeShape.ToString()+ " - " + key_row + key_col;
+        string key = "ROLL : " +roll+ " " +shape.TypeShape.ToString()+ " : " + key_row + key_col;
 
          Debug.Log("KEY : "+key);
 
@@ -3539,7 +3533,7 @@ public class CtrlGamePlay : MonoBehaviour
             if(ListInfor[i].type == TypeShape.crossBar_1 || ListInfor[i].type == TypeShape.crossBar_2 || ListInfor[i].type == TypeShape.crossBar_3)
             {
                 int x = Random.Range(0, 100);
-                if(x>=0 && x <= 50)
+                if(x>=0 && x <= 5)
                 {
                     if (ListInfor[i].roll == 0)
                     {

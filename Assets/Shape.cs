@@ -1209,10 +1209,21 @@ public class Shape : PoolItem
 
     public void Cross_4_Horizontal(int i)
     {
-        Img_Cube_Cross_4_Horizontal.gameObject.SetActive(true);
-        Img_Cube_Cross_4_Horizontal.sprite = CtrlData.Ins.DataGame.LoadShape("1x4")[i];
-        SpriteUse = Img_Cube_Cross_4_Horizontal;
-        nameSpriteUse = Img_Cube_Cross_4_Horizontal.name;
+        if (i != 4)
+        {
+            Img_Cube_Cross_4_Horizontal.gameObject.SetActive(true);
+            Img_Cube_Cross_4_Horizontal.sprite = CtrlData.Ins.DataGame.LoadShape("1x4")[i];
+            SpriteUse = Img_Cube_Cross_4_Horizontal;
+            nameSpriteUse = Img_Cube_Cross_4_Horizontal.name;
+        }
+        else
+        {
+            Img_Cube_Cross_4_Horizontal.gameObject.SetActive(true);
+            Img_Cube_Cross_4_Horizontal.sprite = CtrlData.Ins.DataGame.LoadShape("1x4")[4];
+            SpriteUse = Img_Cube_Cross_4_Horizontal;
+            nameSpriteUse = Img_Cube_Cross_4_Horizontal.name;
+        }
+      
     }
 
     public void Cross_4_Vertical(int i)
@@ -1249,11 +1260,23 @@ public class Shape : PoolItem
         switch (roll)
         {
             case 0:
-                ImgCube_L2_90.flipX = false;
-                ImgCube_L2_90.gameObject.SetActive(true);
-                ImgCube_L2_90.sprite = CtrlData.Ins.DataGame.LoadShape("L2_90")[color];
-                SpriteUse = ImgCube_L2_90;
-                nameSpriteUse = ImgCube_L2_90.name;
+                if (color == 4)
+                {
+                    ImgCube_L2_90.flipX = false;
+                    ImgCube_L2_90.gameObject.SetActive(true);
+                    ImgCube_L2_90.sprite = CtrlData.Ins.DataGame.LoadShape("L2_90")[color];
+                    SpriteUse = ImgCube_L2_90;
+                    nameSpriteUse = ImgCube_L2_90.name;
+                }
+                else
+                {
+                    ImgCube_L2_90.flipX = false;
+                    ImgCube_L2_90.gameObject.SetActive(true);
+                    ImgCube_L2_90.sprite = CtrlData.Ins.DataGame.LoadShape("L2_90")[4];
+                    SpriteUse = ImgCube_L2_90;
+                    nameSpriteUse = ImgCube_L2_90.name;
+                }
+              
 
                 break;
             case 1:
