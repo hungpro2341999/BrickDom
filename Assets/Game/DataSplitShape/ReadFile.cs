@@ -66,7 +66,7 @@ public class ReadFile : MonoBehaviour
         //catch (Exception e)
         //{
         //    Debug.Log("Generate");
-        //    StartCoroutine(LoadFile());
+            //StartCoroutine(LoadFile());
 
         //}
 
@@ -211,13 +211,13 @@ public class ReadFile : MonoBehaviour
         ListKey lKey = new ListKey();
         lKey.Key = InforShapeSplit.ListKey;
 
-        SavingDataWithJson.SaveData<ListKey>(lKey, "Key.fun");
+      //  SavingDataWithJson.SaveData<ListKey>(lKey, "Key.fun");
 
         string jsonKey = JsonUtility.ToJson(lKey);
 
         WriteStringKey(jsonKey);
 
-        Debug.Log("Key khoi tao : " +SavingDataWithJson.LoadData<ListKey>("Key.fun").Key.Count);
+    //    Debug.Log("Key khoi tao : " +SavingDataWithJson.LoadData<ListKey>("Key.fun").Key.Count);
         Dictionary<string, List<int[,]>> SInforShape =   InforShapeSplit.InforShape;
         Dictionary<string, List<Vector2>> SListShape = InforShapeSplit.List_Point;
 
@@ -228,27 +228,16 @@ public class ReadFile : MonoBehaviour
 
 
 
-        //JsonData PlayerJson = JsonMapper.ToJson(save);
-        //File.WriteAllText(Application.dataPath + "/Player.json", PlayerJson.ToString());
-        //  File.ReadAllText(Application.dataPath + "/Player.json");
-
-
-        //string ss = JsonUtility.ToJson(save);
-
-        //PlayerPrefs.SetString(InforShapeSplit.key_Data, ss);
-
-        //SavaDataGame a = JsonUtility.FromJson<SavaDataGame>(PlayerPrefs.GetString(InforShapeSplit.key_Data));
-
-
-        //SavingDataWithJson.SaveData<SavaDataGame>(save,"Dataa.fun");
+      
         string json = JsonUtility.ToJson(save);
+        Debug.Log(json);
         SaveJson(json);
 
 
-        SavingDataWithJson.SaveData(save,"Dataa.fun");
+       // SavingDataWithJson.SaveData(save,"Dataa.fun");
 
 
-        InforShapeSplit.Filter();
+      //  InforShapeSplit.Filter();
 
         Debug.Log("Get Data");
 
@@ -436,12 +425,20 @@ public class ReadFile : MonoBehaviour
 
 
     }
+    public static void WriteString_Positon_Reset()
+    {
+        StreamWriter writer = new StreamWriter(rootFolderPositon,false);
+        writer.WriteLine("");
+        writer.Close();
 
+    }
+ 
     public static void WriteString_Positon(string s)
     {
    
        
         StreamWriter writer = new StreamWriter(rootFolderPositon, true);
+       
         writer.WriteLine(s);
         writer.Close();
 
@@ -451,10 +448,11 @@ public class ReadFile : MonoBehaviour
 
     public static void WriteStringKey(string s)
     {
-
+       
 
         StreamWriter writer = new StreamWriter(rootFolderJsonKey,false);
-       
+
+        writer.WriteLine("");
         writer.WriteLine(s);
         writer.Close();
 
@@ -488,7 +486,13 @@ public class ReadFile : MonoBehaviour
 
     public void SaveJson(string s)
     {
-        StreamWriter writer = new StreamWriter(rootFolderJson,false);
+        //StreamWriter writer = new StreamWriter(rootFolderJson,false);
+
+        //writer.WriteLine(s);
+        //writer.Close();
+
+        StreamWriter writer = new StreamWriter(rootFolderJson, false);
+
         writer.WriteLine(s);
         writer.Close();
     }

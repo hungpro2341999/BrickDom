@@ -3155,3 +3155,14 @@ TypeShape : L_4_0
 TypeShape : L4_90
 TypeShape : square
 TypeShape : T
+TypeShape : crossBar_1
+TypeShape : crossBar_2
+TypeShape : crossBar_3
+TypeShape : crossBar_4
+TypeShape : three_cube
+TypeShape : L3_0
+TypeShape : L3_90
+TypeShape : L_4_0
+TypeShape : L4_90
+TypeShape : square
+TypeShape : T
