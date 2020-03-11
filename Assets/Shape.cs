@@ -244,7 +244,13 @@ public class Shape : PoolItem
     }
     public void NormlizeColor()
     {
+        
         SpriteRenderer FadeShape = SpriteUse;
+        if (FadeShape == null)
+        {
+            SpriteUse = Img_Curent();
+            FadeShape = SpriteUse;
+        }
       //  Debug.Log(gameObject.name + "  ::  " + FadeShape.name);
         Color color = FadeShape.color;
       

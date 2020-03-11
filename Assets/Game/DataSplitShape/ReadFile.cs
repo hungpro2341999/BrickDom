@@ -4,13 +4,34 @@ using UnityEngine;
 using System.IO;
 using UnityEditor;
 using System;
+
 public class ReadFile : MonoBehaviour
 {
+    public static ReadFile Ins = null;
     static readonly string rootFolder = @"Assets/Game/DataSplitShape/SplitShape.txt";
     static readonly string rootFolderPositon = @"Assets/Game/DataSplitShape/PositonShape.txt";
+    static readonly string rootFolderJson = @"Assets/Game/DataSplitShape/ListData.txt";
+    static readonly string rootFolderJsonKey = @"Assets/Game/DataSplitShape/Key.txt";
     public TextAsset textAssetData;
-    public static bool CompleteCode = false;
+    public TextAsset JsonDataGame;
+    public TextAsset JsonDataKey;
+    public static bool CompleteCode = true;
+    public static float time = 0;
+   
     // Start is called before the first frame update
+
+    private void Awake()
+    {
+        if (Ins != null)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Ins = this;
+        }
+    }
+
     void Start()
     {
         // WriteString();
@@ -29,27 +50,26 @@ public class ReadFile : MonoBehaviour
         // }
         // Debug.Log(ss);
         //PlayerPrefs.DeleteKey(InforShapeSplit.key_Data);
-        try
-        {
-            SavaDataGame a = SavingDataWithJson.LoadData<SavaDataGame>("Dataa.fun");
-            a = SavingDataWithJson.LoadData<SavaDataGame>("Dataa.fun");
-
-            InforShapeSplit.InforShape = ListToDirectoryShape(a.shape);
-            InforShapeSplit.List_Point = ListToDataGamePositon(a.Postion);
-            Debug.Log("FILE : " + InforShapeSplit.InforShape.Count);
-            Debug.Log("FILE : " + InforShapeSplit.List_Point.Count);
-            CompleteCode = true;
-            Debug.Log("Loading");
+        //try
+        //{
+        //SavaDataGame a = SavingDataWithJson.LoadData<SavaDataGame>("Dataa.fun");
 
 
-        }
-        catch(Exception e)
-        {
-            Debug.Log("Generate");
-            StartCoroutine(LoadFile());
 
-        }
-        
+
+        LoadGame();
+
+
+
+
+        //}
+        //catch (Exception e)
+        //{
+        //    Debug.Log("Generate");
+        //    StartCoroutine(LoadFile());
+
+        //}
+
 
         //if (a!=null)
         //{
@@ -91,7 +111,31 @@ public class ReadFile : MonoBehaviour
 
 
     }
+  
+    public void LoadGame()
+    {
+        string json = JsonDataGame.text;
+        SavaDataGame a = JsonUtility.FromJson<SavaDataGame>(json);
 
+        //InforShapeSplit.InforShape = ListToDirectoryShape(a.shape);
+
+
+        //InforShapeSplit.List_Point = ListToDataGamePositon(a.Postion);
+
+        InforShapeSplit.ArrayDataGameShape = a.shape.ToArray();
+        InforShapeSplit.ArrayPositonShape = a.Postion.ToArray();
+
+        //   StartCoroutine(Start_1(a.shape, a.Postion));
+        //
+        //Debug.Log("FILE : " + InforShapeSplit.InforShape.Count);
+        //Debug.Log("FILE : " + InforShapeSplit.List_Point.Count);
+        InforShapeSplit.Filter();
+        CompleteCode = true;
+        Debug.Log("Loading");
+
+    }
+
+    
 
     public void LoadCountryCodes()
         {
@@ -112,7 +156,16 @@ public class ReadFile : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            Format("CUT - ROLL : 0 crossBar_2 : [0][0] - 1||1|| - 0 0||0 1||");
+            string s = "ROLL: 0 crossBar_2: [0][1]";  
+            string s2 = "crossBar_2";
+                if (s.Contains(s2))
+            {
+                Debug.Log("true");
+            }
+            else
+            {
+                Debug.Log("false");
+            }
         }
         if (Input.GetKeyDown(KeyCode.S))
         {
@@ -155,8 +208,16 @@ public class ReadFile : MonoBehaviour
            
 
         }
-       
-       
+        ListKey lKey = new ListKey();
+        lKey.Key = InforShapeSplit.ListKey;
+
+        SavingDataWithJson.SaveData<ListKey>(lKey, "Key.fun");
+
+        string jsonKey = JsonUtility.ToJson(lKey);
+
+        WriteStringKey(jsonKey);
+
+        Debug.Log("Key khoi tao : " +SavingDataWithJson.LoadData<ListKey>("Key.fun").Key.Count);
         Dictionary<string, List<int[,]>> SInforShape =   InforShapeSplit.InforShape;
         Dictionary<string, List<Vector2>> SListShape = InforShapeSplit.List_Point;
 
@@ -167,6 +228,11 @@ public class ReadFile : MonoBehaviour
 
 
 
+        //JsonData PlayerJson = JsonMapper.ToJson(save);
+        //File.WriteAllText(Application.dataPath + "/Player.json", PlayerJson.ToString());
+        //  File.ReadAllText(Application.dataPath + "/Player.json");
+
+
         //string ss = JsonUtility.ToJson(save);
 
         //PlayerPrefs.SetString(InforShapeSplit.key_Data, ss);
@@ -175,12 +241,14 @@ public class ReadFile : MonoBehaviour
 
 
         //SavingDataWithJson.SaveData<SavaDataGame>(save,"Dataa.fun");
-        
+        string json = JsonUtility.ToJson(save);
+        SaveJson(json);
 
 
         SavingDataWithJson.SaveData(save,"Dataa.fun");
 
 
+        InforShapeSplit.Filter();
 
         Debug.Log("Get Data");
 
@@ -269,7 +337,7 @@ public class ReadFile : MonoBehaviour
                
                 for (int e = 0; e < Element.Length; e++)
                 {
-                    Debug.Log(SingleMatrix[r] + "  " + Element[e]);
+                 //   Debug.Log(SingleMatrix[r] + "  " + Element[e]);
                 }
 
                 List<int> Row = new List<int>();
@@ -277,7 +345,7 @@ public class ReadFile : MonoBehaviour
                 {
                     if (Element[c] == "")
                         continue;
-                    Debug.Log("ELEMENT : "+Element[c]);
+               //     Debug.Log("ELEMENT : "+Element[c]);
                     string c1 = Element[c].Trim();
                    
                     Row.Add(int.Parse(c1));
@@ -296,10 +364,7 @@ public class ReadFile : MonoBehaviour
             
 
         }
-        for (int i = 0; i < ListMatrix.Count; i++)
-        {
-            Debug.Log("Matrix :" + Shape.Render(ListMatrix[i]));
-        }
+        Debug.Log("Loading Game");
         return ListMatrix;
 
       
@@ -321,7 +386,7 @@ public class ReadFile : MonoBehaviour
                 Vector2 Point = new Vector2();
                 string[] Element = stringListPositon[i].Split(w1, StringSplitOptions.None);
 
-                Debug.Log(stringListPositon[i]);
+               // Debug.Log(stringListPositon[i]);
 
                 Point.x = float.Parse(Element[0]);
                 Point.y = float.Parse(Element[1]);
@@ -330,10 +395,7 @@ public class ReadFile : MonoBehaviour
 
 
         }
-        for (int i = 0; i < ListPoint.Count; i++)
-        {
-            Debug.Log(ListPoint[i].x + "  " + ListPoint[i].y);
-        }
+       
             return ListPoint;
        
 
@@ -387,6 +449,20 @@ public class ReadFile : MonoBehaviour
      
     }
 
+    public static void WriteStringKey(string s)
+    {
+
+
+        StreamWriter writer = new StreamWriter(rootFolderJsonKey,false);
+       
+        writer.WriteLine(s);
+        writer.Close();
+
+
+
+    }
+
+
     public static void ResetFile_Positon()
     {
 
@@ -408,6 +484,13 @@ public class ReadFile : MonoBehaviour
 
 
 
+    }
+
+    public void SaveJson(string s)
+    {
+        StreamWriter writer = new StreamWriter(rootFolderJson,false);
+        writer.WriteLine(s);
+        writer.Close();
     }
 
     public static int[,] StringToMatrix(string s)
@@ -939,7 +1022,90 @@ public class ReadFile : MonoBehaviour
         return List;
 
     }
-    public Dictionary<string,List<int[,]>> ListToDirectoryShape(List<DataGameShape> DataShape)
+
+    public IEnumerator Start_1(List<DataGameShape> DataShape, List<DataGamePositon> DataShapePositon)
+    {
+
+        Dictionary<string, List<int[,]>> DirectoryGame1 = new Dictionary<string, List<int[,]>>();
+        for (int i = 0; i < DataShape.Count; i++)
+        {
+              Debug.Log("Loading");
+
+       //     Debug.Log("DATA : " + DataShape[i].StringMatrix.Count);
+
+            DirectoryGame1.Add(DataShape[i].key, DataShape[i].GetListMatrix());
+
+            yield return new WaitForSeconds(0.1f);
+        }
+        InforShapeSplit.InforShape = DirectoryGame1;
+       
+
+        Dictionary<string, List<Vector2>> DirectoryGame2 = new Dictionary<string, List<Vector2>>();
+        for (int i = 0; i < DataShapePositon.Count; i++)
+        {
+            DirectoryGame2.Add(DataShapePositon[i].key, DataShapePositon[i].Matrix);
+            Debug.Log("Loading");
+            yield return new WaitForSeconds(0.1f);
+        }
+        InforShapeSplit.List_Point = DirectoryGame2;
+
+        ListKey keyShape = JsonUtility.FromJson<ListKey>(ReadFile.Ins.JsonDataKey.text);
+        //ListKey keyShape  = SavingDataWithJson.LoadData<ListKey>("Key.fun");
+        List<string> keyGame = new List<string>();
+        keyGame = keyShape.Key;
+        Debug.Log("Has KEY : " + keyShape.Key.Count);
+        for (int i = 0; i < keyShape.Key.Count; i++)
+        {
+            //  Debug.Log(" KEY : " + keyShape.Key[i]+ CtrlData.AllShape.Count);
+        }
+        for (int i = 0; i < CtrlData.AllShape.Count; i++)
+        {
+            List<string> keyremove = new List<string>();
+            InforForSplitShape SplitShape = new InforForSplitShape();
+            string key = CtrlData.AllShape[i].ToString();
+            for (int j = 0; j < keyShape.Key.Count; j++)
+            {
+
+                //  Debug.Log("Key : "+ keyShape.Key[j] +"  "+ key);
+                //if (keyShape.Key[j].Contains(key))
+                //{
+                //    Debug.Log("Co Key : " + keyShape.Key[j] + "  " + key);
+
+                //}
+                //else
+                //{
+                //    Debug.Log("NO Key:" + keyShape.Key[j] + "  " + key);
+                //}
+               
+                if (keyShape.Key[j].Contains(key))
+                {
+
+                    keyremove.Add(keyShape.Key[j]);
+                    //  Debug.Log("Push Key : " + keyShape.Key[j]);
+                    SplitShape.InforShape.Add(keyShape.Key[j], InforShapeSplit.InforShape[keyShape.Key[j]]);
+                    SplitShape.List_Point.Add(keyShape.Key[j], InforShapeSplit.List_Point[keyShape.Key[j]]);
+                    Debug.Log("Loading");
+                    yield return new WaitForSeconds(0.2f);
+
+                }
+                else
+                {
+                    // Debug.Log("Khong Push Key : " + keyShape.Key[j] + "  " + key);
+                }
+
+            }
+           for(int r = 0; r < keyremove.Count; r++)
+            {
+                keyShape.Key.Remove(keyremove[r]);
+            }
+
+                InforShapeSplit.Directory.Add(CtrlData.AllShape[i], SplitShape);
+
+        }
+        CompleteCode = true;
+    }
+
+    public Dictionary<string,List<int[,]>>  ListToDirectoryShape(List<DataGameShape> DataShape)
     {
         Dictionary<string, List<int[,]>> DirectoryGame = new Dictionary<string, List<int[,]>>();
         for (int i = 0; i < DataShape.Count; i++)
@@ -962,6 +1128,15 @@ public class ReadFile : MonoBehaviour
         return DirectoryGame;
     }
 
-    
+    public static string ReadDataFromFile()
+    {
+
+        TextAsset asset = Resources.Load("Files/Levels") as TextAsset;
+        string jsonString;
+        jsonString = asset.text;
+        return jsonString;
+    }
+   
+
 
 }

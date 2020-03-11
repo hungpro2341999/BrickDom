@@ -822,7 +822,7 @@ public class CtrlData : MonoBehaviour
     }
     public static int[,] ConverStringToMatrix(string s)
     {
-        Debug.Log("Matrix : " + s);
+      //  Debug.Log("Matrix : " + s);
 
         StringReader strReader = new StringReader(s);
         
@@ -831,7 +831,7 @@ public class CtrlData : MonoBehaviour
         while (true)
         {
             string line = strReader.ReadLine();
-            Debug.Log(line);
+     //       Debug.Log(line);
             if (line == "")
             {
                 continue;

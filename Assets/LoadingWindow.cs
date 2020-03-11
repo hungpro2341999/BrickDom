@@ -32,12 +32,14 @@ public class LoadingWindow : MonoBehaviour
     }
     public IEnumerator LoadingGame()
     {
+        ReadFile.time = 0;
         while (LoadingBar.fillAmount!=1)
         {
                   LoadingBar.fillAmount += Random.Range(0,0.08f);
                //LoadingBar.fillAmount = 1;
                  yield return new WaitForSeconds(Random.Range(0,0.2f));
         }
+        ReadFile.time = 0.5f;
         GameManager.Ins.ActiveScreen(TypeScreen.PlayScreen);
 
 

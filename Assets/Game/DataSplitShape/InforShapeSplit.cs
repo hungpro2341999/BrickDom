@@ -8,12 +8,81 @@ public class InforShapeSplit : MonoBehaviour
     public static List<string> ListKey = new List<string>();
     public static Dictionary<string,List<int[,]>> InforShape = new Dictionary<string, List<int[,]>>();
     public static Dictionary<string, List<Vector2>> List_Point = new Dictionary<string, List<Vector2>>();
+    public static Dictionary<TypeShape,InforForSplitShape> Directory = new Dictionary<TypeShape,InforForSplitShape>();
     public const string key_Data = "Key_Data_game_1";
-    
+    public const string key_Dictinory = "Key";
 
+
+    public static List<string> Key = new List<string>();
+
+    public static DataGameShape[] ArrayDataGameShape = null;
+
+    public static DataGamePositon[] ArrayPositonShape = null;
+
+    public static Dictionary<string, int> DirectKey = new Dictionary<string, int>();
     public List<Dictionary<string, List<int[,]>>> Type = new List<Dictionary<string, List<int[,]>>>();
     public string key = "ROLL : 3 T - [012][01]";
     // Start is called before the first frame update
+
+    public static void  Filter()
+    {
+        ListKey keyShape = JsonUtility.FromJson<ListKey>(ReadFile.Ins.JsonDataKey.text); 
+        //ListKey keyShape  = SavingDataWithJson.LoadData<ListKey>("Key.fun");
+        List<string> keyGame = new List<string>();
+
+        keyGame = keyShape.Key;
+
+        for(int i = 0; i < keyGame.Count; i++)
+        {
+            DirectKey.Add(keyGame[i],i);
+        }
+
+        //keyGame = keyShape.Key;
+        //Debug.Log("Has KEY : " + keyShape.Key.Count);
+        //for(int i=0;i< keyShape.Key.Count; i++)
+        //{
+        //  //  Debug.Log(" KEY : " + keyShape.Key[i]+ CtrlData.AllShape.Count);
+        //}
+        //for(int i = 0; i < CtrlData.AllShape.Count; i++)
+        //{
+        //    InforForSplitShape SplitShape = new InforForSplitShape();
+        //    string key =  CtrlData.AllShape[i].ToString();
+        //    for(int j = 0; j < keyShape.Key.Count; j++)
+        //    {
+
+        //        //  Debug.Log("Key : "+ keyShape.Key[j] +"  "+ key);
+        //        //if (keyShape.Key[j].Contains(key))
+        //        //{
+        //        //    Debug.Log("Co Key : " + keyShape.Key[j] + "  " + key);
+
+        //        //}
+        //        //else
+        //        //{
+        //        //    Debug.Log("NO Key:" + keyShape.Key[j] + "  " + key);
+        //        //}
+        //        if (keyShape.Key[j].Contains(key))
+        //        {
+
+        //          //  Debug.Log("Push Key : " + keyShape.Key[j]);
+        //            SplitShape.InforShape.Add(keyShape.Key[j], InforShapeSplit.InforShape[keyShape.Key[j]]);
+        //            SplitShape.List_Point.Add(keyShape.Key[j], InforShapeSplit.List_Point[keyShape.Key[j]]);
+
+        //        }
+        //        else
+        //        {
+        //           // Debug.Log("Khong Push Key : " + keyShape.Key[j] + "  " + key);
+        //        }
+
+        //    }
+        //    Directory.Add(CtrlData.AllShape[i], SplitShape);
+
+        //}
+        
+
+
+
+    }
+
     void Start()
     {
 
@@ -1486,5 +1555,18 @@ public class SaveFileGame
     public Dictionary<string, List<Vector2>> List_Point = new Dictionary<string, List<Vector2>>();
 
 
+}
+public class InforForSplitShape
+{
+    public Dictionary<string, List<int[,]>> InforShape = new Dictionary<string, List<int[,]>>();
+    public Dictionary<string, List<Vector2>> List_Point = new Dictionary<string, List<Vector2>>();
+    public List<int[,]> GetMatrix(string key)
+    {
+        return InforShape[key];
+    }
+    public List<Vector2> GetPoint(string key)
+    {
+        return List_Point[key];
+    }
 }
 
