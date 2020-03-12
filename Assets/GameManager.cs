@@ -124,6 +124,15 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+    public void RateUs()
+    {
+        ManagerAds.Ins.RateApp();
+    }
+
+    public void More_Game()
+    {
+        ManagerAds.Ins.MoreGame();
+    }
 
 
 

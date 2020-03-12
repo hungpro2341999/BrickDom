@@ -54,6 +54,7 @@ public class CtrlGamePlay : MonoBehaviour
     public bool isFinding = false;
     public List<GameObject> Suggest = new List<GameObject>();
     public List<Shape> CloneListDestroy = new List<Shape>();
+   
     #region localVariable
     bool initPos = false;
     public Vector2 PosInit;
@@ -215,6 +216,25 @@ public class CtrlGamePlay : MonoBehaviour
 
         DestroyAll_Ver_1();
         GameManager.Ins.OpenWindow(TypeWindow.GamePlay);
+     
+
+
+    }
+    public void Rest_Game_1()
+    {
+        if (CtrlData.CountPlay % 2 == 0)
+        {
+            ManagerAds.Ins.ShowInterstitial();
+            CtrlData.CountPlay++;
+        }
+        GameManager.Ins.isGameOver = false;
+
+        Board = new int[Row, Column];
+
+        DestroyAll_Ver_1();
+        GameManager.Ins.OpenWindow(TypeWindow.GamePlay);
+        AnimSetting.Ins.ChangeStatus();
+        CtrlGamePlay.Ins.RemuseGame();
 
 
     }
@@ -226,7 +246,8 @@ public class CtrlGamePlay : MonoBehaviour
         {
             if (done)
             {
-                int a = Random.Range(2, 5);
+                //int a = Random.Range(2, 5);
+                int a = 4;
                 int start = Random.Range(6, 9);
                 for (int i = 0; i < a; i++)
                 {
@@ -388,6 +409,8 @@ public class CtrlGamePlay : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (ClickUI.clickPause)
+            return;
         if (GameManager.Ins.isGameOver || GameManager.Ins.isGamePause)
             return;
 
@@ -755,36 +778,39 @@ public class CtrlGamePlay : MonoBehaviour
 
         int[] row = RowSplit.ToArray();
         int[] column = ColumnSplit.ToArray();
-       
-      //  EffSplitShape(RowSplit.ToArray(), ColumnSplit.ToArray());
 
-        List<Shape> ShapeSplit = new List<Shape>();
-       
-        List<Shape> listClone = new List<Shape>(List_Shape);
-        int Update = 0;
-        for (int i = 0; i < listClone.Count; i++)
-        {
-            if (listClone[i].TypeShape != TypeShape.crossBar_1 && !listClone[i].isEff)
-            {
-                if (SplitShape(listClone[i], row, column))
-                {
-                    Update++;
-                    ShapeSplit.Add(listClone[i]);
-                }
-             
+          EffSplitShape(RowSplit.ToArray(), ColumnSplit.ToArray());
 
-            }
-          
 
-        }
-        for (int i = 0; i < ShapeSplit.Count; i++)
-        {
-            ShapeSplit[i].DestroyAllCubeAndShape();
-        }
 
-        RowSplit = new List<int>();
-        ColumnSplit = new List<int>();
-        Invoke("DestroyAndSplitShape", 0.35f);
+
+        //List<Shape> ShapeSplit = new List<Shape>();
+
+        //List<Shape> listClone = new List<Shape>(List_Shape);
+        //int Update = 0;
+        //for (int i = 0; i < listClone.Count; i++)
+        //{
+        //    if (listClone[i].TypeShape != TypeShape.crossBar_1 && !listClone[i].isEff)
+        //    {
+        //        if (SplitShape(listClone[i], row, column))
+        //        {
+
+        //            ShapeSplit.Add(listClone[i]);
+        //        }
+
+
+        //    }
+
+
+        //}
+        //for (int i = 0; i < ShapeSplit.Count; i++)
+        //{
+        //    ShapeSplit[i].DestroyAllCubeAndShape();
+        //}
+
+        //RowSplit = new List<int>();
+        //ColumnSplit = new List<int>();
+        //Invoke("DestroyAndSplitShape", 0.35f);
 
     }
     class GFG : IComparer<int>
@@ -892,56 +918,70 @@ public class CtrlGamePlay : MonoBehaviour
 
 
 
-        //for(int i = 0; i < List_Shape.Count; i++)
-        //{
-
-        //        bool isFind = false;
-
-        //        for(int j = 0; j < List_Shape[i].ListShape.Count; j++)
-        //        {
-        //            if (isFind)
-        //                break;
-        //            DestroySelf Cubes = List_Shape[i].ListShape[j].GetComponent<DestroySelf>();
-
-        //            for(int k = 0; k < column.Length; k++)
-        //            {
-        //                if (isFind)
-        //                    break;
-
-        //                if (Cubes.Point.x == column[k])
-        //                {
-        //                     if(!shapeSplit.Contains(Cubes.shape) && Cubes.shape.gameObject.layer!=0 && !Cubes.shape.isEff)
-        //                    {
-        //                        shapeSplit.Add(Cubes.shape);
-        //                        isFind = true;
-        //                    }    
-        //                }
-        //            }
-        //        }
-
-
-        //}
+       
         List<Shape> ShapeSplit = new List<Shape>();
         GFG gg = new GFG();
         RowSplit.Sort(gg);
         ColumnSplit.Sort(gg);
 
-        List<Shape> listClone = new List<Shape>(List_Shape); 
-        for (int i = 0; i < listClone.Count; i++)
+        for (int i = 0; i < List_Shape.Count; i++)
         {
-            if (listClone[i].TypeShape != TypeShape.crossBar_1 && !listClone[i].isEff )
+            if (List_Shape[i].shape.GetLength(1) <= 1)
+
+                continue;
+           
+                bool isFind = false;
+
+            for (int j = 0; j < List_Shape[i].ListShape.Count; j++)
             {
-                if(SplitShape(listClone[i],null, column))
+             
+
+                if (isFind)
+                    break;
+                DestroySelf Cubes = List_Shape[i].ListShape[j].GetComponent<DestroySelf>();
+
+                for (int k = 0; k < column.Length; k++)
                 {
-                    ShapeSplit.Add(listClone[i]);
+                   
+
+                    if (isFind)
+                        break;
+
+                    if (Cubes.Point.x == column[k])
+                    {
+                        if (Cubes.shape.gameObject.layer != 0 && !Cubes.shape.isEff)
+                        {
+                            ShapeSplit.Add(Cubes.shape);
+                            isFind = true;
+                        }
+                    }
                 }
+            }
+
+
+        }
+
+        List<Shape> ListShapeDestroy = new List<Shape>();
+
+
+        for (int i = 0; i < ShapeSplit.Count; i++)
+        {
+            if (ShapeSplit[i].TypeShape != TypeShape.crossBar_1)
+            {
+                if(SplitShape(ShapeSplit[i], null, column))
+                {
+                    ListShapeDestroy.Add(ShapeSplit[i]);
+
+                }
+              
+               
                
             }
            
         }
-        for(int i = 0; i <ShapeSplit.Count; i++)
+        for(int i = 0; i <ListShapeDestroy.Count; i++)
         {
-            ShapeSplit[i].DestroyAllCubeAndShape();
+            ListShapeDestroy[i].DestroyAllCubeAndShape();
         }
 
         RowSplit = new List<int>();
@@ -1301,6 +1341,7 @@ public class CtrlGamePlay : MonoBehaviour
 
     public void SpawnShape()
     {
+        
         HasCubeEff = 0;
 
         if (CtrlData.Score > (150 * (int)CtrlData.Level))
@@ -1314,6 +1355,8 @@ public class CtrlGamePlay : MonoBehaviour
     }
     public void SpawnStartGame()
     {
+        DestroyAll();
+        SimulateColumn.SetActive(false); 
         CtrlData.Level = 1;
         timeSuggest = 10;
         GenerateStartGame(Random.Range(2, 4), true);
@@ -1889,6 +1932,10 @@ public class CtrlGamePlay : MonoBehaviour
             int index = InforShapeSplit.DirectKey[key];
 
             List<int[,]> matrix = InforShapeSplit.ArrayDataGameShape[index].GetListMatrix();
+            if (matrix.Count <=1)
+            {
+                return false;
+            }
             List<Vector2> ListPoint = InforShapeSplit.ArrayPositonShape[index].Matrix;
 
             List<Vector2> List_Position = ConvertToPostionBoard(ListPoint, shape.Point);
@@ -1898,8 +1945,8 @@ public class CtrlGamePlay : MonoBehaviour
                 // Debug.Log("SHAPE : " + Render(matrix[i]));
                 if (CountInCube(matrix[i]) == 0)
                     return false;
-                Debug.Log("SPAWN");
-                SpawnShape(matrix[i], List_Position[i], shape.IDColor);
+           //     Debug.Log("SPAWN");
+               SpawnShape(matrix[i], List_Position[i], shape.IDColor);
 
 
 
@@ -2062,6 +2109,7 @@ public class CtrlGamePlay : MonoBehaviour
        
     }
     
+    
     public List<Vector2> GrounpPoint(List<int> Row, List<int> Column)
     {
         List<Vector2> point = new List<Vector2>();
@@ -2102,7 +2150,7 @@ public class CtrlGamePlay : MonoBehaviour
 
             Vector2 pos = new Vector2(posX, posY);
             L_Vector.Add(pos);
-            Debug.Log("PosConvert : " + pos.x+"   "+pos.y);
+          //  Debug.Log("PosConvert : " + pos.x+"   "+pos.y);
         }
         return L_Vector; 
        
@@ -2345,14 +2393,14 @@ public class CtrlGamePlay : MonoBehaviour
         List<int> splitColumn = new List<int>();
         List<int> splitRow = new List<int>();
         
-         for(int i = 0; i < type.GetLength(0); i++)
-        {
-            Debug.Log(i + "  " + (point.x + i));
-            splitRow.Add((int)(point.x + i));  
-        }
+        // for(int i = 0; i < type.GetLength(0); i++)
+        //{
+        //    Debug.Log(i + "  " + (point.x + i));
+        //    splitRow.Add((int)(point.x + i));  
+        //}
         for (int j = 0; j < type.GetLength(1); j++)
         {
-            Debug.Log(j + "  " + (point.y + j));
+      //      Debug.Log(j + "  " + (point.y + j));
             splitColumn.Add((int)(point.y + j));
 
         }
@@ -2360,20 +2408,20 @@ public class CtrlGamePlay : MonoBehaviour
         List<int> splitColumn_ver_2 = new List<int>();
         List<int> splitRow_Ver_2 = new List<int>();
 
-        if (row != null)
-        {
-            for (int i = 0; i < splitRow.Count; i++)
-            {
-                for (int j = 0; j < row.Length; j++)
-                {
-                    Debug.Log(splitRow[i] + "   " + row[j]);
-                    if (splitRow[i] == row[j])
-                    {
-                        splitRow_Ver_2.Add(i);
-                    }
-                }
-            }
-        }
+        //if (row != null)
+        //{
+        //    for (int i = 0; i < splitRow.Count; i++)
+        //    {
+        //        for (int j = 0; j < row.Length; j++)
+        //        {
+        //            Debug.Log(splitRow[i] + "   " + row[j]);
+        //            if (splitRow[i] == row[j])
+        //            {
+        //                splitRow_Ver_2.Add(i);
+        //            }
+        //        }
+        //    }
+        //}
         
         if (colum != null)
         {
@@ -2483,7 +2531,23 @@ public class CtrlGamePlay : MonoBehaviour
         return matrix;
     }
 
+    public IEnumerator IESpawnShape(int[,] Type, Vector2 pos, int color,float time)
+    {
+        yield return new WaitForEndOfFrame();
+        int back = BackTo(Type);
+        int forward = BackTo_Top(Type);
+        pos = new Vector2(pos.x += back * offsetX, pos.y -= forward * offsetY);
+        TypeShape type = CtrlGamePlay.Ins.MatrixToType(Type);
+        int roll = RollShape(type, Type);
+        Type = Shape.SplitMatrix(CtrlGamePlay.standardizedMatrix(Type));
+        //   Debug.Log("INFOR SHAPE SPLIT : " + back + " :: " + type.ToString() + " :: " + roll);
 
+        InforShape infor = new InforShape(type, pos, Type, roll, color);
+
+        SpawnShape(infor);
+
+
+    }
     public void  SpawnShape(int[,] Type,Vector2 pos,int color)
     {
 
@@ -3625,7 +3689,7 @@ public class CtrlGamePlay : MonoBehaviour
                 if (ReadFile.CompleteCode)
                 {
                     int x = Random.Range(0, 100);
-                    if (x >= 0 && x <= 50)
+                    if (x >= 0 && x <= 3)
                     {
                         if (ListInfor[i].roll == 0)
                         {
@@ -3717,7 +3781,7 @@ public class CtrlGamePlay : MonoBehaviour
         int[,] Clone = CloneBoard(Board);
         int[,] backup = null;
         int[,] backupBoard = CloneBoard(Board);
-        Debug.Log(Render(Board));
+     //   Debug.Log(Render(Board));
         TypeShape typeshape = TypeShape.None;
         Vector3 position = Vector3.zero;
         while (!isSpawnCorrect)
@@ -3734,7 +3798,7 @@ public class CtrlGamePlay : MonoBehaviour
             {
                 isSpawnCorrect = true;
 
-                Debug.Log(Render(Clone));
+             //   Debug.Log(Render(Clone));
                 position = RandomPosShape();
 
                 if (count % 32 == 0)
@@ -3764,7 +3828,7 @@ public class CtrlGamePlay : MonoBehaviour
                             Vector3 posCurr = new Vector3(position.x + j * CtrlGamePlay.Ins.offsetX, position.y - i * CtrlGamePlay.Ins.offsetY);
 
                             Vector2 point = CtrlGamePlay.PositonToPointMatrix(posCurr.x, posCurr.y);
-                            Debug.Log(Render(Clone));
+                         //   Debug.Log(Render(Clone));
                             if (IsPushShapeCorrect(Clone, (int)point.x, (int)point.y))
                             {
                                 Clone[(int)point.x, (int)point.y] = 1;
@@ -3982,7 +4046,7 @@ public class CtrlGamePlay : MonoBehaviour
             }
             
         }
-        Debug.Log("KHong Co Type Shape !!!!");
+     //   Debug.Log("KHong Co Type Shape !!!!");
 
         return 0;
     }
@@ -5188,6 +5252,11 @@ public class CtrlGamePlay : MonoBehaviour
 
     public void PauseGame()
     {
+        if (CtrlData.CountPlay % 2 == 0)
+        {
+            CtrlData.CountPlay++;
+            ManagerAds.Ins.ShowInterstitial();
+        }
         GameManager.Ins.isGamePause = true;
     }
     public void RemuseGame()
@@ -5196,7 +5265,7 @@ public class CtrlGamePlay : MonoBehaviour
     }
 
    
-    
+   
 
 
     #endregion

@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class VisibleScore : MonoBehaviour
 {
     public Text Score;
+    public Text HighScore;
     // Start is called before the first frame update
     void Start()
     {
@@ -22,6 +23,7 @@ public class VisibleScore : MonoBehaviour
     {
         AudioManganger.Ins.PlaySound("GameOver");
         Score.text = CtrlData.Score.ToString();
+        HighScore.text = CtrlData.Ins.GetHighScore().ToString();
     }
     
 }

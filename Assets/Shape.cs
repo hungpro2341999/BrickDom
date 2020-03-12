@@ -159,6 +159,8 @@ public class Shape : PoolItem
     // Update is called once per frame
     void Update()
     {
+        if (ClickUI.clickPause)
+            return;
         if (GameManager.Ins.isGamePause || GameManager.Ins.isGameOver)
             return;
             Point = CtrlGamePlay.PositonToPointMatrix(transform.position.x, transform.position.y);
@@ -708,21 +710,37 @@ public class Shape : PoolItem
         TypeShape type = TypeShape.None;
         while (type == TypeShape.None || type == TypeShape.L3_0 || type == TypeShape.L3_90)
         {
-
-
-            if (r >= 0 && r <= 80 - (CtrlData.Level * 2))
+            if (CtrlData.Score <= 500)
             {
+                if (r >= 0 && r <= 70 - (CtrlData.Level * 2))
+                {
 
-                type = CtrlData.Ins.Type_Ver_1[Random.Range(0, CtrlData.Ins.Type_Ver_1.Count)];
-            }
-            else if (r > 80 - (CtrlData.Level * 2) && r < 100 - (CtrlData.Level * 2))
-            {
-                type = CtrlData.Ins.Type_Ver_2[Random.Range(0, CtrlData.Ins.Type_Ver_2.Count)];
+                    type = CtrlData.Ins.Type_Ver_1[Random.Range(0, CtrlData.Ins.Type_Ver_1.Count)];
+                }
+                else 
+                {
+                    type = CtrlData.Ins.Type_Ver_2[Random.Range(0, CtrlData.Ins.Type_Ver_2.Count)];
+                }
             }
             else
             {
-                type = CtrlData.Ins.Type_Ver_3[Random.Range(0, CtrlData.Ins.Type_Ver_3.Count)];
+                if (r >= 0 && r <= 80 - (CtrlData.Level * 2))
+                {
+
+                    type = CtrlData.Ins.Type_Ver_1[Random.Range(0, CtrlData.Ins.Type_Ver_1.Count)];
+                }
+                else if (r > 80 - (CtrlData.Level * 2) && r < 100 - (CtrlData.Level * 2))
+                {
+                    type = CtrlData.Ins.Type_Ver_2[Random.Range(0, CtrlData.Ins.Type_Ver_2.Count)];
+                }
+                else
+                {
+
+                    type = CtrlData.Ins.Type_Ver_3[Random.Range(0, CtrlData.Ins.Type_Ver_3.Count)];
+                }
             }
+
+           
           
 
            

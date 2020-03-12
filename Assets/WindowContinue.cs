@@ -42,6 +42,7 @@ public class WindowContinue : Windown
                 if (count == 5)
                 {
                     Complete = true;
+                    GameManager.Ins.OpenWindow(TypeWindow.OverGame);
                 }
                 Count.sprite = CountText[count];
                 StartAnim();

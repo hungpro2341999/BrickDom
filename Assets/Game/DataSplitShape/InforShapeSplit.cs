@@ -37,17 +37,20 @@ public class InforShapeSplit : MonoBehaviour
             DirectKey.Add(keyGame[i],i);
         }
 
-        //keyGame = keyShape.Key;
-        //Debug.Log("Has KEY : " + keyShape.Key.Count);
-        //for(int i=0;i< keyShape.Key.Count; i++)
+        keyGame = keyShape.Key;
+
+
+
+        Debug.Log("Has KEY : " + keyShape.Key.Count);
+        //for (int i = 0; i < keyShape.Key.Count; i++)
         //{
-        //  //  Debug.Log(" KEY : " + keyShape.Key[i]+ CtrlData.AllShape.Count);
+        //    //  Debug.Log(" KEY : " + keyShape.Key[i]+ CtrlData.AllShape.Count);
         //}
-        //for(int i = 0; i < CtrlData.AllShape.Count; i++)
+        //for (int i = 0; i < CtrlData.AllShape.Count; i++)
         //{
         //    InforForSplitShape SplitShape = new InforForSplitShape();
-        //    string key =  CtrlData.AllShape[i].ToString();
-        //    for(int j = 0; j < keyShape.Key.Count; j++)
+        //    string key = CtrlData.AllShape[i].ToString();
+        //    for (int j = 0; j < keyShape.Key.Count; j++)
         //    {
 
         //        //  Debug.Log("Key : "+ keyShape.Key[j] +"  "+ key);
@@ -63,21 +66,21 @@ public class InforShapeSplit : MonoBehaviour
         //        if (keyShape.Key[j].Contains(key))
         //        {
 
-        //          //  Debug.Log("Push Key : " + keyShape.Key[j]);
+        //            //  Debug.Log("Push Key : " + keyShape.Key[j]);
         //            SplitShape.InforShape.Add(keyShape.Key[j], InforShapeSplit.InforShape[keyShape.Key[j]]);
         //            SplitShape.List_Point.Add(keyShape.Key[j], InforShapeSplit.List_Point[keyShape.Key[j]]);
 
         //        }
         //        else
         //        {
-        //           // Debug.Log("Khong Push Key : " + keyShape.Key[j] + "  " + key);
+        //            // Debug.Log("Khong Push Key : " + keyShape.Key[j] + "  " + key);
         //        }
 
         //    }
         //    Directory.Add(CtrlData.AllShape[i], SplitShape);
 
         //}
-        
+
 
 
 
