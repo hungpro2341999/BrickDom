@@ -428,7 +428,7 @@ public class CtrlGamePlay : MonoBehaviour
         }
 
 
-
+        AnimSetting.Ins.Btn_HighScore.gameObject.SetActive(true);
         #region
 
         if (Input.GetKeyDown(KeyCode.A))

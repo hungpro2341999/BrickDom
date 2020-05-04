@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class WindowGamePlay : Windown
 {
+    public Animator AnimGamePlay;
+    public bool open = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -15,7 +17,16 @@ public class WindowGamePlay : Windown
     {
         
     }
-  
-     
-    
+
+    private void OnEnable()
+    {
+        //open = !open;
+        //AnimGamePlay.SetBool("Open",open);
+    }
+    private void OnDisable()
+    {
+        //open = !open;
+        //AnimGamePlay.SetBool("Open", open);
+    }
+
 }

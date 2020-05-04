@@ -44,11 +44,17 @@ public class WindowContinue : Windown
                     Complete = true;
                     GameManager.Ins.OpenWindow(TypeWindow.OverGame);
                 }
-                Count.sprite = CountText[count];
-                StartAnim();
-                delay = delaytime;
+                else
+                {
+                    Count.sprite = CountText[count];
+                    Count.SetNativeSize();
+                    StartAnim();
+                    delay = delaytime;
+                    count++;
+                }
+             
                
-                count++;
+               
              
             }
         }    
