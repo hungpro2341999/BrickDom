@@ -72,8 +72,8 @@ public class AnimSetting : MonoBehaviour
    
     public void Pause()
     {
-        //Btn_Pause.gameObject.SetActive(true);
-        //Btn_Resume.gameObject.SetActive(false);
+        Btn_Pause.gameObject.SetActive(true);
+        Btn_Resume.gameObject.SetActive(false);
         //Status2.localScale = Vector3.one*0.5f;
         //Status2.gameObject.SetActive(false);
         //Status1.DOAnchorPos(new Vector2(-252f, 516f), 0.5f).OnComplete(()=>
@@ -97,8 +97,8 @@ public class AnimSetting : MonoBehaviour
     }
     public void Continue()
     {
-        //Btn_Pause.gameObject.SetActive(false);
-        //Btn_Resume.gameObject.SetActive(true);
+        Btn_Pause.gameObject.SetActive(false);
+        Btn_Resume.gameObject.SetActive(true);
         //Btn_HighScore.gameObject.SetActive(true);
         //Status1.DOAnchorPos(new Vector2(-277f, 516), 0.2f);
         //Status2.DOScale(new Vector3(1.15f, 1.15f, 1f), 0.2f).OnComplete

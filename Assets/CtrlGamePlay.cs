@@ -222,19 +222,24 @@ public class CtrlGamePlay : MonoBehaviour
     }
     public void Rest_Game_1()
     {
-        if (CtrlData.CountPlay % 2 == 0)
+        if (!GameManager.Ins.isGameOver)
         {
-            ManagerAds.Ins.ShowInterstitial();
-            CtrlData.CountPlay++;
+            if (CtrlData.CountPlay % 2 == 0)
+            {
+                ManagerAds.Ins.ShowInterstitial();
+                CtrlData.CountPlay++;
+            }
+            GameManager.Ins.isGameOver = false;
+
+            Board = new int[Row, Column];
+
+            DestroyAll_Ver_1();
+            GameManager.Ins.OpenWindow(TypeWindow.GamePlay);
+            AnimSetting.Ins.ChangeStatus();
+            CtrlGamePlay.Ins.RemuseGame();
         }
-        GameManager.Ins.isGameOver = false;
 
-        Board = new int[Row, Column];
-
-        DestroyAll_Ver_1();
-        GameManager.Ins.OpenWindow(TypeWindow.GamePlay);
-        AnimSetting.Ins.ChangeStatus();
-        CtrlGamePlay.Ins.RemuseGame();
+      
 
 
     }
@@ -2745,6 +2750,10 @@ public class CtrlGamePlay : MonoBehaviour
         for (int i = 0; i < Board.GetLength(0); i++)
         {
             DestroyRow(i);
+        }
+        if (ShapeClick != null)
+        {
+            ShapeClick.DestroyAllCubeAndShape();
         }
         List_Shape = new List<Shape>();
         Cubes = new List<GameObject>();
